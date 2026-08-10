@@ -1,39 +1,38 @@
-# 📖 Central de Runbooks - Cluster Acadêmico 2026
+# 📖 Central de Materiais e Projetos - EEEP Adolfo Ferreira de Sousa
 
-Bem-vindo ao repositório central de documentação e procedimentos operacionais (Runbooks) para a infraestrutura do laboratório! Este espaço é mantido pelos squads de alunos para organizar o provisionamento, a rede e a conectividade de nossos servidores.
+Bem-vindo ao repositório público de compartilhamento de materiais de aula, runbooks e práticas das disciplinas técnicas ministradas pelo **Professor Olegário** no curso de **Desenvolvimento de Sistemas** da **EEEP-AFS** (Redenção-CE).
+
+Aqui você encontrará roteiros de laboratório, slides de apoio, códigos de exemplo e runbooks de infraestrutura.
 
 ---
 
-## 🚀 Como Proceder (Fluxo de Trabalho)
+## 📚 Disciplinas (Semestre 2026.2)
 
-Para implantar e expor seus serviços no laboratório, siga estes passos em ordem:
+Selecione a pasta correspondente à sua disciplina para acessar slides, roteiros de aulas e desafios práticos:
 
-### 1️⃣ Consulte o Índice Central
-Toda a documentação ativa está mapeada no arquivo **[[indice-cluster-academico]]**. Use-o como seu ponto de partida no Obsidian ou GitHub para navegar entre os guias.
+*   **🌐 [Redes de Computadores](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Disciplinas-2026-2/Redes-de-Computadores)** (2º Ano): Arquitetura de redes, TCP/IP, roteamento, topologias e serviços.
+*   **💾 [Banco de Dados](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Disciplinas-2026-2/Banco-de-Dados)** (2º Ano): Modelagem de dados, normalização, SQL e SGBDs.
+*   **🎨 [Design Gráfico](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Disciplinas-2026-2/Design-Grafico)** (2º Ano): Fundamentos visuais, composição, cores e tipografia.
+*   **🛠️ [Arquitetura e Manutenção](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Disciplinas-2026-2/Arquitetura-e-Manutencao)** (1º Ano): Hardware, montagem, manutenção preventiva e lógica de sistemas.
+*   **🎯 [Planejamento de Carreira](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Disciplinas-2026-2/Planejamento-de-Carreira)** (1º Ano): Desenvolvimento pessoal, mercado de trabalho, ética e carreira em TI.
 
-### 2️⃣ Provisione a Aplicação (WordPress)
-Se o seu squad precisa de uma instância WordPress:
-* Acesse o runbook **[[runbook-provisionamento-wordpress-lxc]]**.
-* Siga o procedimento de criação da máquina modelo (LXC Turnkey no Proxmox).
-* **Muito Importante:** Execute a *Fase B (Ajuste Técnico)* para editar o `wp-config.php` e evitar loops de redirecionamento HTTPS infinito quando o site for publicado na internet.
-* Clone a máquina e configure o IP específico do seu Squad conforme a tabela de inventário de IPs.
+---
 
-### 3️⃣ Exponha sua Aplicação na Rede Local (NPM)
-Com o WordPress rodando localmente no IP do seu Squad:
-* Acesse o runbook **[[runbook-acesso-externo-npm]]**.
-* A equipe de infraestrutura utilizará este guia para configurar a "Torre de Controle" (Nginx Proxy Manager) no IP `20.20.0.202`.
-* Você criará um *Proxy Host* no painel administrativo do NPM (`http://20.20.0.202:81`) apontando o domínio do seu squad (ex: `squad1.lab.seudominio.com`) para o IP interno do seu contêiner na porta `80`.
+## 🖥️ Projeto: Cluster Acadêmico
 
-### 4️⃣ Ative o Acesso Externo Seguro (Cloudflare Tunnels)
-Para que pessoas fora da rede da escola consigam acessar o seu site WordPress ou o Moodle:
-* Acesse o runbook **[[runbook-cloudflare-tunnels]]**.
-* A equipe de infraestrutura integrará o contêiner do `cloudflared` ao Docker Compose do NPM.
-* **Atenção:** Solicite o **Tunnel Token** diretamente ao **Professor/Administrador**. Nunca publique o token real no código ou no GitHub!
+Se você faz parte de um squad de infraestrutura ou desenvolvimento no laboratório da escola, consulte a pasta de documentação e runbooks de servidores:
+
+*   📂 **[Acessar Pasta do Cluster Acadêmico](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Cluster-academico-runbooks-alunos)**
+    *   **[Índice de Documentação do Cluster](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Cluster-academico-runbooks-alunos/indice-cluster-academico.md)**
+    *   **[Runbook: Provisionamento WordPress em LXC](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Cluster-academico-runbooks-alunos/runbook-provisionamento-wordpress-lxc.md)** (Para squads criando instâncias WordPress)
+    *   **[Runbook: Exposição na Rede Local com NPM](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Cluster-academico-runbooks-alunos/runbook-acesso-externo-npm.md)** (Configuração do Nginx Proxy Manager)
+    *   **[Runbook: Acesso Seguro com Cloudflare Tunnels](file:///c:/Users/olega/Documents/Materiais-Compartilhados/Cluster-academico-runbooks-alunos/runbook-cloudflare-tunnels.md)** (Exposição externa segura)
+
 
 ---
 
 ## 🔒 Diretrizes e Boas Práticas
 
-* **Respeite o IPAM:** Nunca utilize um IP que não esteja explicitamente atribuído ao seu Squad na tabela de inventário. Conflitos de IP derrubam os serviços dos seus colegas.
-* **Segurança de Credenciais:** Nunca salve senhas, chaves privadas SSH ou tokens de serviços online nos arquivos markdown ou códigos que serão commitados no GitHub. Use placeholders (ex: `<SEU_TOKEN_AQUI>`).
-* **Mantenha a Documentação Viva:** Encontrou um bug ou um erro nos comandos durante o laboratório? Faça a correção no arquivo markdown correspondente e notifique o professor para atualizarmos o repositório público.
+*   **Segurança de Credenciais:** Nunca commit senhas, chaves privadas SSH ou tokens de serviços (ex: Cloudflare tokens) nos arquivos markdown ou códigos deste repositório público. Use sempre placeholders (ex: `<SEU_TOKEN_AQUI>`).
+*   **Mantenha a Documentação Viva:** Se encontrar um erro nos comandos ou se um roteiro prático puder ser melhorado, avise o professor ou abra uma issue/pull request sugerindo a correção!
+
