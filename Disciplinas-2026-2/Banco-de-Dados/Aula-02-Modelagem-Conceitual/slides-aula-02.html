@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Abstração, Modelo Relacional e Modelo Conceitual | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; margin-bottom: 20px; }
+    .reveal p, .reveal li { font-size: 1.3rem; line-height: 1.6; }
+    .reveal blockquote { font-size: 1.2rem; background: #264653; border-left: 5px solid #2a9d8f; padding: 15px; text-align: left; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+    .reveal pre { font-size: 0.95rem; border-radius: 8px; box-shadow: 3px 3px 6px rgba(0,0,0,0.4); }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #2a9d8f; font-weight: bold; }
+    .resposta-aluno { color: #e9c46a; font-style: italic; font-weight: normal; }
+    section.capa { text-align: center; }
+    .colunas { display: flex; justify-content: space-between; gap: 20px; text-align: left; }
+    .coluna { flex: 1; }
+    .agenda-list li { margin: 15px 0; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa</p>
+      <h1 style="margin: 30px 0;">Banco de Dados<br><span style="font-size: 1.4rem; color:#e9c46a;">Abstração, Modelo Relacional e Modelo Conceitual</span></h1>
+      <p>Prof. Olegário Neto</p>
+      <p style="font-size: 1rem; opacity: 0.6;">Semestre 2026.2 · Aula 02 · 11/08/2026</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 Agenda de Hoje</h2>
+      <ul class="agenda-list">
+        <li><span class="destaque">Parte 1:</span> Correção do Exercício de Fixação</li>
+        <li><span class="destaque">Parte 2:</span> Níveis de Abstração (ANSI/SPARC) e Independência de Dados</li>
+        <li><span class="destaque">Parte 3:</span> Introdução ao Modelo Relacional</li>
+        <li><span class="destaque">Parte 4:</span> Modelagem de Dados e Modelo Conceitual (Aula 06)</li>
+        <li><span class="destaque">Prática:</span> Dinâmica da Livraria</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 3: TRANSIÇÃO PARTE 1 -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 1</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Correção do Exercício</h1>
+      <p>Alinhando os conceitos da aula passada.</p>
+    </section>
+
+    <!-- SLIDE 4: QUESTÃO 1 e 2 -->
+    <section>
+      <h2>1) O que é um Banco de Dados?</h2>
+      <p>Coleção lógica e coerente de dados correlacionados, representando aspectos do mundo real (Mini-mundo).</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Sua resposta:</strong> <span class="resposta-aluno">"Uma forma digital de armazenar dados de forma organizada."</span> 
+        <span class="destaque-verde">✓ Excelente!</span>
+      </blockquote>
+
+      <h2 style="margin-top: 30px;">2) Quais os principais tipos?</h2>
+      <p>Bancos de dados <strong>Relacionais</strong> (tabelas rígidas) e <strong>Não Relacionais (NoSQL)</strong>.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Sua resposta:</strong> <span class="resposta-aluno">"Os Relacionais e os Não Relacionais."</span> 
+        <span class="destaque-verde">✓ Correto!</span>
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 5: QUESTÃO 3 -->
+    <section>
+      <h2>3) Diferença entre Relacional e Não Relacional</h2>
+      <ul>
+        <li><strong>Relacional (SQL):</strong> Dados estruturados em linhas e colunas (tabelas) ligadas por relacionamentos.</li>
+        <li><strong>Não Relacional (NoSQL):</strong> Estrutura flexível, orientada a documentos, chave-valor, grafos ou colunas amplas.</li>
+      </ul>
+      <blockquote style="margin-top: 20px;">
+        <strong>Sua resposta:</strong> <span class="resposta-aluno">"O Relacional contém seus dados organizados em tabelas... O Não Relacional armazena os seus dados em pastas/NoSQL."</span> 
+        <span class="destaque-verde">✓ Muito bom!</span>
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 6: QUESTÃO 4 e 5 -->
+    <section>
+      <h2>4) O que é um SGBD?</h2>
+      <p>O software intermediário que gerencia o acesso, segurança, concorrência e a integridade do banco físico.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Sua resposta:</strong> <span class="resposta-aluno">"O sistema que irá gerenciar os dados armazenados."</span> 
+        <span class="destaque-verde">✓ Perfeito!</span>
+      </blockquote>
+
+      <h2 style="margin-top: 30px;">5) Cite SGBDs Relacionais</h2>
+      <p>MySQL, PostgreSQL, Oracle, SQL Server, <strong>MariaDB</strong>, <strong>SQLite</strong>.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Sua resposta:</strong> <span class="resposta-aluno">"SQL SERVER, MARIA BD e SQLITE."</span> 
+        <span class="destaque-verde">✓ Correto!</span> (Apenas atente para a grafia correta de <strong>MariaDB</strong>).
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 7: TRANSIÇÃO PARTE 2 -->
+    <section style="background-color: #1d3557;">
+      <h2 style="color: #e63946;">Parte 2</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Abstração de Dados & Modelo Relacional</h1>
+      <p>Entendendo as camadas e a estruturação em tabelas.</p>
+    </section>
+
+    <!-- SLIDE 8: OS 3 NÍVEIS -->
+    <section>
+      <h2>🏗️ Arquitetura ANSI/SPARC</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+        <div style="background: #2a9d8f; padding: 10px; border-radius: 5px;">
+          <strong style="color: #e9c46a;">1. Nível Externo (Visão)</strong> — Telas e visões que os aplicativos e usuários consomem.
+        </div>
+        <div style="background: #264653; padding: 10px; border-radius: 5px;">
+          <strong style="color: #f4a261;">2. Nível Conceitual (Lógico)</strong> — Estrutura lógica de tabelas, tipos e chaves.
+        </div>
+        <div style="background: #1d3557; padding: 10px; border-radius: 5px;">
+          <strong style="color: #90e0ef;">3. Nível Interno (Físico)</strong> — Como os bits e arquivos estão alocados nos discos físicos do servidor.
+        </div>
+      </div>
+      <p style="margin-top: 20px; font-size: 1.1rem; opacity: 0.8;">Isso garante a <span class="destaque">Independência de Dados</span> (mudar o hardware sem precisar reescrever o código!).</p>
+    </section>
+
+    <!-- SLIDE 9: MODELO RELACIONAL -->
+    <section>
+      <h2>🚀 O Modelo Relacional (1970)</h2>
+      <ul>
+        <li>Proposto por <strong>Edgar F. Codd (IBM)</strong>.</li>
+        <li>Organiza informações em <strong>tabelas (relações)</strong> contendo linhas (registros) e colunas (campos).</li>
+        <li>Bancos relacionais conectam tabelas por meio de valores em comum chamados <strong>chaves</strong>.</li>
+      </ul>
+      <blockquote style="margin-top: 25px;">
+        O modelo mais utilizado no mercado de TI devido à sua integridade, simplicidade e padronização com a linguagem SQL.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 10: TRANSIÇÃO PARTE 3 -->
+    <section style="background-color: #2a9d8f;">
+      <h2 style="color: #e9c46a;">Parte 3</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Introdução à Modelagem de Dados</h1>
+      <p>O desenho técnico do banco de dados (Aula 06).</p>
+    </section>
+
+    <!-- SLIDE 11: POR QUE MODELAR -->
+    <section>
+      <h2>✏️ Por que modelar?</h2>
+      <p>Nenhum pedreiro constrói as colunas de uma casa sem antes ler a <strong>planta baixa</strong> projetada pelo arquiteto.</p>
+      <div style="margin-top: 25px;" class="colunas">
+        <div class="coluna" style="background-color: #264653; padding: 15px; border-radius: 8px;">
+          <h3 style="color:#f4a261; font-size:1.2rem; margin-top:0;">Vantagens:</h3>
+          <p style="font-size:1.1rem; margin:5px 0;">✓ Evita retrabalho no desenvolvimento.</p>
+          <p style="font-size:1.1rem; margin:5px 0;">✓ Garante que as regras do cliente foram mapeadas corretas.</p>
+          <p style="font-size:1.1rem; margin:5px 0;">✓ Serve como manual/documentação técnica do projeto.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 12: MODELO CONCEITUAL -->
+    <section>
+      <h2>🗺️ O Modelo Conceitual</h2>
+      <ul>
+        <li>Representa a <strong>primeira etapa</strong> da modelagem.</li>
+        <li>Alto nível de abstração — focado nas regras de negócio e fácil entendimento pelo cliente.</li>
+        <li><strong>Independente de tecnologia</strong> (tanto faz se usaremos MySQL, PostgreSQL ou Oracle, o diagrama conceitual será o mesmo).</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 13: COMPONENTES CONCEITUAIS -->
+    <section>
+      <h2>🧱 Componentes do Modelo</h2>
+      <div class="colunas">
+        <div class="coluna" style="background-color: #264653; padding: 12px; border-radius: 8px;">
+          <strong style="color:#f4a261;">1. Entidade (Retângulo)</strong>
+          <p style="font-size:1.1rem; margin-top:5px;">Conceitos do mundo real com existência própria que queremos mapear (ex: <code>Aluno</code>, <code>Livro</code>, <code>Venda</code>).</p>
+        </div>
+        <div class="coluna" style="background-color: #264653; padding: 12px; border-radius: 8px;">
+          <strong style="color:#e9c46a;">2. Atributo (Elipse)</strong>
+          <p style="font-size:1.1rem; margin-top:5px;">Propriedades que descrevem a entidade (ex: <code>nome</code>, <code>preco</code>, <code>cpf</code>).</p>
+        </div>
+        <div class="coluna" style="background-color: #264653; padding: 12px; border-radius: 8px;">
+          <strong style="color:#2a9d8f;">3. Relacionamento (Losango)</strong>
+          <p style="font-size:1.1rem; margin-top:5px;">Como as entidades se conectam e interagem entre si (ex: Aluno <em>estuda em</em> Curso).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 14: PRÁTICA GUIADA -->
+    <section>
+      <h2>💻 Prática Guiada: A Livraria</h2>
+      <p>Como modelaríamos o banco de dados de uma livraria fictícia no quadro?</p>
+      <ul style="margin-top: 20px;">
+        <li>Quais seriam as <strong class="destaque">Entidades</strong> (retângulos) fundamentais?</li>
+        <li>Quais os principais <strong class="destaque">Atributos</strong> (elipses) que descrevem o livro e o cliente?</li>
+        <li>Como descrevemos o <strong class="destaque">Relacionamento</strong> (losango) de compra de um livro?</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 15: RESUMO DA AULA -->
+    <section>
+      <h2>✅ Resumo de Hoje</h2>
+      <ul>
+        <li><strong>SGBD</strong> é o motor de software; bancos de dados organizam os dados de forma lógica.</li>
+        <li><strong>ANSI/SPARC</strong> separa o físico do lógico (independência de dados).</li>
+        <li><strong>Modelo Relacional</strong> armazena dados em tabelas (linhas e colunas).</li>
+        <li><strong>Modelagem Conceitual</strong> é a planta baixa e descreve as regras do negócio usando <strong>Entidades</strong>, <strong>Atributos</strong> e <strong>Relacionamentos</strong>.</li>
+      </ul>
+      <p style="margin-top: 30px;">Próxima aula: <span class="destaque">O que é uma Entidade? (Identificação em Requisitos)</span></p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    plugins: [RevealHighlight]
+  });
+</script>
+</body>
+</html>

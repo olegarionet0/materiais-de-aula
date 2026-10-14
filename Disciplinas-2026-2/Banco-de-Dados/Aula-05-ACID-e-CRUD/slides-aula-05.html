@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ACID e CRUD | Banco de Dados — EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; margin-bottom: 20px; }
+    .reveal p, .reveal li { font-size: 1.3rem; line-height: 1.6; }
+    .reveal blockquote { font-size: 1.15rem; background: #264653; border-left: 5px solid #2a9d8f; padding: 15px; text-align: left; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+    .reveal pre code { font-size: 1rem; }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #2a9d8f; font-weight: bold; }
+    .destaque-azul { color: #90e0ef; font-weight: bold; }
+    section.capa { text-align: center; }
+    .colunas { display: flex; justify-content: space-between; gap: 18px; text-align: left; }
+    .coluna { flex: 1; }
+    .agenda-list li { margin: 14px 0; }
+    table { font-size: 1.05rem; border-collapse: collapse; width: 100%; }
+    th { background: #264653; color: #e9c46a; padding: 8px 12px; }
+    td { padding: 7px 12px; border-bottom: 1px solid #444; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    .acid-card { border-radius: 10px; padding: 16px 22px; margin: 10px 0; font-size: 1.15rem; border-left: 6px solid; }
+    .acid-a { border-color: #e63946; background: rgba(230,57,70,0.1); }
+    .acid-c { border-color: #f4a261; background: rgba(244,162,97,0.1); }
+    .acid-i { border-color: #e9c46a; background: rgba(233,196,106,0.1); }
+    .acid-d { border-color: #2a9d8f; background: rgba(42,157,143,0.1); }
+    .letra-acid { font-size: 2rem; font-weight: bold; margin-right: 12px; }
+    .crud-c { color: #2a9d8f; font-weight: bold; }
+    .crud-r { color: #90e0ef; font-weight: bold; }
+    .crud-u { color: #e9c46a; font-weight: bold; }
+    .crud-d { color: #e63946; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa</p>
+      <h1 style="margin: 30px 0;">Banco de Dados<br><span style="font-size: 1.4rem; color:#e9c46a;">ACID e CRUD</span></h1>
+      <p style="font-size: 1.2rem; color: #90e0ef;">Integridade de Dados e Operações Fundamentais</p>
+      <p>Prof. Olegário Neto</p>
+      <p style="font-size: 1rem; opacity: 0.6;">Semestre 2026.2 · 29/09/2026</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 Agenda de Hoje</h2>
+      <ul class="agenda-list">
+        <li><span class="destaque">Revisão:</span> FK — correção do desafio da aula anterior</li>
+        <li><span class="destaque">Parte 1:</span> O problema das transações</li>
+        <li><span class="destaque">Parte 2:</span> As 4 propriedades ACID</li>
+        <li><span class="destaque">Parte 3:</span> CRUD — as 4 operações fundamentais</li>
+        <li><span class="destaque">Prática:</span> Quiz de cenários em dupla</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 3: O PROBLEMA -->
+    <section>
+      <h2>⚠️ O Problema: Transferência Bancária</h2>
+      <p>Um sistema executa uma transferência de <strong>R$ 500</strong> do João para a Maria:</p>
+      <br>
+      <div style="font-size: 1.25rem; text-align: left; padding: 0 30px;">
+        <p>1️⃣ Debitar R$ 500 da conta do João → ✅ feito</p>
+        <p>2️⃣ Creditar R$ 500 na conta da Maria → 💥 servidor caiu!</p>
+      </div>
+      <br>
+      <blockquote>
+        <strong>Resultado:</strong> João perdeu R$ 500. Maria não recebeu nada.<br>
+        O banco de dados ficou em estado <span class="destaque">inconsistente</span>.
+      </blockquote>
+      <p style="margin-top: 20px;">Como evitar isso? Com <span class="destaque-verde"><strong>Transações</strong></span>.</p>
+    </section>
+
+    <!-- SLIDE 4: TRANSAÇÃO -->
+    <section>
+      <h2>🔁 O que é uma Transação?</h2>
+      <br>
+      <div class="acid-card acid-a" style="border-left-color: #2a9d8f; background: rgba(42,157,143,0.1);">
+        Um conjunto de operações que devem ser executadas como uma <strong>unidade indivisível</strong>.
+      </div>
+      <br>
+      <div class="colunas">
+        <div class="coluna" style="text-align:center; border: 2px solid #2a9d8f; border-radius: 8px; padding: 16px;">
+          <p style="font-size: 2rem;">✅</p>
+          <p style="color: #2a9d8f; font-weight: bold;">COMMIT</p>
+          <p style="font-size: 1.1rem;">Tudo funcionou<br>→ confirma as mudanças</p>
+        </div>
+        <div class="coluna" style="text-align:center; border: 2px solid #e63946; border-radius: 8px; padding: 16px;">
+          <p style="font-size: 2rem;">↩️</p>
+          <p style="color: #e63946; font-weight: bold;">ROLLBACK</p>
+          <p style="font-size: 1.1rem;">Algo falhou<br>→ desfaz tudo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: TRANSIÇÃO ACID -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 2</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">As Propriedades ACID</h1>
+      <p>Os quatro pilares que todo SGBD sério precisa garantir.</p>
+    </section>
+
+    <!-- SLIDE 6: A - ATOMICIDADE -->
+    <section>
+      <h2>🅐 Atomicidade</h2>
+      <div class="acid-card acid-a">
+        <span class="letra-acid" style="color: #e63946;">A</span>
+        <strong>Tudo ou Nada.</strong>
+      </div>
+      <br>
+      <p>A transação é <span class="destaque">atômica</span>: não existe "meio-feita".</p>
+      <ul style="margin-top: 15px;">
+        <li>Todos os passos executam → <strong>COMMIT</strong></li>
+        <li>Qualquer passo falha → <strong>ROLLBACK</strong> de tudo</li>
+      </ul>
+      <blockquote style="margin-top: 20px;">
+        <strong>Exemplo:</strong> Na transferência bancária, se o crédito falhar, o débito é automaticamente desfeito. O João não perde dinheiro.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 7: C - CONSISTÊNCIA -->
+    <section>
+      <h2>🅒 Consistência</h2>
+      <div class="acid-card acid-c">
+        <span class="letra-acid" style="color: #f4a261;">C</span>
+        <strong>Sempre válido.</strong>
+      </div>
+      <br>
+      <p>O banco deve passar de um <span class="destaque">estado válido</span> para outro <span class="destaque">estado válido</span>.</p>
+      <p>PK, FK, NOT NULL e regras de negócio são sempre respeitadas.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Exemplo:</strong> Se a regra diz que nota ∈ [0, 10], um UPDATE que tente gravar nota = -5 é rejeitado. A Consistência garante que a regra nunca seja violada.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 8: I - ISOLAMENTO -->
+    <section>
+      <h2>🅘 Isolamento</h2>
+      <div class="acid-card acid-i">
+        <span class="letra-acid" style="color: #e9c46a;">I</span>
+        <strong>Sem interferência.</strong>
+      </div>
+      <br>
+      <p>Transações simultâneas <span class="destaque">não se enxergam</span> enquanto estão em andamento.</p>
+      <p>Uma transação não vê as mudanças de outra que ainda não fez COMMIT.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Exemplo:</strong> Dois caixas de supermercado registrando vendas ao mesmo tempo. O banco gerencia o acesso para que um não sobrescreva os dados do outro.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 9: D - DURABILIDADE -->
+    <section>
+      <h2>🅓 Durabilidade</h2>
+      <div class="acid-card acid-d">
+        <span class="letra-acid" style="color: #2a9d8f;">D</span>
+        <strong>Permanente após COMMIT.</strong>
+      </div>
+      <br>
+      <p>Uma transação confirmada <span class="destaque-verde">persiste para sempre</span> — mesmo que o servidor caia logo depois.</p>
+      <p>O SGBD usa <strong>logs de transação</strong> em disco para garantir recuperação.</p>
+      <blockquote style="margin-top: 20px;">
+        <strong>Exemplo:</strong> Você paga no Pix e recebe a confirmação. Se o servidor reiniciar 2 segundos depois, o pagamento continua registrado.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 10: MNEMÔNICO ACID -->
+    <section style="background-color: #1a1a2e;">
+      <h2>🧠 Mnemônico ACID</h2>
+      <br>
+      <div class="acid-card acid-a"><span style="color:#e63946; font-weight:bold; font-size:1.3rem;">A</span>tômica &nbsp;—&nbsp; tudo ou nada</div>
+      <div class="acid-card acid-c"><span style="color:#f4a261; font-weight:bold; font-size:1.3rem;">C</span>onsistente &nbsp;—&nbsp; sempre válido</div>
+      <div class="acid-card acid-i"><span style="color:#e9c46a; font-weight:bold; font-size:1.3rem;">I</span>solada &nbsp;—&nbsp; sem interferência</div>
+      <div class="acid-card acid-d"><span style="color:#2a9d8f; font-weight:bold; font-size:1.3rem;">D</span>urável &nbsp;—&nbsp; permanente após commit</div>
+    </section>
+
+    <!-- SLIDE 11: TRANSIÇÃO CRUD -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 3</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">CRUD</h1>
+      <p>As 4 operações que qualquer sistema realiza em um banco de dados.</p>
+    </section>
+
+    <!-- SLIDE 12: CRUD -->
+    <section>
+      <h2>🔄 As 4 Operações CRUD</h2>
+      <br>
+      <table>
+        <tr><th>Letra</th><th>Operação</th><th>SQL</th><th>O que faz</th></tr>
+        <tr>
+          <td style="font-size: 1.5rem;"><span class="crud-c">C</span></td>
+          <td><span class="crud-c">Create</span> (Criar)</td>
+          <td><code>INSERT INTO</code></td>
+          <td>Insere novo registro</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.5rem;"><span class="crud-r">R</span></td>
+          <td><span class="crud-r">Read</span> (Ler)</td>
+          <td><code>SELECT</code></td>
+          <td>Consulta registros</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.5rem;"><span class="crud-u">U</span></td>
+          <td><span class="crud-u">Update</span> (Atualizar)</td>
+          <td><code>UPDATE</code></td>
+          <td>Modifica registros</td>
+        </tr>
+        <tr>
+          <td style="font-size: 1.5rem;"><span class="crud-d">D</span></td>
+          <td><span class="crud-d">Delete</span> (Deletar)</td>
+          <td><code>DELETE FROM</code></td>
+          <td>Remove registros</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 13: CRUD NO DIA A DIA -->
+    <section>
+      <h2>🖥️ CRUD em Qualquer Sistema</h2>
+      <br>
+      <p style="margin-bottom: 10px;">Toda tela de sistema que você vai desenvolver usa CRUD:</p>
+      <br>
+      <div class="colunas">
+        <div class="coluna">
+          <p><span class="crud-c">C</span> — Formulário de cadastro de aluno</p>
+          <p><span class="crud-r">R</span> — Lista de chamada da turma</p>
+          <p><span class="crud-u">U</span> — Edição do endereço no perfil</p>
+          <p><span class="crud-d">D</span> — Botão "Excluir aluno transferido"</p>
+        </div>
+        <div class="coluna">
+          <p style="color: #90e0ef; font-size: 1.1rem; margin-top: 10px;">CRUD + ACID:</p>
+          <p style="font-size: 1.1rem;">Toda operação CRUD dentro de uma transação segue as regras ACID. Se um INSERT falhar no meio, o SGBD faz ROLLBACK — o registro não fica pela metade.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 14: SPOILER SQL -->
+    <section>
+      <h2>👀 Spoiler: O que vem a seguir</h2>
+      <p>Nas próximas aulas vamos escrever SQL de verdade:</p>
+      <br>
+      <pre><code class="language-sql">-- CREATE TABLE (DDL)
+CREATE TABLE aluno (
+  id_aluno INT AUTO_INCREMENT PRIMARY KEY,
+  nome     VARCHAR(100) NOT NULL
+);
+
+-- INSERT (CRUD - C)
+INSERT INTO aluno (nome) VALUES ('Maria Silva');
+
+-- SELECT (CRUD - R)
+SELECT * FROM aluno;</code></pre>
+    </section>
+
+    <!-- SLIDE 15: ENCERRAMENTO -->
+    <section>
+      <h2>✅ O que aprendemos hoje</h2>
+      <ul class="agenda-list">
+        <li>Transação = bloco indivisível (COMMIT ou ROLLBACK)</li>
+        <li><span style="color:#e63946;font-weight:bold;">A</span>tômica · <span style="color:#f4a261;font-weight:bold;">C</span>onsistente · <span style="color:#e9c46a;font-weight:bold;">I</span>solada · <span style="color:#2a9d8f;font-weight:bold;">D</span>urável</li>
+        <li>CRUD = <span class="crud-c">Create</span> / <span class="crud-r">Read</span> / <span class="crud-u">Update</span> / <span class="crud-d">Delete</span></li>
+        <li>CRUD ↔ INSERT / SELECT / UPDATE / DELETE</li>
+      </ul>
+      <br>
+      <p style="color: #e9c46a; font-size: 1.2rem;"><strong>Próxima aula:</strong> SQL DDL — <code>CREATE TABLE</code>, <code>PRIMARY KEY</code>, <code>FOREIGN KEY</code></p>
+      <br>
+      <p style="opacity: 0.6; font-size: 1rem;">Prof. Olegário Neto · EEEP-AFS · Banco de Dados 2026.2</p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    plugins: [ RevealHighlight ]
+  });
+</script>
+</body>
+</html>

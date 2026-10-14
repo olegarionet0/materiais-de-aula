@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Modelo Lógico Relacional — Do DER para Tabelas | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; margin-bottom: 20px; }
+    .reveal p, .reveal li { font-size: 1.3rem; line-height: 1.6; }
+    .reveal blockquote { font-size: 1.2rem; background: #264653; border-left: 5px solid #2a9d8f; padding: 15px; text-align: left; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+    .reveal pre { font-size: 0.95rem; border-radius: 8px; box-shadow: 3px 3px 6px rgba(0,0,0,0.4); }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #2a9d8f; font-weight: bold; }
+    .destaque-azul { color: #90e0ef; font-weight: bold; }
+    section.capa { text-align: center; }
+    .colunas { display: flex; justify-content: space-between; gap: 20px; text-align: left; }
+    .coluna { flex: 1; }
+    .agenda-list li { margin: 15px 0; }
+    table { font-size: 1.1rem; border-collapse: collapse; width: 100%; }
+    th { background: #264653; color: #e9c46a; padding: 8px 12px; }
+    td { padding: 7px 12px; border-bottom: 1px solid #444; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    .nivel-box { border: 2px solid; border-radius: 8px; padding: 10px 18px; margin: 8px 0; font-size: 1.15rem; }
+    .nivel-concluido { border-color: #2a9d8f; color: #2a9d8f; }
+    .nivel-atual { border-color: #f4a261; color: #f4a261; font-weight: bold; }
+    .nivel-futuro { border-color: #888; color: #888; }
+    .pk-badge { background: #f4a261; color: #000; border-radius: 4px; padding: 2px 7px; font-size: 0.9rem; font-weight: bold; }
+    .regra-num { display: inline-block; background: #2a9d8f; color: #fff; border-radius: 50%; width: 32px; height: 32px; text-align: center; line-height: 32px; font-weight: bold; margin-right: 8px; }
+    .seta { color: #f4a261; font-size: 1.5rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa</p>
+      <h1 style="margin: 30px 0;">Banco de Dados<br><span style="font-size: 1.4rem; color:#e9c46a;">Do DER para Tabelas</span></h1>
+      <p style="font-size: 1.2rem; color: #90e0ef;">Modelo Lógico Relacional</p>
+      <p>Prof. Olegário Neto</p>
+      <p style="font-size: 1rem; opacity: 0.6;">Semestre 2026.2 · 22/09/2026</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 Agenda de Hoje</h2>
+      <ul class="agenda-list">
+        <li><span class="destaque">Revisão:</span> O DER que vocês montaram no BR Modelo</li>
+        <li><span class="destaque">Parte 1:</span> Os 3 Níveis de Modelagem</li>
+        <li><span class="destaque">Parte 2:</span> Regras de Mapeamento (Entidade → Tabela)</li>
+        <li><span class="destaque">Parte 3:</span> Chave Primária (PK) — consolidação</li>
+        <li><span class="destaque">Prática:</span> Converter o DER em tabelas ao vivo</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 3: TRANSIÇÃO -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 1</h2>
+      <h1 style="color: #fff; font-size: 2.2rem;">Os 3 Níveis de Modelagem</h1>
+      <p>Do diagrama ao banco de dados real.</p>
+    </section>
+
+    <!-- SLIDE 4: 3 NÍVEIS -->
+    <section>
+      <h2>🏗️ Do Croqui à Obra</h2>
+      <div class="nivel-box nivel-concluido">✅ Nível 1 — Conceitual (DER) — Para humanos entenderem</div>
+      <div class="nivel-box nivel-atual">🔵 Nível 2 — Lógico Relacional — Tabelas e colunas ← Hoje</div>
+      <div class="nivel-box nivel-futuro">⏳ Nível 3 — Físico (SQL) — Código que o banco executa</div>
+      <blockquote style="margin-top: 25px;">
+        O DER é o <strong>croqui do arquiteto</strong>.<br>
+        O Modelo Lógico é a <strong>planta técnica com medidas</strong>.<br>
+        O SQL é a <strong>obra construída</strong>.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 5: TRANSIÇÃO REGRAS -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 2</h2>
+      <h1 style="color: #fff; font-size: 2.2rem;">Regras de Mapeamento</h1>
+      <p>Como cada elemento do DER se transforma em tabela.</p>
+    </section>
+
+    <!-- SLIDE 6: REGRA 1 -->
+    <section>
+      <h2>📌 <span class="regra-num">1</span> Entidade → Tabela</h2>
+      <p>Cada <span class="destaque">entidade</span> do DER vira uma <span class="destaque-verde">tabela</span> no banco.</p>
+      <br>
+      <div class="colunas">
+        <div class="coluna" style="text-align:center;">
+          <p style="border: 2px solid #f4a261; border-radius: 6px; padding: 12px; font-size: 1.2rem;">[ Aluno ]</p>
+          <p style="font-size: 1.2rem; color: #888;">entidade no DER</p>
+        </div>
+        <div class="coluna" style="text-align:center; display:flex; align-items:center; justify-content:center;">
+          <span class="seta">→</span>
+        </div>
+        <div class="coluna" style="text-align:center;">
+          <p style="border: 2px solid #2a9d8f; border-radius: 6px; padding: 12px; font-size: 1.2rem;">tabela <strong>aluno</strong></p>
+          <p style="font-size: 1.2rem; color: #888;">tabela no banco</p>
+        </div>
+      </div>
+      <blockquote style="margin-top: 20px; font-size: 1.1rem;">
+        Convenção: letras minúsculas, <code>snake_case</code>, singular.<br>
+        ✅ <code>aluno</code> &nbsp;&nbsp; ✅ <code>livro</code> &nbsp;&nbsp; ✅ <code>nota_bimestral</code>
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 7: REGRA 2 -->
+    <section>
+      <h2>📌 <span class="regra-num">2</span> Atributo → Coluna</h2>
+      <p>Cada <span class="destaque">atributo</span> da entidade vira uma <span class="destaque-verde">coluna</span> da tabela.</p>
+      <p>Cada coluna precisa de um <span class="destaque-azul">tipo de dado</span>:</p>
+      <br>
+      <table>
+        <tr><th>Tipo</th><th>O que guarda</th><th>Exemplo</th></tr>
+        <tr><td><code>VARCHAR(n)</code></td><td>Texto até n caracteres</td><td><code>nome VARCHAR(100)</code></td></tr>
+        <tr><td><code>INT</code></td><td>Número inteiro</td><td><code>idade INT</code></td></tr>
+        <tr><td><code>DATE</code></td><td>Data (ano-mês-dia)</td><td><code>data_nasc DATE</code></td></tr>
+        <tr><td><code>DECIMAL(p,s)</code></td><td>Número decimal</td><td><code>nota DECIMAL(4,2)</code></td></tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 7b: TIPOS DE DADOS -->
+    <section>
+      <h2>🗂️ Tipos de Dados — Referência Completa</h2>
+      <table style="font-size: 1.05rem;">
+        <tr><th>Categoria</th><th>Tipo</th><th>O que guarda</th><th>Exemplo real</th></tr>
+        <tr>
+          <td rowspan="3" style="color:#90e0ef; font-weight:bold;">Texto</td>
+          <td><code>CHAR(n)</code></td>
+          <td>Texto fixo de exatamente n chars</td>
+          <td><code>sigla_estado CHAR(2)</code></td>
+        </tr>
+        <tr>
+          <td><code>VARCHAR(n)</code></td>
+          <td>Texto variável de até n chars</td>
+          <td><code>nome VARCHAR(100)</code></td>
+        </tr>
+        <tr>
+          <td><code>TEXT</code></td>
+          <td>Texto longo (sem limite prático)</td>
+          <td><code>descricao TEXT</code></td>
+        </tr>
+        <tr>
+          <td rowspan="3" style="color:#f4a261; font-weight:bold;">Número</td>
+          <td><code>INT</code></td>
+          <td>Inteiro (–2bi a +2bi)</td>
+          <td><code>quantidade INT</code></td>
+        </tr>
+        <tr>
+          <td><code>BIGINT</code></td>
+          <td>Inteiro muito grande</td>
+          <td><code>visualizacoes BIGINT</code></td>
+        </tr>
+        <tr>
+          <td><code>DECIMAL(p,s)</code></td>
+          <td>Decimal exato (p dígitos, s decimais)</td>
+          <td><code>nota DECIMAL(4,2)</code></td>
+        </tr>
+        <tr>
+          <td rowspan="3" style="color:#2a9d8f; font-weight:bold;">Data/Hora</td>
+          <td><code>DATE</code></td>
+          <td>Só data (AAAA-MM-DD)</td>
+          <td><code>data_nasc DATE</code></td>
+        </tr>
+        <tr>
+          <td><code>DATETIME</code></td>
+          <td>Data + hora (AAAA-MM-DD HH:MM:SS)</td>
+          <td><code>criado_em DATETIME</code></td>
+        </tr>
+        <tr>
+          <td><code>TIMESTAMP</code></td>
+          <td>Como DATETIME, com fuso automático</td>
+          <td><code>atualizado_em TIMESTAMP</code></td>
+        </tr>
+        <tr>
+          <td style="color:#e9c46a; font-weight:bold;">Lógico</td>
+          <td><code>BOOLEAN</code></td>
+          <td>Verdadeiro (1) ou Falso (0)</td>
+          <td><code>ativo BOOLEAN</code></td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 8: REGRA 3 -->
+    <section>
+      <h2>📌 <span class="regra-num">3</span> Atributo Identificador → PK</h2>
+      <p>O atributo <span class="destaque">sublinhado</span> no DER vira a <span class="pk-badge">PRIMARY KEY</span></p>
+      <br>
+      <blockquote>
+        Uma <strong>Chave Primária</strong> deve ser:<br>
+        ✅ <span class="destaque-verde"><strong>Única</strong></span> — dois registros não podem ter o mesmo valor<br>
+        ✅ <span class="destaque-verde"><strong>Não nula</strong></span> — todo registro precisa ter uma PK<br>
+        ✅ <span class="destaque-verde"><strong>Estável</strong></span> — o valor não muda ao longo do tempo
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 9: CPF vs ID -->
+    <section>
+      <h2>🤔 CPF é uma boa PK?</h2>
+      <div class="colunas">
+        <div class="coluna">
+          <p style="color: #e63946; font-weight: bold;">❌ CPF como PK</p>
+          <ul style="font-size: 1.15rem;">
+            <li>Pode ter erro de digitação</li>
+            <li>Menor de idade pode não ter</li>
+            <li>Requer validação extra</li>
+            <li>Se corrigir, afeta o banco todo</li>
+          </ul>
+        </div>
+        <div class="coluna">
+          <p style="color: #2a9d8f; font-weight: bold;">✅ ID Auto Incremento</p>
+          <ul style="font-size: 1.15rem;">
+            <li>Gerado automaticamente</li>
+            <li>Nunca se repete</li>
+            <li>Nunca é nulo</li>
+            <li>Nunca precisa mudar</li>
+          </ul>
+        </div>
+      </div>
+      <blockquote style="margin-top: 20px;">
+        <code>id_aluno INT AUTO_INCREMENT PRIMARY KEY</code>
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 10: CONVERSÃO AO VIVO -->
+    <section>
+      <h2>🔧 Convertendo o DER em Tabelas</h2>
+      <p style="font-size: 1.1rem; color: #90e0ef;">Minimundo: Biblioteca com Alunos e Livros</p>
+      <br>
+      <p><strong>Tabela <code>aluno</code></strong></p>
+      <table style="font-size: 1rem; margin-bottom: 18px;">
+        <tr><th>Coluna</th><th>Tipo</th><th>Restrição</th></tr>
+        <tr><td><span class="pk-badge">id_aluno</span></td><td>INT</td><td>PRIMARY KEY, AUTO_INCREMENT</td></tr>
+        <tr><td>nome</td><td>VARCHAR(100)</td><td>NOT NULL</td></tr>
+        <tr><td>matricula</td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td></tr>
+        <tr><td>data_nascimento</td><td>DATE</td><td>—</td></tr>
+      </table>
+      <p><strong>Tabela <code>livro</code></strong></p>
+      <table style="font-size: 1rem;">
+        <tr><th>Coluna</th><th>Tipo</th><th>Restrição</th></tr>
+        <tr><td><span class="pk-badge">id_livro</span></td><td>INT</td><td>PRIMARY KEY, AUTO_INCREMENT</td></tr>
+        <tr><td>titulo</td><td>VARCHAR(200)</td><td>NOT NULL</td></tr>
+        <tr><td>isbn</td><td>VARCHAR(20)</td><td>UNIQUE</td></tr>
+        <tr><td>ano_publicacao</td><td>INT</td><td>—</td></tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 10b: MINIMUNDO BIBLIOTECA -->
+    <section>
+      <h2>📖 Minimundo: A Biblioteca</h2>
+      <blockquote style="font-size: 1.25rem; line-height: 1.8;">
+        "Uma biblioteca possui <span class="destaque">alunos</span> e <span class="destaque">livros</span>.<br>
+        Cada aluno tem <strong>matrícula</strong>, <strong>nome</strong> e <strong>data de nascimento</strong>.<br>
+        Cada livro tem <strong>título</strong>, <strong>ISBN</strong> e <strong>ano de publicação</strong>.<br><br>
+        Um aluno pode pegar emprestado <strong>vários livros</strong>.<br>
+        Um livro pode ser emprestado para <strong>um aluno por vez</strong>."
+      </blockquote>
+      <br>
+      <div style="display: flex; gap: 30px; justify-content: center; font-size: 1.15rem;">
+        <div style="border: 2px solid #f4a261; border-radius: 8px; padding: 10px 22px; text-align: left;">
+          <p style="color:#f4a261; font-weight:bold; margin-bottom: 6px;">📦 Entidades</p>
+          <p>▸ Aluno</p>
+          <p>▸ Livro</p>
+        </div>
+        <div style="border: 2px solid #2a9d8f; border-radius: 8px; padding: 10px 22px; text-align: left;">
+          <p style="color:#2a9d8f; font-weight:bold; margin-bottom: 6px;">🔗 Relacionamento</p>
+          <p>▸ empresta (1:N)</p>
+        </div>
+        <div style="border: 2px solid #90e0ef; border-radius: 8px; padding: 10px 22px; text-align: left;">
+          <p style="color:#90e0ef; font-weight:bold; margin-bottom: 6px;">📋 Atributos</p>
+          <p>▸ Aluno: matrícula*, nome, data_nasc</p>
+          <p>▸ Livro: ISBN*, título, ano_pub</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10c: DER BIBLIOTECA -->
+    <section>
+      <h2>🗂️ DER — Diagrama Entidade-Relacionamento</h2>
+      <p style="font-size: 1rem; color: #888; margin-bottom: 6px;">* atributo sublinhado = identificador (chave primária)</p>
+      <svg viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height: 420px;">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#aaa"/>
+          </marker>
+        </defs>
+
+        <!-- =================== ENTIDADE: ALUNO =================== -->
+        <!-- Retângulo entidade -->
+        <rect x="30" y="130" width="160" height="50" rx="4" fill="none" stroke="#f4a261" stroke-width="2.5"/>
+        <text x="110" y="161" text-anchor="middle" fill="#f4a261" font-size="18" font-weight="bold">ALUNO</text>
+
+        <!-- Atributo: matricula (identificador — sublinhado) -->
+        <ellipse cx="60" cy="50" rx="52" ry="22" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="60" y="45" text-anchor="middle" fill="#e9c46a" font-size="13">matrícula</text>
+        <line x1="21" y1="52" x2="99" y2="52" stroke="#e9c46a" stroke-width="1.5"/>
+        <line x1="60" y1="72" x2="85" y2="130" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- Atributo: nome -->
+        <ellipse cx="145" cy="42" rx="44" ry="20" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="145" y="47" text-anchor="middle" fill="#e9c46a" font-size="13">nome</text>
+        <line x1="145" y1="62" x2="140" y2="130" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- Atributo: data_nascimento -->
+        <ellipse cx="20" cy="240" rx="58" ry="22" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="20" y="235" text-anchor="middle" fill="#e9c46a" font-size="12">data_nasc</text>
+        <line x1="30" y1="218" x2="60" y2="180" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- =================== LOSANGO: EMPRESTA =================== -->
+        <!-- Linha: aluno → losango -->
+        <line x1="190" y1="155" x2="330" y2="170" stroke="#aaa" stroke-width="1.8"/>
+        <!-- cardinalidade 1 -->
+        <text x="208" y="150" fill="#ccc" font-size="14" font-weight="bold">1</text>
+
+        <!-- Losango -->
+        <polygon points="380,140 450,170 380,200 310,170" fill="none" stroke="#2a9d8f" stroke-width="2.5"/>
+        <text x="380" y="175" text-anchor="middle" fill="#2a9d8f" font-size="15" font-weight="bold">empresta</text>
+
+        <!-- Linha: losango → livro -->
+        <line x1="450" y1="170" x2="590" y2="155" stroke="#aaa" stroke-width="1.8"/>
+        <!-- cardinalidade N -->
+        <text x="558" y="150" fill="#ccc" font-size="14" font-weight="bold">N</text>
+
+        <!-- =================== ENTIDADE: LIVRO =================== -->
+        <!-- Retângulo entidade -->
+        <rect x="590" y="130" width="160" height="50" rx="4" fill="none" stroke="#f4a261" stroke-width="2.5"/>
+        <text x="670" y="161" text-anchor="middle" fill="#f4a261" font-size="18" font-weight="bold">LIVRO</text>
+
+        <!-- Atributo: ISBN (identificador — sublinhado) -->
+        <ellipse cx="635" cy="50" rx="38" ry="20" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="635" y="45" text-anchor="middle" fill="#e9c46a" font-size="13">ISBN</text>
+        <line x1="600" y1="52" x2="671" y2="52" stroke="#e9c46a" stroke-width="1.5"/>
+        <line x1="635" y1="70" x2="645" y2="130" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- Atributo: titulo -->
+        <ellipse cx="730" cy="42" rx="44" ry="20" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="730" y="47" text-anchor="middle" fill="#e9c46a" font-size="13">título</text>
+        <line x1="730" y1="62" x2="710" y2="130" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- Atributo: ano_publicacao -->
+        <ellipse cx="820" cy="240" rx="58" ry="22" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="820" y="235" text-anchor="middle" fill="#e9c46a" font-size="12">ano_pub</text>
+        <line x1="800" y1="218" x2="760" y2="180" stroke="#aaa" stroke-width="1.4"/>
+
+        <!-- =================== LEGENDA =================== -->
+        <rect x="260" y="285" width="340" height="42" rx="6" fill="rgba(38,70,83,0.6)" stroke="#444" stroke-width="1"/>
+        <rect x="276" y="298" width="24" height="14" rx="2" fill="none" stroke="#f4a261" stroke-width="1.8"/>
+        <text x="308" y="310" fill="#ccc" font-size="12">Entidade</text>
+        <ellipse cx="370" cy="305" rx="18" ry="10" fill="none" stroke="#e9c46a" stroke-width="1.8"/>
+        <text x="397" y="310" fill="#ccc" font-size="12">Atributo</text>
+        <polygon points="460,295 480,305 460,315 440,305" fill="none" stroke="#2a9d8f" stroke-width="1.8"/>
+        <text x="490" y="310" fill="#ccc" font-size="12">Relacionamento</text>
+      </svg>
+    </section>
+
+    <!-- SLIDE 11: PERGUNTA ABERTA -->
+    <section style="background-color: #1a1a2e;">
+      <h2 style="color: #f4a261;">🤔 E o Relacionamento?</h2>
+      <br>
+      <p style="font-size: 1.4rem;">O losango <strong>"empresta"</strong> do DER...</p>
+      <p style="font-size: 1.4rem;">...como ele aparece nas tabelas?</p>
+      <br>
+      <p style="font-size: 1.3rem; color: #888;">Como o banco sabe que o aluno <span class="destaque">João</span> pegou o livro <span class="destaque">"Dom Casmurro"</span>?</p>
+      <br>
+      <blockquote>
+        A resposta tem nome: <span class="destaque" style="font-size: 1.5rem;"><strong>Chave Estrangeira (Foreign Key)</strong></span><br>
+        <span style="font-size: 1.1rem; color: #ccc;">→ Próxima aula!</span>
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 12: ENCERRAMENTO -->
+    <section>
+      <h2>✅ O que aprendemos hoje</h2>
+      <ul class="agenda-list">
+        <li>O modelo lógico fica entre o DER e o SQL</li>
+        <li>Entidade → Tabela (nome em <code>snake_case</code>)</li>
+        <li>Atributo → Coluna (com tipo de dado)</li>
+        <li>Atributo identificador → <span class="pk-badge">PRIMARY KEY</span></li>
+        <li>PK deve ser única, não nula e estável</li>
+      </ul>
+      <br>
+      <p style="color: #e9c46a; font-size: 1.2rem;"><strong>Próxima aula:</strong> Chave Estrangeira — como os relacionamentos viram colunas</p>
+      <br>
+      <p style="opacity: 0.6; font-size: 1rem;">Prof. Olegário Neto · EEEP-AFS · Banco de Dados 2026.2</p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    plugins: [ RevealHighlight ]
+  });
+</script>
+</body>
+</html>

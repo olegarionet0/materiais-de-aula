@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aulas 06–08: Wireless, Classificação e Topologias | Redes de Computadores | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    :root {
+      --laranja: #f4a261;
+      --amarelo: #e9c46a;
+      --azul-claro: #90e0ef;
+      --verde: #2ec4b6;
+      --vermelho: #e63946;
+      --cinza-claro: #ccc;
+    }
+    .reveal { font-size: 2.2rem; }
+    .reveal h1 { font-size: 3.2rem; color: var(--laranja); line-height: 1.2; margin-bottom: 0.6em; }
+    .reveal h2 { font-size: 2.6rem; color: var(--amarelo); margin-bottom: 0.6em; }
+    .reveal h3 { font-size: 2.0rem; color: var(--azul-claro); }
+    .reveal p, .reveal li { color: #ddd; line-height: 1.5; margin-bottom: 0.5em; }
+    .reveal pre { font-size: 1.2rem; padding: 1em; }
+    .reveal table { font-size: 1.6rem; width: 100%; }
+    .reveal th { background: #2a2a3e; color: var(--amarelo); padding: 0.5em; }
+    .reveal td { border-color: #444; padding: 0.5em; }
+    .reveal strong { color: var(--laranja); }
+    .reveal em { color: var(--azul-claro); }
+    .tag-disciplina { font-size: 1.4rem; color: var(--azul-claro); opacity: 0.85; letter-spacing: 0.08em; }
+    .tag-aula { font-size: 1.4rem; color: var(--verde); opacity: 0.9; }
+    .destaque { color: var(--laranja); font-weight: bold; }
+    .destaque-verde { color: var(--verde); font-weight: bold; }
+    .destaque-azul { color: var(--azul-claro); font-weight: bold; }
+    section.capa { text-align: center; }
+    .callout {
+      background: rgba(244,162,97,0.12);
+      border-left: 4px solid var(--laranja);
+      padding: 0.8em 1.2em;
+      border-radius: 6px;
+      font-size: 1.6rem;
+      margin-top: 0.8em;
+      text-align: left;
+    }
+    .callout.info {
+      background: rgba(144,224,239,0.1);
+      border-left-color: var(--azul-claro);
+    }
+    .callout.aviso {
+      background: rgba(230,57,70,0.1);
+      border-left-color: var(--vermelho);
+    }
+    .callout.dica {
+      background: rgba(46,196,182,0.1);
+      border-left-color: var(--verde);
+    }
+    .two-col { display: flex; gap: 2em; align-items: flex-start; }
+    .two-col > div { flex: 1; }
+    .badge {
+      display: inline-block;
+      background: var(--laranja);
+      color: #111;
+      border-radius: 6px;
+      padding: 0.1em 0.5em;
+      font-weight: bold;
+      margin-right: 0.3em;
+    }
+    .badge.azul { background: var(--azul-claro); }
+    .badge.verde { background: var(--verde); }
+    .badge.amarelo { background: var(--amarelo); }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ===== CAPA ===== -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP-AFS &nbsp;·&nbsp; Redes de Computadores &nbsp;·&nbsp; 2º Ano Informática</p>
+      <h1>📡 Wireless, Classificação<br>e Topologias de Rede</h1>
+      <p class="tag-aula">Aulas 06 · 07 · 08</p>
+      <p style="margin-top:1.2em; color:#aaa;">Prof. Olegário Neto &nbsp;·&nbsp; Setembro / 2026</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Recuperação Ativa Inicial:</strong> Comece relembrando a turma dos modos de transmissão vistos nas aulas anteriores. Lembre-os que <strong>Half-Duplex</strong> significa transmitir e receber dados, mas não ao mesmo tempo (como um walkie-talkie). Já <strong>Full-Duplex</strong> é a transmissão simultânea (como uma ligação telefônica). Relembre também que o <strong>Switch</strong> é o equipamento que interliga dispositivos na rede local, enviando dados diretamente para a porta correta.</p>
+        <p><strong>Objetivo da Aula:</strong> Mostrar como as redes deixaram de depender puramente de fios, como elas são categorizadas pelo tamanho, e como os dispositivos são organizados (topologias) para que tudo funcione sem causar o caos na comunicação.</p>
+      </aside>
+    </section>
+
+    <!-- ===== AGENDA ===== -->
+    <section>
+      <h2>📋 Agenda das Aulas 06–08</h2>
+      <ul>
+        <li>🔵 <strong>Aula 06:</strong> Tecnologias Sem Fio — Wi-Fi, Bluetooth, IR, NFC e RFID</li>
+        <li>🟡 <strong>Aula 07:</strong> Classificação de Redes — PAN, LAN, CAN, MAN, WAN, SAN</li>
+        <li>🔴 <strong>Aula 08:</strong> Topologias de Rede — Bus, Ring, Star, Tree, Mesh, Híbrida</li>
+        <li>🏆 <strong>Desafio:</strong> Projete a rede da EEEP-AFS</li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Explique brevemente que estas três aulas são uma transição entre os cabos físicos e a parte lógica de como as máquinas conversam e se organizam. <strong>O foco prático de hoje é o desafio final</strong>, onde a turma aplicará todos esses conceitos para desenhar a rede completa da escola.</p>
+      </aside>
+    </section>
+
+    <!-- ===== GANCHO ===== -->
+    <section>
+      <h2>🤔 O Gancho — Você sabe responder?</h2>
+      <div class="callout" style="margin-bottom:0.8em;">
+        💳 Quando você usa o <strong>Pix por aproximação</strong> no celular e quando aproxima o <strong>cartão no maquininha</strong> — os dois usam a mesma tecnologia?
+      </div>
+      <div class="callout info">
+        📡 O Wi-Fi usa a mesma faixa de frequência do Bluetooth e os dois se interferem — como isso é possível no mesmo ambiente?
+      </div>
+      <div class="callout dica" style="margin-top:0.8em;">
+        🏫 Por que o Lab de Informática usa cabo UTP mesmo existindo Wi-Fi? O cabo tem alguma vantagem real?
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Estas perguntas servem para instigar a curiosidade e não precisam ser respondidas imediatamente. Deixe que os alunos tentem chutar ou deduzir as respostas. A ideia é mostrar que o conteúdo teórico que virá a seguir explica fenômenos cotidianos que eles vivenciam todos os dias.</p>
+      </aside>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- BLOCO 1 — WIRELESS -->
+    <!-- ============================================================ -->
+
+    <section>
+      <h2 style="color: var(--azul-claro);">📶 Bloco 1: Tecnologias Sem Fio</h2>
+      <p style="text-align:center; color: #aaa;">Aula 06</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Nesta seção, aborde como a evolução dos dispositivos móveis demandou tecnologias de comunicação que prescindem de fios, utilizando ondas eletromagnéticas (rádio) ou luz (infravermelho). Destaque que <strong>frequência</strong> e <strong>alcance</strong> andam de mãos dadas, e que as escolhas de tecnologia dependem do que precisa ser conectado e a que distância.</p>
+      </aside>
+    </section>
+
+    <!-- ATIVIDADE DETETIVE DO SINAL -->
+    <section>
+      <h2>🔍 Atividade: Detetive do Sinal</h2>
+      <p>Abra as configurações do celular e responda em dupla:</p>
+      <ol>
+        <li>Qual rede Wi-Fi está conectado? É <strong>2,4 GHz</strong> ou <strong>5 GHz</strong>?</li>
+        <li>Quantos dispositivos Bluetooth estão pareados?</li>
+        <li>O <strong>NFC</strong> está ativado? Para que você usa (ou usaria)?</li>
+        <li>Onde você já viu <strong>RFID</strong> no dia a dia sem saber o nome?</li>
+      </ol>
+      <div class="callout dica" style="margin-top:0.8em;">
+        💡 <strong>5 minutos</strong> — cada dupla anota as respostas. Depois compartilhamos.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Incentive a participação apontando onde, nos celulares, as informações ficam (ex: nas configurações de Wi-Fi, clicar na rede atual para ver se é 2.4 ou 5Ghz). Depois, quando recolher as respostas, use-as como ponte: "Muitos de vocês têm NFC desligado para poupar bateria, mas é ele que permite o pagamento. Outros já usaram RFID na escola ou em tags de pedágio sem saber."</p>
+      </aside>
+    </section>
+
+    <!-- WI-FI -->
+    <section>
+      <h2>🔵 Wi-Fi — IEEE 802.11</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Ondas de rádio: <strong>2,4 GHz</strong> e <strong>5 GHz</strong></li>
+            <li><strong>2,4 GHz:</strong> mais alcance, mais interferência</li>
+            <li><strong>5 GHz:</strong> mais velocidade, menos alcance</li>
+            <li>Modo: <strong class="destaque">Half-Duplex</strong> (canal compartilhado)</li>
+            <li>Alcance: 30–200 m (depende do ambiente)</li>
+          </ul>
+        </div>
+        <div>
+          <table>
+            <tr><th>Padrão</th><th>Freq.</th><th>Vel. Máx.</th></tr>
+            <tr><td>802.11n (Wi-Fi 4)</td><td>2,4/5 GHz</td><td>600 Mbps</td></tr>
+            <tr><td>802.11ac (Wi-Fi 5)</td><td>5 GHz</td><td>3,5 Gbps</td></tr>
+            <tr><td>802.11ax (Wi-Fi 6)</td><td>2,4/5/6 GHz</td><td>9,6 Gbps</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="callout aviso" style="margin-top:0.8em;">
+        ⚠️ Velocidade teórica ≠ velocidade real. Obstáculos e número de dispositivos reduzem o desempenho.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Detalhando o Wi-Fi:</strong> Explique a diferença crucial entre as duas bandas. A banda <strong>2,4 GHz</strong> tem ondas mais longas, por isso ultrapassa paredes facilmente (maior alcance). No entanto, é muito congestionada (telefones sem fio, micro-ondas e até Bluetooth usam essa frequência). Já a banda <strong>5 GHz</strong> tem ondas curtas, garantindo velocidades muito maiores e menos interferência, mas mal atravessa uma parede grossa (menor alcance). Ressalte que o Wi-Fi opera em <strong>Half-Duplex</strong>: quando um dispositivo está enviando, o outro escuta, como em um walkie-talkie (as colisões reduzem a velocidade real consideravelmente).</p>
+      </aside>
+    </section>
+
+    <!-- BLUETOOTH -->
+    <section>
+      <h2>🔷 Bluetooth — IEEE 802.15.1</h2>
+      <ul>
+        <li>Faixa: <strong>2,4 GHz</strong> (mesma do Wi-Fi!)</li>
+        <li>Evita interferência com <em>frequency hopping</em> — troca de canal 1.600× por segundo</li>
+        <li>Alcance: <strong>~10 m</strong> (padrão) · <strong>~100 m</strong> (industrial)</li>
+        <li><strong>BLE (Bluetooth Low Energy):</strong> baixo consumo para IoT, sensores, wearables</li>
+      </ul>
+      <div class="callout info" style="margin-top:0.8em;">
+        📌 Exemplos: fone de ouvido, teclado sem fio, smartwatch, beacon de localização indoor, óculos de realidade aumentada.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Detalhando o Bluetooth:</strong> Foi criado para substituir cabos curtos (mouse, teclado, áudio). Explique que, como ele compartilha os 2.4 GHz com o Wi-Fi, ele usa a técnica de <em>Frequency Hopping Spread Spectrum</em>: salta entre 79 canais diferentes milhares de vezes por segundo. Assim, se um canal estiver interferido pelo Wi-Fi, o dado é retransmitido num instante em outro canal limpo. Cite o <strong>BLE (Low Energy)</strong>, que é o que permite que uma bateria de smartwatch dure dias comunicando-se com o celular ativamente.</p>
+      </aside>
+    </section>
+
+    <!-- INFRAVERMELHO -->
+    <section>
+      <h2>🔴 Infravermelho (IR)</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Usa <strong>luz infravermelha</strong> (invisível ao olho humano)</li>
+            <li>Modo: <strong class="destaque">Simplex</strong> (envia em uma direção só)</li>
+            <li>Exige <em>Line of Sight (LOS)</em> — sem obstáculos</li>
+            <li>Alcance: <strong>1 a 5 metros</strong></li>
+            <li>Exemplos: controle de TV, ar-condicionado</li>
+          </ul>
+        </div>
+        <div style="text-align:center; padding-top:0.5em;">
+          <div style="font-size:4rem;">📱 → 📺</div>
+          <p style="color:#aaa;">A câmera do celular enxerga a luz IR!</p>
+        </div>
+      </div>
+      <div class="callout dica" style="margin-top:0.5em;">
+        🔬 <strong>Demonstração:</strong> Aponte o controle remoto para a câmera do celular e pressione um botão. Você verá a luz piscando na tela!
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Detalhando o Infravermelho:</strong> Diferente de rádio, o infravermelho usa luz em uma frequência abaixo da que o olho humano pode ver. Sendo luz, não atravessa paredes e precisa de visão direta (Line of Sight - LOS) entre o transmissor e o receptor. É quase sempre <strong>Simplex</strong>, onde o controle só emite comandos e a TV apenas os recebe. Faça a demonstração ao vivo para a turma utilizando as câmeras dos celulares e o controle, mostrando a luz pulsante do sinal binário.</p>
+      </aside>
+    </section>
+
+    <!-- NFC -->
+    <section>
+      <h2>🟢 NFC — Near Field Communication</h2>
+      <ul>
+        <li>Norma: <em>ISO/IEC 14443</em> · Frequência: <strong>13,56 MHz</strong></li>
+        <li>Alcance máximo: <span class="destaque">≤ 10 cm</span> (geralmente ~4 cm)</li>
+        <li>Baseado em <strong>RFID de Alta Frequência (HF)</strong></li>
+      </ul>
+      <p style="margin-top:0.6em; color: var(--amarelo);">3 Modos de Operação:</p>
+      <ul>
+        <li><strong>Leitura/Escrita:</strong> celular lê tag NFC passiva (ex: pôster inteligente)</li>
+        <li><strong>Ponto a Ponto (P2P):</strong> dois dispositivos trocam dados</li>
+        <li><strong>Emulação de Cartão:</strong> celular age como cartão bancário — <em>Pix por aproximação!</em></li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Detalhando o NFC:</strong> Significa "Comunicação por Campo de Proximidade". Ele é derivado da tecnologia RFID, mas foi adaptado para ter um alcance extremamente curto (por segurança) e modos de interação bidirecional. Explique o modo de <strong>Emulação de Cartão</strong> (Host Card Emulation - HCE), que é quando as carteiras virtuais (Apple/Google/Samsung Pay) dizem para o chip NFC imitar perfeitamente o comportamento do chip do seu cartão físico de crédito para enganar a maquininha de cartão.</p>
+      </aside>
+    </section>
+
+    <!-- RFID -->
+    <section>
+      <h2>🟡 RFID — Radio Frequency Identification</h2>
+      <div class="two-col">
+        <div>
+          <p><strong>Tag Passiva:</strong> sem bateria — alimentada pelo leitor. Barata.</p>
+          <p><strong>Tag Ativa:</strong> tem bateria própria. Maior alcance (metros a centenas de metros).</p>
+          <table style="margin-top:0.5em;">
+            <tr><th>Faixa</th><th>Freq.</th><th>Exemplo</th></tr>
+            <tr><td>LF</td><td>125 kHz</td><td>Catraca, pets</td></tr>
+            <tr><td>HF</td><td>13,56 MHz</td><td>NFC, biblioteca</td></tr>
+            <tr><td>UHF</td><td>860–960 MHz</td><td>Estoque, pedágio</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="callout dica">
+            🏫 O módulo <strong>RC522</strong> do projeto <em>Frequência Biométrica ESP32</em> da escola usa RFID na faixa HF (13,56 MHz) — a mesma do NFC!
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Detalhando o RFID:</strong> Essa é a tecnologia "mãe" do NFC, usada para inventário e identificação. Explique o fascinante funcionamento da <strong>Tag Passiva</strong>: a bobina (antena do leitor) emite um campo magnético. Quando a etiqueta (tag) entra nesse campo, a antena da etiqueta capta a energia do leitor para ligar o seu microchip, que responde com a informação. É por isso que não precisamos carregar as tags de catraca ou cartão do bilhete de ônibus na tomada. Associe com os projetos que eles desenvolvem na escola, como o controle de frequência biométrico com o sensor RC522.</p>
+      </aside>
+    </section>
+
+    <!-- TABELA COMPARATIVA WIRELESS -->
+    <section>
+      <h2>📊 Comparativo: Tecnologias Sem Fio</h2>
+      <table>
+        <tr>
+          <th>Tecnologia</th><th>Frequência</th><th>Alcance</th><th>Modo</th><th>Exemplo</th>
+        </tr>
+        <tr>
+          <td><strong>Wi-Fi</strong></td><td>2,4 / 5 GHz</td><td>30–200 m</td><td>Half-Duplex</td><td>Internet na escola</td>
+        </tr>
+        <tr>
+          <td><strong>Bluetooth</strong></td><td>2,4 GHz</td><td>10–100 m</td><td>Full-Duplex</td><td>Fone de ouvido</td>
+        </tr>
+        <tr>
+          <td><strong>Infravermelho</strong></td><td>Luz IR</td><td>1–5 m</td><td>Simplex</td><td>Controle de TV</td>
+        </tr>
+        <tr>
+          <td><strong>NFC</strong></td><td>13,56 MHz</td><td>≤ 10 cm</td><td>Half-Duplex</td><td>Pix por aproximação</td>
+        </tr>
+        <tr>
+          <td><strong>RFID</strong></td><td>LF / HF / UHF</td><td>cm – centenas m</td><td>Simplex/Duplex</td><td>Catraca, estoque</td>
+        </tr>
+      </table>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Faça uma revisão panorâmica. Reforce que cada tecnologia foi criada para sanar uma dor específica (distância, taxa de transferência, consumo de bateria ou segurança). Como exercício de recuperação, pergunte as diferenças notáveis (ex: por que o NFC tem alcance tão curto? R: por segurança. Por que o IR está obsoleto frente ao BT? R: porque exige contato visual).</p>
+      </aside>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- BLOCO 2 — CLASSIFICAÇÃO DE REDES -->
+    <!-- ============================================================ -->
+
+    <section>
+      <h2 style="color: var(--amarelo);">🌍 Bloco 2: Classificação de Redes</h2>
+      <p style="text-align:center; color: #aaa;">Aula 07</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Explique que depois de entendermos a comunicação nos fios (aulas passadas) e no ar (início desta aula), vamos classificar o tamanho físico dessas estruturas. Essa é uma taxonomia muito cobrada em concursos e necessária na organização e gestão de grandes parques de TI.</p>
+      </aside>
+    </section>
+
+    <!-- PAN / LAN -->
+    <section>
+      <h2>PAN · LAN — Do Pessoal ao Local</h2>
+      <div class="two-col">
+        <div>
+          <h3>📱 PAN <span style="font-size:1.4rem; color:#aaa;">Personal Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>~1 a 10 metros</strong></li>
+            <li>Conecta dispositivos pessoais de 1 usuário</li>
+            <li>Ex: celular ↔ smartwatch, notebook ↔ fone BT</li>
+          </ul>
+        </div>
+        <div>
+          <h3>🖥️ LAN <span style="font-size:1.4rem; color:#aaa;">Local Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>um prédio / ~1 km</strong></li>
+            <li>Conecta dispositivos de uma organização localmente</li>
+            <li>Ex: laboratório de TI, rede doméstica com roteador</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>PAN:</strong> A "Bolha" ao redor do indivíduo. É a rede criada por seus dispositivos Bluetooth ao seu redor e é altamente portátil.<br><strong>LAN:</strong> É o "feijão com arroz" da infraestrutura. Quase toda a conectividade em pequena/média escala em ambientes fechados (laboratórios, residências, pequenos escritórios). Uma LAN é controlada e mantida por um único dono (ex: a escola cuida da sua LAN local, você cuida da sua de casa).</p>
+      </aside>
+    </section>
+
+    <!-- CAN / MAN -->
+    <section>
+      <h2>CAN · MAN — Do Campus à Cidade</h2>
+      <div class="two-col">
+        <div>
+          <h3>🏫 CAN <span style="font-size:1.4rem; color:#aaa;">Campus Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>campus / condomínio (~alguns km)</strong></li>
+            <li>Interliga múltiplos prédios de um mesmo campus</li>
+            <li>Ex: <em>EEEP-AFS: Lab ↔ Secretaria ↔ Quadra</em></li>
+          </ul>
+        </div>
+        <div>
+          <h3>🏙️ MAN <span style="font-size:1.4rem; color:#aaa;">Metropolitan Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>uma cidade / região (~50 km)</strong></li>
+            <li>Interliga múltiplas LANs de uma mesma cidade</li>
+            <li>Ex: provedores de internet de Redenção-CE, câmeras de segurança pública</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>CAN:</strong> Quando a LAN deixa de estar em um único prédio e se expande por um complexo universitário ou condomínio através de cabos de fibra ou rádio próprios. Toda a área e os terrenos continuam sob gerência do dono do local.<br><strong>MAN:</strong> A rede já atravessa ruas e terrenos públicos na cidade. O grande exemplo prático de MAN na região são os Provedores Regionais (ISPs locais de Redenção), que criam redes espalhadas em postes interligando clientes à sua central.</p>
+      </aside>
+    </section>
+
+    <!-- WAN / SAN -->
+    <section>
+      <h2>WAN · SAN — Do Mundo ao Datacenter</h2>
+      <div class="two-col">
+        <div>
+          <h3>🌐 WAN <span style="font-size:1.4rem; color:#aaa;">Wide Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>países / continentes / o mundo</strong></li>
+            <li>Interliga redes geograficamente distantes</li>
+            <li>Ex: <em>A Internet</em>, links MPLS entre filiais</li>
+          </ul>
+        </div>
+        <div>
+          <h3>💾 SAN <span style="font-size:1.4rem; color:#aaa;">Storage Area Network</span></h3>
+          <ul>
+            <li>Alcance: <strong>dentro de um datacenter</strong></li>
+            <li>Conecta servidores a storages com alta velocidade</li>
+            <li>Tecnologias: Fibre Channel (FC), iSCSI</li>
+            <li>Ex: infraestrutura de nuvem (AWS, Azure)</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>WAN:</strong> A Internet é a maior WAN existente (Wide Area = Extensa área). Envolve a travessia por continentes via cabos submarinos.<br><strong>SAN:</strong> Enfatize que, ao contrário das outras, a SAN não se classifica por tamanho, mas pelo <strong>propósito</strong>. Em datacenters, os servidores operam na LAN, mas, para evitar que grandes gravações de dados congestionem a rede normal, cria-se uma rede totalmente isolada e ultrarrápida (SAN) só para os discos (storage) conversarem com o servidor. Acesso do usuário vai via LAN, o dado interno é gravado via SAN.</p>
+      </aside>
+    </section>
+
+    <!-- RESUMO CLASSIFICAÇÃO -->
+    <section>
+      <h2>📊 Escala de Abrangência</h2>
+      <div style="display:flex; justify-content:center; align-items:center; gap:0; flex-wrap:nowrap; margin:0.5em 0;">
+        <div style="background:#2a2a3e; border:2px solid var(--azul-claro); border-radius:8px; padding:0.4em 0.7em; text-align:center;">
+          <div style="color:var(--azul-claro); font-weight:bold;">PAN</div>
+          <div style="font-size:1.2rem; color:#aaa;">~10 m</div>
+        </div>
+        <div style="color:#666; padding:0 0.3em;">→</div>
+        <div style="background:#2a2a3e; border:2px solid var(--verde); border-radius:8px; padding:0.4em 0.7em; text-align:center;">
+          <div style="color:var(--verde); font-weight:bold;">LAN</div>
+          <div style="font-size:1.2rem; color:#aaa;">~1 km</div>
+        </div>
+        <div style="color:#666; padding:0 0.3em;">→</div>
+        <div style="background:#2a2a3e; border:2px solid var(--amarelo); border-radius:8px; padding:0.4em 0.7em; text-align:center;">
+          <div style="color:var(--amarelo); font-weight:bold;">CAN</div>
+          <div style="font-size:1.2rem; color:#aaa;">~campus</div>
+        </div>
+        <div style="color:#666; padding:0 0.3em;">→</div>
+        <div style="background:#2a2a3e; border:2px solid var(--laranja); border-radius:8px; padding:0.4em 0.7em; text-align:center;">
+          <div style="color:var(--laranja); font-weight:bold;">MAN</div>
+          <div style="font-size:1.2rem; color:#aaa;">~50 km</div>
+        </div>
+        <div style="color:#666; padding:0 0.3em;">→</div>
+        <div style="background:#2a2a3e; border:2px solid var(--vermelho); border-radius:8px; padding:0.4em 0.7em; text-align:center;">
+          <div style="color:var(--vermelho); font-weight:bold;">WAN</div>
+          <div style="font-size:1.2rem; color:#aaa;">mundo</div>
+        </div>
+      </div>
+      <div class="callout dica" style="margin-top:0.8em;">
+        🧠 <strong>Mnemônico:</strong> <em>"Pessoal → Local → Campus → Metropolitana → Wide"</em>
+      </div>
+      <div class="callout aviso" style="margin-top:0.5em;">
+        ⚠️ A <strong>SAN</strong> não é geográfica — é funcional (armazenamento de datacenter).
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Apenas peça para a turma memorizar a ordem de crescimento. Use o Mnemônico visual para reforçar.</p>
+      </aside>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- BLOCO 3 — TOPOLOGIAS -->
+    <!-- ============================================================ -->
+
+    <section>
+      <h2 style="color: var(--vermelho);">🔀 Bloco 3: Topologias de Rede</h2>
+      <p style="text-align:center; color: #aaa;">Aula 08</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Agora detalhamos o formato geométrico das redes. Topologia dita o layout físico ou lógico dos links de comunicação.</p>
+      </aside>
+    </section>
+
+    <!-- FÍSICA VS LÓGICA -->
+    <section>
+      <h2>📐 Física vs. Lógica</h2>
+      <div class="two-col">
+        <div>
+          <div class="callout info">
+            🔌 <strong>Topologia Física</strong><br>
+            Como os cabos e dispositivos estão conectados no mundo real — o que você vê ao entrar na sala.
+          </div>
+          <p style="color:#aaa; margin-top:0.5em;">Exemplo: todos os computadores com cabos indo para um Switch central.</p>
+        </div>
+        <div>
+          <div class="callout">
+            💡 <strong>Topologia Lógica</strong><br>
+            Como os dados trafegam entre os dispositivos — o que acontece "por baixo".
+          </div>
+          <p style="color:#aaa; margin-top:0.5em;">Exemplo: mesmo usando Switch, protocolos antigos tratavam a rede como barramento lógico.</p>
+        </div>
+      </div>
+      <div class="callout dica" style="margin-top:0.8em;">
+        💡 Física e Lógica são <strong>conceitos independentes</strong>. Uma rede pode ter topologia física em Estrela e lógica em Anel.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Explique com uma analogia que "físico é a planta baixa das ruas de uma cidade, o lógico é o caminho que os carros efetivamente tomam de acordo com as placas". Assim, mesmo que a sala do lab seja toda desenhada em Estrela física (indo para o switch no rack), como no passado funcionavam Hubs, a forma como os pacotes viajavam e colidiam seguia as regras matemáticas de um barramento (todos ouvem todos). É vital a distinção para não causar equívocos conceituais.</p>
+      </aside>
+    </section>
+
+    <!-- BARRAMENTO -->
+    <section>
+      <h2>🟠 Barramento (Bus)</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Todos conectados em <strong>um único cabo</strong> principal</li>
+            <li>Dados trafegam por todo o cabo — todos "ouvem"</li>
+            <li>✅ Simples e barato</li>
+            <li>❌ Falha no cabo derruba tudo</li>
+            <li>❌ Colisões constantes</li>
+          </ul>
+          <p style="color:#aaa; margin-top:0.5em;">Tecnologia: <em>Ethernet 10BASE-2 (cabo coaxial)</em></p>
+        </div>
+        <div>
+          <pre style="background:#1a1a2e; padding:0.8em; border-radius:6px; font-family:monospace; color:#90e0ef;">
+💻 [PC1]─┬─💻 [PC2]─┬─💻 [PC3]─┬─💻 [PC4]
+         │          │          │
+══════════════════════════════════════
+            Cabo Backbone (Bus)</pre>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Barramento Físico:</strong> Antigamente as placas de rede Ethernet se ligavam com cabos coaxiais idênticos aos de TV. O cabo formava uma linha direta (bus). Para que os dados chegassem em um lado, corriam por todo o cabo. Se o fio partisse no meio, o sinal vazava e a rede inteira colapsava instantaneamente.</p>
+      </aside>
+    </section>
+
+    <!-- ANEL -->
+    <section>
+      <h2>🟣 Anel (Ring)</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Dispositivos formam um <strong>anel fechado</strong></li>
+            <li>Dados circulam em uma direção (ou duas em anel duplo)</li>
+            <li>Controle por <strong>token</strong> — sem colisões!</li>
+            <li>✅ Desempenho previsível</li>
+            <li>❌ Falha em um nó pode quebrar o anel</li>
+          </ul>
+          <p style="color:#aaa; margin-top:0.5em;">Tecnologias: <em>Token Ring (IBM), FDDI (fibra)</em></p>
+        </div>
+        <div>
+          <pre style="background:#1a1a2e; padding:0.8em; border-radius:6px; font-family:monospace; color:#c77dff;">
+       💻 [PC1]
+      ↗        ↘
+💻 [PC4]  🔄  💻 [PC2]
+      ↖        ↙
+       💻 [PC3]</pre>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Anel Lógico e Físico:</strong> Desenvolvido principalmente pela IBM, a premissa genial é eliminar colisões e ordenar o fluxo num ambiente corporativo. Apenas o dispositivo que tiver uma ficha digital em seu poder (o <em>Token</em>) pode transmitir. Funciona como uma corrida de revezamento — ninguém fala na vez do outro, garantindo justiça de tempo para todos.</p>
+      </aside>
+    </section>
+
+    <!-- ESTRELA -->
+    <section>
+      <h2>🔵 Estrela (Star) ⭐ — A mais usada hoje</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Todos conectados a um <strong>ponto central</strong> (Switch)</li>
+            <li>✅ Falha em 1 cabo/nó <strong>não afeta os demais</strong></li>
+            <li>✅ Fácil diagnóstico e expansão</li>
+            <li>❌ Falha no Switch central derruba tudo</li>
+            <li>❌ Mais cabo que Barramento</li>
+          </ul>
+          <div class="callout dica" style="margin-top:0.5em; ">
+            🏅 <strong>Topologia dominante</strong> nas LANs modernas com Switch.
+          </div>
+        </div>
+        <div>
+          <pre style="background:#1a1a2e; padding:0.8em; border-radius:6px; font-family:monospace; color:#90e0ef;">
+  💻 [PC1]      💻 [PC2]
+         ↘      ↙
+        🔀 [SWITCH]
+         ↗      ↖
+  💻 [PC3]      💻 [PC4]</pre>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Estrela Física:</strong> Traga para a realidade deles apontando para o próprio laboratório. Cada computador possui seu próprio cabo UTP que viaja até um Rack central onde está o Switch. Se alguém morder ou quebrar o seu cabo, apenas aquele computador cai, isolando a falha, sem penalizar os demais, sendo essa a sua principal vantagem frente ao barramento e anel.</p>
+      </aside>
+    </section>
+
+    <!-- ÁRVORE -->
+    <section>
+      <h2>🟢 Árvore (Tree / Hierárquica)</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li><strong>Estrelas conectadas em hierarquia:</strong> Acesso → Distribuição → Core</li>
+            <li>✅ Escala facilmente — basta adicionar switches</li>
+            <li>✅ Segmenta tráfego por camada</li>
+            <li>❌ Falha num switch de distribuição isola segmento inteiro</li>
+          </ul>
+          <p style="color:#aaa; margin-top:0.5em;">Uso: redes corporativas, hospitais, escolas grandes.</p>
+        </div>
+        <div>
+          <pre style="background:#1a1a2e; padding:0.8em; border-radius:6px; font-family:monospace; color:#2ec4b6;">
+        🔀 [Switch Core]
+       ↙             ↘
+🔀 [Sw. Dist. A]   🔀 [Sw. Dist. B]
+   ↙    ↘           ↙    ↘
+🔀[A]  🔀[B]     🔀[C]  🔀[D]</pre>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Árvore:</strong> Também chamada Hierárquica. O que acontece quando os switchs de estrela acabam as portas? Nós criamos camadas! A EEEP-AFS tem um switch "Acesso" por sala que conecta nos PCs, esses switches de sala se interligam num switch maior central (o Distribuição), que, por sua vez, fala com um Roteador mestre (o Core). Mostre aos alunos como as ramificações de uma árvore refletem essa geometria descendente, que escala até o infinito.</p>
+      </aside>
+    </section>
+
+    <!-- MALHA -->
+    <section>
+      <h2>🔴 Malha (Mesh)</h2>
+      <div class="two-col">
+        <div>
+          <ul>
+            <li>Cada dispositivo conectado a <strong>múltiplos outros</strong></li>
+            <li><strong>Full Mesh:</strong> todos conectados a todos</li>
+            <li><strong>Partial Mesh:</strong> nós críticos têm redundância</li>
+            <li>✅ <strong>Altíssima tolerância a falhas</strong> — sempre há rota alternativa</li>
+            <li>❌ Custo alto de cabeamento e configuração complexa</li>
+          </ul>
+          <p style="color:#aaa; margin-top:0.5em;">Usos: backbone da Internet (BGP), redes militares, <em>Wi-Fi Mesh doméstico</em>.</p>
+        </div>
+        <div style="text-align:center; padding-top:1em;">
+          <div style="font-size:4rem;">🌐</div>
+          <p style="color:#aaa;">A Internet é uma grande Malha parcial de roteadores interligados pelo protocolo BGP.</p>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>A Malha:</strong> A regra máxima de segurança. Se houver um rompimento de um link ou um roteador for destruído, a informação flui por outro caminho, pois sempre há mais de uma rota para o destino. A internet moderna tem como objetivo nunca poder ser "desligada", operando como uma malha parcial interconectada por provedores no mundo todo. Na área doméstica o Wi-Fi Mesh funciona criando múltiplas rotas de sinal sem fio pelos roteadores na casa.</p>
+      </aside>
+    </section>
+
+    <!-- HÍBRIDA -->
+    <section>
+      <h2>⚪ Híbrida — A Realidade das Redes</h2>
+      <ul>
+        <li>Combinação de <strong>duas ou mais topologias</strong> em uma só rede</li>
+        <li>Exemplo: <em>Árvore (entre blocos) + Estrela (dentro de cada bloco) + Malha parcial (links redundantes entre switches core)</em></li>
+        <li>✅ Aproveita as vantagens de cada topologia</li>
+        <li>✅ Pode ter redundância onde necessário sem gastar com malha total</li>
+      </ul>
+      <div class="callout" style="margin-top:0.8em;">
+        📌 A <strong>maioria das redes corporativas e institucionais modernas</strong> é híbrida — incluindo a que vocês vão projetar agora.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Híbrida:</strong> Conclua a explanação teórica consolidando o fato de que na vida real não usamos apenas uma em uma rede de médio porte em diante. Combina-se uma Árvore Hierárquica com malha redundante nos núcleos sensíveis e Estrelas na ponta (no cliente). É a transição ideal para prepará-los ao desafio a seguir, onde desenharão uma rede complexa e realista.</p>
+      </aside>
+    </section>
+
+    <!-- TABELA COMPARATIVA TOPOLOGIAS -->
+    <section>
+      <h2>📊 Comparativo de Topologias</h2>
+      <table>
+        <tr>
+          <th>Topologia</th><th>Dispositivo Central</th><th>Tolerância a Falha</th><th>Custo</th><th>Uso Típico</th>
+        </tr>
+        <tr><td><strong>Barramento</strong></td><td>Nenhum</td><td>Baixa</td><td>Muito baixo</td><td>Redes coaxiais históricas</td></tr>
+        <tr><td><strong>Anel</strong></td><td>Nenhum (token)</td><td>Média</td><td>Médio</td><td>FDDI, Token Ring (legado)</td></tr>
+        <tr><td><strong>⭐ Estrela</strong></td><td>Switch / Hub</td><td>Alta (sem o centro)</td><td>Médio</td><td>LAN moderna com Switch</td></tr>
+        <tr><td><strong>Árvore</strong></td><td>Switches em camadas</td><td>Média-Alta</td><td>Alto</td><td>Redes corporativas</td></tr>
+        <tr><td><strong>Malha</strong></td><td>Nenhum</td><td>Muito Alta</td><td>Muito alto</td><td>Internet, Wi-Fi Mesh</td></tr>
+        <tr><td><strong>Híbrida</strong></td><td>Variável</td><td>Alta</td><td>Alto</td><td>Redes empresariais reais</td></tr>
+      </table>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Aproveite essa matriz para fazer um fechamento sumarizando os prós e contras visivelmente. Recomende que a turma preste atenção ao fato da tolerância a falha ditar o alto custo da topologia (quanto mais tolerância e malha inserida, exponencialmente mais alto é o custo e a complexidade).</p>
+      </aside>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DESAFIO PRÁTICO -->
+    <!-- ============================================================ -->
+
+    <section>
+      <h2>🏆 Desafio: Projete a Rede da EEEP-AFS</h2>
+      <p><strong>Em grupos de 3 alunos — 25 minutos:</strong></p>
+      <p style="color:#ccc;"><strong>Cenário:</strong> A escola vai conectar: Bloco A (Lab 1 + Lab 2, 20 PCs cada), Bloco B (4 salas, 10 PCs cada), Secretaria (5 PCs + impressora) e Pátio (AP para 60 dispositivos móveis).</p>
+      <ol>
+        <li>Desenhe o diagrama no papel com topologia de cada bloco e backbone.</li>
+        <li>Marque: 🔵 link Full-Duplex · 🟡 situação de Broadcast · 🟢 tráfego Unicast.</li>
+        <li>Identifique <strong>1 ponto de falha crítica</strong> e proponha como eliminar.</li>
+        <li>Classifique a rede: <strong>LAN ou CAN?</strong> Justifique.</li>
+      </ol>
+      <div class="callout dica" style="margin-top:0.5em;">
+        ⚡ <strong>Extra:</strong> Como transformar o backbone em Malha parcial para eliminar o ponto de falha central?
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Inicie os cronômetros e caminhe pelos grupos provocando reflexões no desenho, garantindo que usem Estrelas conectando em um grande nó hierárquico, e checando se todos conseguiram colocar ao menos a redundância.</p>
+      </aside>
+    </section>
+
+    <!-- TICKET DE SAÍDA -->
+    <section>
+      <h2>🎟️ Ticket de Saída</h2>
+      <p>Antes de sair, escreva no caderno:</p>
+      <ol>
+        <li>Qual tecnologia sem fio você usaria para um sistema de <strong>pagamento por aproximação</strong> e por quê?</li>
+        <li>Desenhe (só o esquema) a topologia mais usada em uma <strong>LAN moderna</strong> com Switch.</li>
+      </ol>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Avalie visualmente rapidamente quando cada aluno sair ou na próxima correção. É vital consolidar a topologia Estrela e o uso do NFC por sua segurança a curtíssimas distâncias, para ratificar a aplicabilidade prática.</p>
+      </aside>
+    </section>
+
+    <!-- PRÓXIMA AULA -->
+    <section class="capa">
+      <h2>✅ Resumo das Aulas 06–08</h2>
+      <ul style="text-align:left; max-width:800px; margin:0 auto;">
+        <li>📶 <strong>Wireless:</strong> Wi-Fi, Bluetooth, IR, NFC, RFID — cada um no seu alcance e propósito.</li>
+        <li>🌍 <strong>Classificação:</strong> PAN &lt; LAN &lt; CAN &lt; MAN &lt; WAN (SAN = funcional).</li>
+        <li>🔀 <strong>Topologias:</strong> Estrela domina as LANs modernas; redes reais são híbridas.</li>
+      </ul>
+      <p style="margin-top:1.2em; color: var(--amarelo);">
+        🔜 <strong>Próxima sequência:</strong> Modelo OSI e TCP/IP — as 7 camadas que explicam tudo.
+      </p>
+      <p style="color:#aaa; margin-top:0.5em;">Para se preparar: pesquise as 7 camadas do modelo OSI e a função de cada uma.</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Agradeça a todos, certifique-se que compreenderam o escopo das camadas que serão explicadas logo nas próximas aulas e reforce o convite para baixarem ou acessarem simuladores como o Packet Tracer da Cisco caso tenham interesse em continuar o layout em casa.</p>
+      </aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    margin: 0.15,
+    width: 1200,
+    height: 800,
+    transition: 'slide',
+    transitionSpeed: 'fast',
+    controls: true,
+    progress: true,
+    center: true,
+    plugins: [ RevealHighlight, RevealNotes ]
+  });
+</script>
+</body>
+</html>

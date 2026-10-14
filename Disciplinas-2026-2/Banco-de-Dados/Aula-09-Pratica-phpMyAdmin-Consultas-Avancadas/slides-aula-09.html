@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Prática com phpMyAdmin: Filtros, Ordenação e Agregações — Banco de Dados | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.3rem; color: #f4a261; line-height: 1.2; }
+    .reveal h2 { font-size: 2.1rem; color: #e9c46a; line-height: 1.2; }
+    .reveal h3 { font-size: 1.6rem; color: #90e0ef; }
+    .reveal p, .reveal li { line-height: 1.45; font-size: 1.6rem; }
+    .reveal pre { 
+      font-size: 1.45rem !important; 
+      width: 100% !important; 
+      margin: 14px auto !important; 
+      box-shadow: 0 4px 18px rgba(0,0,0,0.6) !important;
+      border: 1px solid rgba(255,255,255,0.18) !important;
+      border-radius: 8px !important;
+    }
+    .reveal pre code { 
+      font-family: 'Consolas', 'Fira Code', 'Courier New', monospace !important; 
+      font-size: 1.45rem !important; 
+      line-height: 1.45 !important;
+      padding: 16px 22px !important;
+      max-height: 560px !important;
+    }
+    .reveal code:not(pre code) {
+      font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
+      font-size: 1.35rem;
+      color: #90e0ef;
+      background: rgba(255,255,255,0.12);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .tag-disciplina { font-size: 1.2rem; color: #90e0ef; opacity: 0.95; text-transform: uppercase; letter-spacing: 1px; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #52b788; font-weight: bold; }
+    .destaque-vermelho { color: #e76f51; font-weight: bold; }
+    .destaque-azul { color: #48cae4; font-weight: bold; }
+    .card-box { background: rgba(255, 255, 255, 0.07); border-left: 5px solid #f4a261; padding: 14px 20px; border-radius: 6px; margin: 12px 0; text-align: left; }
+    .card-alerta { background: rgba(231, 111, 81, 0.18); border-left: 5px solid #e76f51; padding: 14px 20px; border-radius: 6px; margin: 12px 0; text-align: left; }
+    .card-dica { background: rgba(42, 157, 143, 0.18); border-left: 5px solid #2a9d8f; padding: 14px 20px; border-radius: 6px; margin: 12px 0; text-align: left; }
+    .badge-tempo { display: inline-block; background: #e76f51; color: #fff; padding: 5px 14px; border-radius: 14px; font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; }
+    table.tabela-dados { width: 100%; border-collapse: collapse; font-size: 1.35rem; margin-top: 10px; }
+    table.tabela-dados th { background: #264653; color: #e9c46a; padding: 8px 12px; border: 1px solid #555; }
+    table.tabela-dados td { padding: 6px 12px; border: 1px solid #444; background: rgba(0,0,0,0.35); }
+    section.capa { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP-AFS · Banco de Dados · 2º Ano DS</p>
+      <h1>Prática no phpMyAdmin<br><span style="font-size: 1.6rem; color: #e9c46a;">Filtros, Ordenação, Limites e Agregações</span></h1>
+      <p style="margin-top: 20px;">Prof. Olegário Neto · 14/10/2026</p>
+      <div class="card-box" style="display: inline-block; margin-top: 15px;">
+        ⏱️ <strong>Duração total do laboratório:</strong> 100 minutos (3 Blocos Práticos)
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Inicie a aula dando as boas-vindas ao laboratório. Recorde que na Aula 08 eles fizeram consultas no caderno e no quadro (Whiteboard Coding). Hoje o objetivo é testar essas queries no motor MySQL usando o phpMyAdmin e avançar para recursos de relatórios: ordenação, paginação e agrupamentos.</p>
+        <p><strong>Dinâmica de Sala:</strong> Peça que todos liguem os monitores, abram o XAMPP Control Panel e iniciem Apache e MySQL.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 2: AGENDA DA AULA -->
+    <section>
+      <h2>📋 Estrutura dos 100 Minutos</h2>
+      <div class="grid-2">
+        <div class="card-box">
+          <h3>⚡ Bloco 0 & 1 (40 min)</h3>
+          <ul>
+            <li>Dica de Engenharia: <code>queries.sql</code></li>
+            <li>Revisão prática da Aula 08</li>
+            <li><code>SELECT</code> com <code>WHERE</code>, <code>AND</code>, <code>OR</code></li>
+            <li>DML Seguro: <code>UPDATE</code> e <code>DELETE</code></li>
+          </ul>
+        </div>
+        <div class="card-box">
+          <h3>📊 Bloco 2 & 3 (60 min)</h3>
+          <ul>
+            <li>Ordenação: <code>ORDER BY ASC/DESC</code></li>
+            <li>Paginação e rankings: <code>LIMIT</code></li>
+            <li>Agregações: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code></li>
+            <li>Apelidos (<code>AS</code>) e <code>GROUP BY</code></li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Apresente a divisão do tempo para que os alunos mantenham o foco nas bancadas. O tempo é rigorosamente dividido em blocos de execução e resolução.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 3: DICA DE OURO DE DEV -->
+    <section>
+      <h2>🛡️ Dica de Engenharia: O Arquivo Local</h2>
+      <div class="card-alerta">
+        ⚠️ <strong>O Problema:</strong> A interface web do phpMyAdmin é <em>stateless</em>. Se você apertar <code>F5</code> por engano, fechar a aba ou a conexão reiniciar, <strong>toda a query digitada é perdida</strong>.
+      </div>
+      <div class="card-dica">
+        💡 <strong>A Solução Profissional:</strong>
+        <ol>
+          <li>Abra o <strong>VS Code</strong> ou Bloco de Notas agora.</li>
+          <li>Crie e salve o arquivo <code>queries.sql</code> na sua pasta pessoal.</li>
+          <li>Escreva, comente e salve a query no editor.</li>
+          <li>Copie e cole na caixa SQL do phpMyAdmin apenas para executar.</li>
+        </ol>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Em ambientes corporativos, nenhum DBA ou desenvolvedor escreve queries complexas direto em caixas web sem backup local. O arquivo de script funciona como histórico de trabalho e documentação.</p>
+        <p><strong>Dinâmica de Sala:</strong> Espere 2 minutos e passe nas bancadas conferindo se todos criaram o arquivo `queries.sql`.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 4: BASE DE DADOS (loja_afs) -->
+    <section>
+      <h2>🏛️ A Base de Dados: loja_afs</h2>
+      <p>Tabela <code>produtos</code> pronta para os testes:</p>
+      <table class="tabela-dados">
+        <thead>
+          <tr><th>id</th><th>nome</th><th>preco</th><th>categoria</th><th>ativo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Teclado Mecânico</td><td>250.00</td><td>Eletrônicos</td><td>1</td></tr>
+          <tr><td>2</td><td>Mouse Gamer</td><td>120.00</td><td>Eletrônicos</td><td>1</td></tr>
+          <tr><td>3</td><td>Caderno Universitário</td><td>25.00</td><td>Papelaria</td><td>0</td></tr>
+          <tr><td>4</td><td>Monitor 24</td><td>850.00</td><td>Eletrônicos</td><td>1</td></tr>
+          <tr><td>5</td><td>Caneta Azul</td><td>2.50</td><td>Papelaria</td><td>1</td></tr>
+          <tr><td>6</td><td>Headset</td><td>180.00</td><td>Eletrônicos</td><td>0</td></tr>
+          <tr><td>7</td><td>Resma Papel A4</td><td>32.00</td><td>Papelaria</td><td>1</td></tr>
+          <tr><td>8</td><td>Mousepad Speed</td><td>45.00</td><td>Eletrônicos</td><td>1</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 1.2rem; margin-top: 10px; color: #90e0ef;">👉 Script completo de recriação disponível no <code>guia-pratico-aluno-09.md</code>.</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Mostre que temos 8 produtos representativos divididos em 'Eletrônicos' e 'Papelaria', com itens ativos (1) e inativos (0). Essa diversidade permitirá testar filtros, exclusões lógicas e cálculos estatísticos.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 5: BLOCO 1 - TEORIA FILTROS E OPERADORES -->
+    <section>
+      <h2>🔍 Bloco 1: Filtros com WHERE</h2>
+      <p>A cláusula <code>WHERE</code> restringe as linhas retornadas:</p>
+      <pre><code class="language-sql">-- Operadores de Comparação: =, !=, <, >, <=, >=
+SELECT * FROM produtos WHERE preco > 100.00;
+
+-- Operador Lógico AND (ambas as condições verdadeiras)
+SELECT nome, preco FROM produtos 
+WHERE categoria = 'Eletrônicos' AND ativo = 1;
+
+-- Operador Lógico OR (pelo menos uma verdadeira)
+SELECT * FROM produtos 
+WHERE categoria = 'Papelaria' OR preco < 50.00;</code></pre>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Explique a precedência lógica: o MySQL avalia expressões booleanas linha por linha. Aspas simples são obrigatórias para strings (`'Papelaria'`), enquanto números (`100.00`) não usam aspas.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 6: DESAFIOS 1 E 2 -->
+    <section>
+      <span class="badge-tempo">⏱️ Tempo: 6 minutos</span>
+      <h2>⚡ Desafios 1 & 2 (Mão na Massa)</h2>
+      <div class="card-box">
+        <p><strong>Desafio 1:</strong> Selecione todos os campos dos produtos da categoria <code>'Papelaria'</code>.</p>
+      </div>
+      <div class="card-box">
+        <p><strong>Desafio 2:</strong> Selecione apenas <code>nome</code> e <code>preco</code> de produtos que estejam ativos (<code>ativo = 1</code>) <strong>E</strong> custem menos de <code>100.00</code>.</p>
+      </div>
+      <p style="font-size: 1.3rem;">💾 <em>Digite primeiro no seu <code>queries.sql</code> e execute no phpMyAdmin!</em></p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Inicie o cronômetro visual de 6 minutos. Circule no laboratório verificando se os alunos estão usando aspas simples e selecionando apenas as colunas pedidas no Desafio 2.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 7: GABARITO DESAFIOS 1 E 2 -->
+    <section>
+      <h2>✅ Gabarito Comentado: Desafios 1 & 2</h2>
+      <pre><code class="language-sql">-- Desafio 1: Todos os campos de Papelaria
+SELECT * 
+FROM produtos 
+WHERE categoria = 'Papelaria';
+
+-- Desafio 2: Nome e Preço de ativos abaixo de 100.00
+SELECT nome, preco 
+FROM produtos 
+WHERE ativo = 1 AND preco < 100.00;</code></pre>
+      <div class="card-dica">
+        📌 <strong>Análise:</strong> No Desafio 2, projetamos apenas <code>nome, preco</code> em vez de <code>*</code>. Em aplicações reais, trafegar apenas as colunas necessárias reduz o consumo de memória e rede do servidor.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Discuta o resultado: o Desafio 2 retorna a Caneta Azul (2.50), a Resma de Papel A4 (32.00) e o Mousepad Speed (45.00). O Caderno Universitário não vem porque está inativo (ativo = 0).</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 8: DML SEGURO: A REGRA DO SELECT PRÉVIO -->
+    <section>
+      <h2>🛡️ DML Seguro: A Regra do SELECT Prévio</h2>
+      <div class="card-alerta">
+        🚨 <strong>Nunca execute UPDATE ou DELETE diretamente em produção!</strong><br>
+        Se o filtro <code>WHERE</code> estiver errado ou ausente, a alteração afeta a tabela inteira.
+      </div>
+      <div class="card-box">
+        <p><strong>Regra de Ouro do DBA:</strong></p>
+        <p>1º Teste com <code>SELECT</code>:</p>
+        <pre><code class="language-sql">SELECT * FROM produtos WHERE categoria = 'Eletrônicos';</code></pre>
+        <p>2º Conferiu as linhas? Execute o <code>UPDATE</code>:</p>
+        <pre><code class="language-sql">UPDATE produtos SET preco = preco * 1.10 WHERE categoria = 'Eletrônicos';</code></pre>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Destaque que em bancos reais sem transações ativas (`autocommit=1`), um `DELETE` ou `UPDATE` executado não tem Ctrl+Z imediato. A disciplina do `SELECT` prévio previne desastres operacionais.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 9: DESAFIOS 3 E 4 -->
+    <section>
+      <span class="badge-tempo">⏱️ Tempo: 8 minutos</span>
+      <h2>⚡ Desafios 3 & 4 (DML Seguro)</h2>
+      <div class="card-box">
+        <p><strong>Desafio 3 (UPDATE):</strong> Aumente o preço de todos os produtos da categoria <code>'Eletrônicos'</code> em 10% (<code>preco * 1.10</code>).<br>
+        👉 <em>Obrigatório: execute o SELECT correspondente antes do UPDATE.</em></p>
+      </div>
+      <div class="card-box">
+        <p><strong>Desafio 4 (DELETE):</strong> Exclua permanentemente os produtos desativados (<code>ativo = 0</code>).<br>
+        👉 <em>Obrigatório: execute o SELECT correspondente antes do DELETE.</em></p>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Peça que levantem a mão quem conferiu primeiro as linhas afetadas antes de rodar o comando final.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 10: GABARITO DESAFIOS 3 E 4 -->
+    <section>
+      <h2>✅ Gabarito Comentado: Desafios 3 & 4</h2>
+      <pre><code class="language-sql">-- Desafio 3: Verificação prévia e UPDATE
+SELECT * FROM produtos WHERE categoria = 'Eletrônicos';
+
+UPDATE produtos 
+SET preco = preco * 1.10 
+WHERE categoria = 'Eletrônicos';
+
+-- Desafio 4: Verificação prévia e DELETE
+SELECT * FROM produtos WHERE ativo = 0;
+
+DELETE FROM produtos 
+WHERE ativo = 0;</code></pre>
+      <p style="font-size: 1.2rem; color: #52b788;">✔️ O phpMyAdmin informará a quantidade de linhas afetadas (ex: <em>4 rows affected / 2 rows deleted</em>).</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Notem como o feedback do phpMyAdmin exibe o total de linhas modificadas. Se você esperava 4 linhas e o phpMyAdmin disser 8 linhas, algo estaria errado no seu filtro.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 11: BLOCO 2 - ORDER BY E LIMIT -->
+    <section>
+      <h2>📶 Bloco 2: Ordenação (ORDER BY)</h2>
+      <p>Classifica a ordem de exibição dos registros retornados:</p>
+      <pre><code class="language-sql">-- Ordem Crescente (padrão): ASC (Ascending - A-Z, 0-9)
+SELECT * FROM produtos ORDER BY preco ASC;
+
+-- Ordem Decrescente: DESC (Descending - Z-A, 9-0)
+SELECT * FROM produtos ORDER BY preco DESC;
+
+-- Ordenação Múltipla:
+SELECT * FROM produtos ORDER BY categoria ASC, preco DESC;</code></pre>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Explique que sem `ORDER BY`, a ordem dos registros retornados pelo banco não é garantida pelo padrão SQL (depende do plano de execução do banco ou da ordem do índice físico). O `ORDER BY` garante determinismo visual.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 12: LIMIT E PAGINAÇÃO -->
+    <section>
+      <h2>📄 Controle de Volume (LIMIT)</h2>
+      <p>A cláusula <code>LIMIT</code> restringe a quantidade máxima de linhas devolvidas:</p>
+      <pre><code class="language-sql">-- Retorna apenas os 3 primeiros registros encontrados
+SELECT * FROM produtos LIMIT 3;
+
+-- Muito usado em rankings combinando com ORDER BY:
+SELECT nome, preco FROM produtos 
+ORDER BY preco DESC 
+LIMIT 5; -- Top 5 produtos mais caros</code></pre>
+      <div class="card-box">
+        🎯 <strong>Aplicações reais:</strong> Paginação em sites (ex: 20 produtos por página), exibição de "Top 10" e proteção contra sobrecarga em bancos com milhões de registros.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Em sistemas web reais com 1 milhão de clientes, um `SELECT * FROM clientes` sem LIMIT derrubaria a memória do servidor PHP/NodeJS. O LIMIT é obrigatório em sistemas escaláveis.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 13: DESAFIOS 5 E 6 -->
+    <section>
+      <span class="badge-tempo">⏱️ Tempo: 7 minutos</span>
+      <h2>⚡ Desafios 5 & 6 (Ordenação e Limite)</h2>
+      <div class="card-box">
+        <p><strong>Desafio 5:</strong> Liste <code>nome</code>, <code>categoria</code> e <code>preco</code> de todos os produtos ordenados a partir do mais caro até o mais barato.</p>
+      </div>
+      <div class="card-box">
+        <p><strong>Desafio 6:</strong> Construa a consulta para exibir o <strong>Top 3 produtos de maior valor</strong> da loja (retornando apenas <code>nome</code> e <code>preco</code>).</p>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Observe se os alunos colocaram o `LIMIT` após o `ORDER BY`. A ordem das cláusulas no SQL é estrita: `SELECT ... FROM ... WHERE ... ORDER BY ... LIMIT`.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 14: GABARITO DESAFIOS 5 E 6 -->
+    <section>
+      <h2>✅ Gabarito: Desafios 5 & 6</h2>
+      <pre><code class="language-sql">-- Desafio 5: Ordenação por preço decrescente
+SELECT nome, categoria, preco 
+FROM produtos 
+ORDER BY preco DESC;
+
+-- Desafio 6: Top 3 produtos mais caros
+SELECT nome, preco 
+FROM produtos 
+ORDER BY preco DESC 
+LIMIT 3;</code></pre>
+      <div class="card-dica">
+        ⚠️ <strong>Atenção à Ordem Sintática do SQL:</strong><br>
+        <code>SELECT</code> ➔ <code>FROM</code> ➔ <code>WHERE</code> ➔ <code>ORDER BY</code> ➔ <code>LIMIT</code>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Se invertermos `LIMIT` antes de `ORDER BY`, o MySQL retornará erro de sintaxe. Reforce a ordem das cláusulas do SQL.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 15: BLOCO 3 - FUNÇÕES DE AGREGAÇÃO -->
+    <section>
+      <h2>🧮 Bloco 3: Funções de Agregação</h2>
+      <p>Transformam múltiplas linhas em um único valor calculado:</p>
+      <ul>
+        <li><code>COUNT(*)</code>: Contagem de linhas.</li>
+        <li><code>SUM(coluna)</code>: Soma numérica dos valores.</li>
+        <li><code>AVG(coluna)</code>: Média aritmética simples.</li>
+        <li><code>MIN(coluna)</code>: Menor valor da coluna.</li>
+        <li><code>MAX(coluna)</code>: Maior valor da coluna.</li>
+      </ul>
+      <pre><code class="language-sql">-- Exemplo com apelido de coluna (AS):
+SELECT COUNT(*) AS total_itens, AVG(preco) AS media_valor 
+FROM produtos;</code></pre>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Explique o propósito do `AS`: sem ele, o cabeçalho da coluna na tabela de resultado ficaria com o nome literal `COUNT(*)` ou `AVG(preco)`, o que é inadequado para integração em APIs e interfaces.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 16: DESAFIO 7 -->
+    <section>
+      <span class="badge-tempo">⏱️ Tempo: 7 minutos</span>
+      <h2>⚡ Desafio 7 (Métricas Consolidadas)</h2>
+      <div class="card-box">
+        <p>Elabore uma <strong>única query SQL</strong> que retorne as seguintes colunas com os respectivos apelidos (<code>AS</code>):</p>
+        <ul>
+          <li>Total de produtos cadastrados ➔ <code>total_produtos</code></li>
+          <li>Média de preços ➔ <code>media_precos</code></li>
+          <li>Menor preço ➔ <code>menor_preco</code></li>
+          <li>Maior preço ➔ <code>maior_preco</code></li>
+          <li>Soma de todos os preços ➔ <code>soma_precos</code></li>
+        </ul>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Incentive os alunos a separarem as funções agregadoras por vírgula na cláusula SELECT.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 17: GABARITO DESAFIO 7 -->
+    <section>
+      <h2>✅ Gabarito: Desafio 7</h2>
+      <pre><code class="language-sql">-- Desafio 7: Sumário Estatístico da Loja
+SELECT 
+    COUNT(*) AS total_produtos,
+    AVG(preco) AS media_precos,
+    MIN(preco) AS menor_preco,
+    MAX(preco) AS maior_preco,
+    SUM(preco) AS soma_precos
+FROM produtos;</code></pre>
+      <div class="card-box">
+        💡 <strong>Resultado:</strong> Retorna uma única linha com o consolidado de toda a tabela.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Mostre que os números retornados refletem o estado atual da tabela após o reajuste do Desafio 3 e a exclusão do Desafio 4.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 18: INTRODUÇÃO A GROUP BY -->
+    <section>
+      <h2>📂 Agrupamento de Dados: GROUP BY</h2>
+      <p>E se quisermos saber as métricas <strong>por categoria</strong>?</p>
+      <pre><code class="language-sql">SELECT categoria, COUNT(*) AS quantidade, AVG(preco) AS preco_medio
+FROM produtos
+GROUP BY categoria;</code></pre>
+      <div class="card-dica">
+        📌 <strong>Regra Fundamental do GROUP BY:</strong><br>
+        Toda coluna presente no <code>SELECT</code> que <strong>não</strong> for uma função agregadora (como <code>COUNT</code>, <code>AVG</code>) <strong>deve constar no GROUP BY</strong>!
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Essa é a regra mais cobrada em mercado e entrevistas técnicas. Se você colocar `SELECT nome, categoria, COUNT(*) FROM produtos GROUP BY categoria`, o banco não sabe qual 'nome' exibir para a categoria inteira, gerando inconsistência ou erro SQL de `only_full_group_by`.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 19: DESAFIO 8 -->
+    <section>
+      <span class="badge-tempo">⏱️ Tempo: 8 minutos</span>
+      <h2>⚡ Desafio 8 (Relatório por Categoria)</h2>
+      <div class="card-box">
+        <p>Gere um relatório executivo agrupado por categoria contendo:</p>
+        <ol>
+          <li>A coluna <code>categoria</code>.</li>
+          <li>A contagem de itens: <code>COUNT(*) AS total_itens</code>.</li>
+          <li>O preço médio: <code>AVG(preco) AS preco_medio</code>.</li>
+        </ol>
+        <p style="margin-top: 10px;">👉 Ordene o resultado final pela quantidade de itens de forma decrescente (<code>ORDER BY total_itens DESC</code>).</p>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Esta é a query de encerramento do laboratório que consolida `SELECT`, agregação, `GROUP BY` e `ORDER BY`.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 20: GABARITO DESAFIO 8 -->
+    <section>
+      <h2>✅ Gabarito: Desafio 8</h2>
+      <pre><code class="language-sql">-- Desafio 8: Agrupamento analítico por Categoria
+SELECT 
+    categoria,
+    COUNT(*) AS total_itens,
+    AVG(preco) AS preco_medio
+FROM produtos
+GROUP BY categoria
+ORDER BY total_itens DESC;</code></pre>
+      <div class="card-box">
+        📊 <strong>Saída esperada:</strong> Uma linha resumida para <code>'Eletrônicos'</code> e uma linha para <code>'Papelaria'</code>, com suas respectivas médias e quantidades.
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Demonstre no phpMyAdmin como a tabela resultante fica limpa e executiva, ideal para gráficos de dashboards corporativos.</p>
+      </aside>
+    </section>
+
+    <!-- SLIDE 21: ENCERRAMENTO E VISTO -->
+    <section class="capa">
+      <h2>🏁 Fechamento do Laboratório</h2>
+      <div class="card-box" style="text-align: left;">
+        ✔️ <strong>Checklist final do aluno:</strong>
+        <ul>
+          <li>Arquivo <code>queries.sql</code> com os 8 desafios salvos localmente.</li>
+          <li>Código limpo e comentado (<code>-- Desafio 1</code> ... <code>-- Desafio 8</code>).</li>
+          <li>Chame o professor na bancada para validar a execução da query 8 e registrar o visto de aula.</li>
+        </ul>
+      </div>
+      <p style="margin-top: 25px; color: #90e0ef;">Próxima Aula: <strong>Consultas com Múltiplas Tabelas (JOINs)</strong></p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Finalize a aula pontuando que agora que eles dominam manipulação e agregações em uma tabela só, na próxima aula iremos conectar tabelas através de Chaves Estrangeiras (JOIN).</p>
+        <p><strong>Dinâmica de Sala:</strong> Registre os vistos e peça para desligarem as máquinas com encerramento normal do XAMPP.</p>
+      </aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    margin: 0.05,
+    width: 1280,
+    height: 720,
+    plugins: [RevealHighlight]
+  });
+</script>
+</body>
+</html>

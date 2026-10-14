@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Endereçamento: IPv4, IPv6 e NAT</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>O Mundo dos IPs</h2>
+					<h3>IPv4, NAT e IPv6</h3>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>O formato do IPv4</h3>
+					<p>Um endereço IPv4 possui <strong>32 bits</strong>.</p>
+					<p>Eles são divididos em 4 blocos de 8 bits (octetos).</p>
+					<p>Exemplo em decimal: <code>192.168.1.50</code></p>
+					<p>Exemplo real (como o PC vê): <code>11000000.10101000.00000001.00110010</code></p>
+					<aside class="notes">
+						DICA PARA PROVAS: Bancas sempre tentam confundir os números.<br>
+						Um octeto vai de 0 a 255. Nunca existe IP com número 256. Exemplo de pegadinha clássica: "O IP 192.168.256.10 é válido?" NÃO!
+					</aside>
+				</section>
+
+				<section>
+					<h3>IP Público vs Privado</h3>
+					<p><strong>Público:</strong> Navega na internet. É único no mundo. Custa dinheiro.</p>
+					<p><strong>Privado:</strong> Fica trancado dentro de casa ou da empresa. É grátis, mas não serve para acessar sites fora da rede.</p>
+					<aside class="notes">
+						IP DE LOOPBACK (Outro queridinho de provas):<br>
+						O endereço 127.0.0.1 é você mesmo. Fazer um ping em 127.0.0.1 testa se a SUA própria placa de rede e o protocolo TCP/IP estão funcionando. Se falhar, seu PC tá quebrado.<br><br>
+						APIPA: E se o PC não achar um servidor DHCP? A Microsoft inventou o APIPA. O PC se auto-atribui um IP no padrão 169.254.x.x. Caiu em prova que começou com 169.254, significa: "O DHCP caiu e o PC tá no modo desespero".
+					</aside>
+				</section>
+
+				<section>
+					<h3>O Herói da Internet: NAT</h3>
+					<p>Network Address Translation</p>
+					<p>O roteador da sua casa pega todos os celulares (IPs Privados 192.168.x.x) e mascara eles sob um <strong>único IP Público</strong> que o seu provedor (Brisanet, Claro, etc) te deu.</p>
+					<aside class="notes">
+						ANALOGIA DO NAT:<br>
+						O NAT é a recepcionista de uma grande empresa corporativa. Você de fora não consegue ligar direto para a mesa 45 do setor de compras (IP Privado). Você liga para o número geral da empresa (IP Público). A recepcionista atende (O NAT no roteador) e ela transfere a ligação internamente.
+					</aside>
+				</section>
+
+				<section>
+					<h3>O Futuro (que já é o presente): IPv6</h3>
+					<ul>
+						<li>O IPv4 (32 bits) acabou. Faltou número pro mundo inteiro.</li>
+						<li>O IPv6 tem <strong>128 bits</strong> (Hexadecimal).</li>
+						<li>Formato: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>
+						<li>Não precisa de NAT (todo mundo pode ter IP Público).</li>
+						<li>Tem IPSec nativo (criptografia embutida).</li>
+					</ul>
+					<aside class="notes">
+						COMPARAÇÃO DIRETA FGV:<br>
+						- IPv4: 32 bits (4 bilhões de IPs), Decimal, usa Broadcast.<br>
+						- IPv6: 128 bits (infinitos IPs), Hexadecimal, NÃO TEM BROADCAST (usa Multicast e Anycast), IPSec nativo. Essa é a matriz da aprovação!
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>

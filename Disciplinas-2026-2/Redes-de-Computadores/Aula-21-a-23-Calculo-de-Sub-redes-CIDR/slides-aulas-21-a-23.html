@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Matemática de Redes: Subnetting e CIDR</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Matemática de Redes</h2>
+					<h3>Máscaras, CIDR e Sub-redes</h3>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>Para que serve a Máscara?</h3>
+					<p>Um endereço IP sozinho é cego. Ele não sabe onde a rede termina e onde começam os computadores.</p>
+					<p>A <strong>Máscara de Sub-rede</strong> divide o IP em duas metades lógicas:</p>
+					<ul>
+						<li>A parte bloqueada (A Rede / O Nome da Rua).</li>
+						<li>A parte livre (O Host / O Número da Casa).</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>A Notação CIDR</h3>
+					<p>Classless Inter-Domain Routing.</p>
+					<p>Escrever a máscara <code>255.255.255.0</code> dá trabalho. Na notação CIDR, dizemos apenas <strong>/24</strong>.</p>
+					<p>O que significa o 24? Significa que os primeiros 24 bits (3 octetos inteiros) estão cimentados. Você não pode mexer. Sobraram 8 bits no final para você ligar computadores.</p>
+					<aside class="notes">
+						DICA FGV (A MATEMÁTICA RÁPIDA):<br>
+						Se a máscara é /24, os bits de host são 32 - 24 = 8.<br>
+						Elevamos 2 na potência 8 (2^8) = 256 IPs no total.<br>
+						Se a questão pedir "Quantos IPs podem ser colocados nos PCs da rede /24", não é 256! É (2^8) - 2 = 254 PCs válidos!
+					</aside>
+				</section>
+
+				<section>
+					<h3>Os 2 IPs Proibidos</h3>
+					<p>Por que a fórmula de computadores é sempre <strong>(2^n) - 2</strong> ?</p>
+					<ul>
+						<li>O <strong>Primeiro IP</strong> de um bloco é reservado para ser o "ID da Rede" (o nome geral dela). Nenhuma placa de rede pode usá-lo.</li>
+						<li>O <strong>Último IP</strong> de um bloco é o "Endereço de Broadcast" (O megafone, a mensagem enviada para todos ao mesmo tempo).</li>
+					</ul>
+					<aside class="notes">
+						MACETE VISUAL PARA A TURMA:<br>
+						Seja a rede de 0 a 255.<br>
+						.0 é a placa da rua.<br>
+						.1 até .254 são as casas (onde pessoas moram de verdade).<br>
+						.255 é o carro de som gritando na rua.
+					</aside>
+				</section>
+
+				<section>
+					<h3>Sub-redes: Cortando a Pizza</h3>
+					<p>Um IP de classe C (/24) te dá 256 IPs em um bolão só.</p>
+					<p>E se uma empresa tem 4 departamentos e quiser separar a rede do RH da rede da Diretoria por segurança?</p>
+					<p>Nós aumentamos a máscara! Passamos ela para <strong>/26</strong>.</p>
+					<p>Ao invés de 1 pizza gigante de 256 IPs, teremos 4 pizzas (redes isoladas) com 64 IPs cada!</p>
+					<aside class="notes">
+						O TRUQUE DOS PULOS (TAMANHO DO BLOCO):<br>
+						Como calcular mentalmente redes /26?<br>
+						Se /26 sobraram 6 bits (32 - 26). 2^6 = 64.<br>
+						A rede pula de 64 em 64! <br>
+						Rede 1: Vai de 0 a 63 (0 é Rede, 63 é Broadcast)<br>
+						Rede 2: Vai de 64 a 127 (64 é Rede, 127 Broadcast)<br>
+						Isso salva a vida na prova! Eles não precisam converter pra binário.
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>

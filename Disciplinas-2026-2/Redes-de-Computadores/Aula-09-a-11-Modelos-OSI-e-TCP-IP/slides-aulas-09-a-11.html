@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aulas 09–11: Modelos OSI e TCP/IP | Redes de Computadores | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    :root {
+      --laranja: #f4a261;
+      --amarelo: #e9c46a;
+      --azul-claro: #90e0ef;
+      --verde: #2ec4b6;
+      --vermelho: #e63946;
+      --roxo: #b388eb;
+    }
+    .reveal { font-size: 2.2rem; }
+    .reveal h1 { font-size: 3.2rem; color: var(--laranja); line-height: 1.2; margin-bottom: 0.6em; }
+    .reveal h2 { font-size: 2.4rem; color: var(--amarelo); margin-bottom: 0.6em; }
+    .reveal h3 { font-size: 1.9rem; color: var(--azul-claro); }
+    .reveal p, .reveal li { color: #ddd; line-height: 1.5; margin-bottom: 0.4em; }
+    .reveal pre { font-size: 1.1rem; padding: 1em; box-shadow: none; }
+    .reveal table { font-size: 1.45rem; width: 100%; }
+    .reveal th { background: #2a2a3e; color: var(--amarelo); padding: 0.45em; }
+    .reveal td { border-color: #444; padding: 0.4em; }
+    .reveal strong { color: var(--laranja); }
+    .reveal em { color: var(--azul-claro); }
+    .tag-disciplina { font-size: 1.4rem; color: var(--azul-claro); opacity: 0.85; letter-spacing: 0.08em; }
+    .tag-aula { font-size: 1.4rem; color: var(--verde); opacity: 0.9; }
+    .destaque { color: var(--laranja); font-weight: bold; }
+    section.capa { text-align: center; }
+    .callout {
+      background: rgba(244,162,97,0.12); border-left: 4px solid var(--laranja);
+      padding: 0.7em 1.1em; border-radius: 6px; font-size: 1.55rem; margin-top: 0.7em; text-align: left;
+    }
+    .callout.info { background: rgba(144,224,239,0.1); border-left-color: var(--azul-claro); }
+    .callout.aviso { background: rgba(230,57,70,0.1); border-left-color: var(--vermelho); }
+    .callout.dica { background: rgba(46,196,182,0.1); border-left-color: var(--verde); }
+    .two-col { display: flex; gap: 1.5em; align-items: flex-start; }
+    .two-col > div { flex: 1; }
+    /* Pilha de camadas */
+    .pilha { display: flex; flex-direction: column; gap: 6px; max-width: 760px; margin: 0 auto; }
+    .camada { padding: 0.25em 0.8em; border-radius: 6px; font-size: 1.45rem; color: #111; font-weight: bold;
+              display: flex; justify-content: space-between; }
+    .c7 { background: #ffadad; } .c6 { background: #ffd6a5; } .c5 { background: #fdffb6; }
+    .c4 { background: #caffbf; } .c3 { background: #9bf6ff; } .c2 { background: #a0c4ff; } .c1 { background: #bdb2ff; }
+    /* Envelopes aninhados */
+    .env { border: 3px solid; border-radius: 8px; padding: 0.35em 0.6em; margin: 0.25em; font-size: 1.3rem; text-align: left; }
+    .env .rot { font-weight: bold; }
+    .e2 { border-color: #a0c4ff; } .e3 { border-color: #9bf6ff; } .e4 { border-color: #caffbf; } .e7 { border-color: #ffadad; background: rgba(255,173,173,0.1); }
+    .badge { display: inline-block; background: var(--laranja); color: #111; border-radius: 6px; padding: 0.05em 0.45em; font-weight: bold; }
+    .badge.azul { background: var(--azul-claro); } .badge.verde { background: var(--verde); } .badge.roxo { background: var(--roxo); }
+    .small { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ===== CAPA ===== -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP-AFS &nbsp;·&nbsp; Redes de Computadores &nbsp;·&nbsp; 2º Ano Informática</p>
+      <h1>📦 Modelos OSI e TCP/IP</h1>
+      <h3>Camadas e Encapsulamento</h3>
+      <p class="tag-aula">Aulas 09 · 10 · 11</p>
+      <p style="margin-top:1.2em; color:#aaa;">Prof. Olegário Neto &nbsp;·&nbsp; Outubro / 2026</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Recuperação Ativa Inicial:</strong> Antes de qualquer slide, pergunte: "Na última aula desenhamos a rede da escola em árvore. Qual equipamento fica no centro de cada estrela? E qual liga a escola à internet?". Respostas esperadas: Switch e Roteador. Escreva as duas palavras no canto do quadro — elas voltam quando a turma descobrir em qual camada cada um trabalha.</p>
+        <p><strong>Objetivo da sequência:</strong> Esta sequência corresponde à Aula 15 do cronograma oficial. O foco não é decorar as 7 camadas, e sim entender a ideia de encapsulamento: cada camada coloca um "envelope" com informações próprias por fora dos dados. As aulas seguintes (16 a 22) vão abrir cada camada em detalhe.</p>
+      </aside>
+    </section>
+
+    <!-- ===== AGENDA ===== -->
+    <section>
+      <h2>📋 Agenda</h2>
+      <ul>
+        <li>🤔 <strong>O problema:</strong> como fabricantes diferentes se entendem?</li>
+        <li>✉️ <strong>Atividade:</strong> Correio em Camadas</li>
+        <li>🗂️ <strong>Modelo OSI</strong> — 7 camadas e PDUs</li>
+        <li>🌐 <strong>Modelo TCP/IP</strong> — 4 camadas</li>
+        <li>🖥️ <strong>Laboratório:</strong> encapsulamento no Packet Tracer</li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Os três primeiros itens acontecem na sala (Bloco 1, 1 tempo). O laboratório é o Bloco 2 (2 tempos). Avise a turma que 12/10 é feriado e confirme a data do laboratório. Deixe claro que vão sair da sequência sabendo responder "em qual camada trabalha o switch e o roteador" — pergunta presente em praticamente toda prova de redes.</p>
+      </aside>
+    </section>
+
+    <!-- ===== GANCHO ===== -->
+    <section>
+      <h2>🤔 Você aperta Enter...</h2>
+      <p style="text-align:center; font-size:2.6rem;">▶️ <code>www.youtube.com</code></p>
+      <div class="callout">📱 Celular <strong>Samsung</strong> → 📶 Roteador <strong>TP-Link</strong> → 🌊 Cabo submarino de <strong>outra empresa</strong> → 🗄️ Servidor do <strong>Google</strong></div>
+      <div class="callout info">Em menos de <strong>1 segundo</strong> o vídeo começa. <br>Como equipamentos de fabricantes diferentes se entendem?</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> A resposta é padronização em camadas. Cada fabricante implementa uma parte do processo seguindo regras públicas (protocolos). O celular não precisa "saber" como funciona o cabo submarino; só precisa entregar os dados para a camada de baixo no formato combinado. É como o sistema dos Correios: quem escreve a carta não precisa saber qual caminhão ou avião vai levá-la.</p>
+        <p><strong>Dinâmica de Sala:</strong> 2 minutos de discussão em duplas. Anote as hipóteses no quadro sem corrigir — elas serão revisitadas depois da explicação do OSI.</p>
+      </aside>
+    </section>
+
+    <!-- ===== TRANSIÇÃO ATIVIDADE ===== -->
+    <section>
+      <h2 style="color: var(--verde);">✉️ Atividade: Correio em Camadas</h2>
+      <table>
+        <thead><tr><th>Aluno</th><th>Camada</th><th>Escreve no envelope</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Aplicação</td><td>Bilhete: <em>"GET /video"</em></td></tr>
+          <tr><td>2</td><td>Transporte</td><td><em>"Porta 443 — parte 1 de 1"</em></td></tr>
+          <tr><td>3</td><td>Rede</td><td><em>"De: IP Lab 1 → Para: IP Servidor"</em></td></tr>
+          <tr><td>4</td><td>Enlace</td><td><em>"De: MAC do PC → Para: MAC do Roteador"</em></td></tr>
+          <tr><td>5</td><td>Física</td><td>Leva até o grupo vizinho 🏃</td></tr>
+        </tbody>
+      </table>
+      <div class="callout dica">O grupo que recebe <strong>abre na ordem contrária</strong>. Cada um só lê o <strong>seu</strong> envelope.</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Execução (15 min):</strong> Grupos de 5. Entregue 3 envelopes de tamanhos crescentes e 1 bilhete por grupo (ou folhas A4 dobradas). O aluno 1 escreve o bilhete e entrega ao aluno 2, que o coloca no envelope menor e escreve o "cabeçalho" de transporte; o aluno 3 coloca esse envelope em outro maior e escreve o cabeçalho de rede; o aluno 4 faz o mesmo com o de enlace; o aluno 5 caminha até o grupo vizinho. No grupo receptor, o aluno "Física" recebe, o "Enlace" confere se o MAC é dele e abre, o "Rede" confere o IP, e assim por diante até o "Aplicação" ler o bilhete.</p>
+        <p><strong>Ponto de atenção:</strong> não use ainda os termos "encapsulamento" ou "PDU". Deixe a experiência acontecer primeiro e nomeie depois.</p>
+      </aside>
+    </section>
+
+    <!-- ===== PERGUNTAS DA ATIVIDADE ===== -->
+    <section>
+      <h2>🔍 O que aconteceu?</h2>
+      <div class="callout">❓ O aluno <strong>Enlace</strong> do receptor precisou ler o bilhete?</div>
+      <div class="callout aviso">❓ E se o aluno <strong>Rede</strong> escrever o IP errado?</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Resposta 1:</strong> Não. O Enlace só precisa conferir o endereço físico (MAC) para saber se o envelope é para aquela máquina. O conteúdo de dentro não é problema dele. Isso já antecipa por que o switch é rápido: ele só olha o envelope de enlace.</p>
+        <p><strong>Resposta 2:</strong> O bilhete chega ao lugar errado ou não chega. As camadas de cima podem estar perfeitas, mas um erro em uma camada compromete a entrega. Essa é a base do diagnóstico por camadas, que será usado no fim da sequência.</p>
+        <p><strong>Dinâmica de Sala:</strong> 1 frase por grupo, falada em voz alta.</p>
+      </aside>
+    </section>
+
+    <!-- ===== ENCAPSULAMENTO VISUAL ===== -->
+    <section>
+      <h2>📦 Isso se chama <span class="destaque">Encapsulamento</span></h2>
+      <div class="env e2"><span class="rot" style="color:#a0c4ff;">Enlace:</span> MAC origem → MAC destino
+        <div class="env e3"><span class="rot" style="color:#9bf6ff;">Rede:</span> IP origem → IP destino
+          <div class="env e4"><span class="rot" style="color:#caffbf;">Transporte:</span> porta 443
+            <div class="env e7"><span class="rot" style="color:#ffadad;">Aplicação:</span> "GET /video"</div>
+          </div>
+        </div>
+      </div>
+      <p class="small" style="text-align:center;">⬇️ Enviar = <strong>encapsular</strong> &nbsp;&nbsp;|&nbsp;&nbsp; ⬆️ Receber = <strong>desencapsular</strong></p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Encapsulamento é o processo em que cada camada, ao enviar, adiciona um cabeçalho (header) com informações de controle próprias e passa o conjunto para a camada de baixo. No destino ocorre o processo inverso: cada camada lê e remove o seu cabeçalho e entrega o restante para a camada de cima (desencapsulamento). A camada de enlace também adiciona um trailer no final (FCS, verificação de erros), mas esse detalhe fica para a aula de Enlace.</p>
+        <p><strong>Analogia:</strong> é exatamente a atividade que acabaram de fazer — envelopes dentro de envelopes.</p>
+      </aside>
+    </section>
+
+    <!-- ===== POR QUE CAMADAS ===== -->
+    <section>
+      <h2>🧱 Por que dividir em camadas?</h2>
+      <ul>
+        <li>📏 <strong>Padronização:</strong> fabricantes diferentes seguem a mesma regra</li>
+        <li>🔌 <strong>Independência:</strong> trocar Wi-Fi por cabo não muda o navegador</li>
+        <li>🔧 <strong>Diagnóstico:</strong> investigar camada por camada</li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Padronização/Interoperabilidade:</strong> Se cada empresa criasse sua forma de comunicação, um celular Samsung só falaria com roteador Samsung. Com camadas e protocolos públicos, basta cada fabricante implementar corretamente a camada que lhe cabe.</p>
+        <p><strong>Independência (modularidade):</strong> Quando você sai do Wi-Fi e entra no 4G, só as camadas de baixo mudam. O YouTube continua funcionando porque a camada de aplicação não depende do meio físico.</p>
+        <p><strong>Diagnóstico:</strong> Técnicos de suporte seguem uma ordem: cabo/sinal (física), luz do switch (enlace), IP/gateway (rede), porta/firewall (transporte), serviço (aplicação). Isso economiza tempo e é cobrado em entrevistas de emprego de suporte.</p>
+      </aside>
+    </section>
+
+    <!-- ===== TRANSIÇÃO OSI ===== -->
+    <section>
+      <h2 style="color: var(--azul-claro);">🗂️ Modelo OSI</h2>
+      <p style="text-align:center;">ISO · 1984 · <strong>7 camadas</strong></p>
+      <p style="text-align:center; color:#aaa;">Modelo de <em>referência</em> — usado para estudar e diagnosticar</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>OSI significa Open Systems Interconnection (Interconexão de Sistemas Abertos). Foi publicado pela ISO (International Organization for Standardization) em 1984 como modelo de referência. Na prática, a internet adotou o TCP/IP, mas o OSI continua sendo a linguagem comum de técnicos: quando alguém fala "switch de camada 2" ou "firewall de camada 7", está usando a numeração do OSI.</p>
+      </aside>
+    </section>
+
+    <!-- ===== PILHA OSI ===== -->
+    <section>
+      <h2>As 7 camadas</h2>
+      <div class="pilha">
+        <div class="camada c7"><span>7 · Aplicação</span><span>navegador, HTTP, DNS</span></div>
+        <div class="camada c6"><span>6 · Apresentação</span><span>formato, criptografia</span></div>
+        <div class="camada c5"><span>5 · Sessão</span><span>abre / encerra conversa</span></div>
+        <div class="camada c4"><span>4 · Transporte</span><span>portas, TCP / UDP</span></div>
+        <div class="camada c3"><span>3 · Rede</span><span>IP, rota</span></div>
+        <div class="camada c2"><span>2 · Enlace</span><span>MAC, rede local</span></div>
+        <div class="camada c1"><span>1 · Física</span><span>sinal: elétrico, luz, rádio</span></div>
+      </div>
+      <div class="callout dica small">🧠 De baixo para cima: <strong>F</strong>iz <strong>E</strong>sse <strong>R</strong>esumo <strong>T</strong>entando <strong>S</strong>alvar <strong>A</strong> <strong>A</strong>ula</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>7 Aplicação:</strong> interface entre a rede e o programa do usuário. Protocolos: HTTP/HTTPS, DNS, SMTP, FTP. <strong>6 Apresentação:</strong> garante que os dados estejam num formato que o destino entenda — codificação de caracteres (UTF-8), compressão (JPEG, MP4) e criptografia (TLS). <strong>5 Sessão:</strong> estabelece, mantém e encerra o diálogo entre aplicações; exemplo cotidiano: a sessão do SIGE que expira após um tempo parado. <strong>4 Transporte:</strong> entrega fim a fim entre processos, usando portas (80, 443); TCP garante entrega e ordem, UDP prioriza velocidade. <strong>3 Rede:</strong> endereçamento lógico (IP) e roteamento entre redes diferentes. <strong>2 Enlace:</strong> entrega dentro da mesma rede local usando endereço MAC; detecta erros de transmissão. <strong>1 Física:</strong> transforma bits em sinais elétricos (UTP), luz (fibra) ou ondas de rádio (Wi-Fi), e define conectores e pinagem — o que eles praticaram na crimpagem.</p>
+        <p><strong>Dinâmica de Sala:</strong> leia o mnemônico com a turma em voz alta uma vez e peça que alguém repita sem olhar.</p>
+      </aside>
+    </section>
+
+    <!-- ===== PDUs ===== -->
+    <section>
+      <h2>📛 PDU: o nome do "pacote" em cada camada</h2>
+      <table>
+        <thead><tr><th>Camadas</th><th>PDU</th></tr></thead>
+        <tbody>
+          <tr><td>7 · 6 · 5 — Aplicação / Apresentação / Sessão</td><td><strong>Dados</strong></td></tr>
+          <tr><td>4 — Transporte</td><td><strong>Segmento</strong></td></tr>
+          <tr><td>3 — Rede</td><td><strong>Pacote</strong></td></tr>
+          <tr><td>2 — Enlace</td><td><strong>Quadro</strong> (frame)</td></tr>
+          <tr><td>1 — Física</td><td><strong>Bits</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="callout dica small">🧠 <strong>D</strong>ados <strong>S</strong>eguem <strong>P</strong>elo <strong>Q</strong>uadro em <strong>B</strong>its</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> PDU (Protocol Data Unit) é a unidade de dados de cada camada: a mesma informação recebe nomes diferentes conforme os envelopes que já tem por fora. Dados + cabeçalho TCP/UDP = segmento (em UDP também se usa "datagrama"). Segmento + cabeçalho IP = pacote. Pacote + cabeçalho e trailer Ethernet = quadro. O quadro é transmitido como sequência de bits no meio físico.</p>
+        <p><strong>Erro comum:</strong> chamar tudo de "pacote". Em provas, "quadro" e "pacote" são alternativas que derrubam quem não diferencia camada 2 de camada 3.</p>
+      </aside>
+    </section>
+
+    <!-- ===== EQUIPAMENTOS ===== -->
+    <section>
+      <h2>🔁 Voltando ao quadro...</h2>
+      <p>Qual envelope cada equipamento <strong>precisa abrir</strong>?</p>
+      <table>
+        <thead><tr><th>Equipamento</th><th>Abre até</th><th>Lê</th></tr></thead>
+        <tbody>
+          <tr class="fragment"><td>🔌 Hub</td><td><span class="badge roxo">1 · Física</span></td><td>só sinal</td></tr>
+          <tr class="fragment"><td>🔀 Switch</td><td><span class="badge azul">2 · Enlace</span></td><td>MAC</td></tr>
+          <tr class="fragment"><td>🌐 Roteador</td><td><span class="badge verde">3 · Rede</span></td><td>IP</td></tr>
+          <tr class="fragment"><td>💻 PC / 🗄️ Servidor</td><td><span class="badge">7 · Aplicação</span></td><td>tudo</td></tr>
+        </tbody>
+      </table>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Antes de revelar cada linha (fragmentos), pergunte à turma. Retome as palavras "Switch" e "Roteador" escritas no canto do quadro no início da aula.</p>
+        <p><strong>Teoria:</strong> O hub apenas regenera e repete o sinal elétrico para todas as portas — não entende endereços (camada 1). O switch lê o MAC de destino no quadro e encaminha só para a porta correta (camada 2). O roteador lê o IP de destino no pacote e decide a rota para outra rede (camada 3). Os hosts finais (PC e servidor) processam todas as camadas, pois são eles que geram e consomem os dados. Existem switches de camada 3 e firewalls de camada 7, mas isso fica para aulas futuras.</p>
+      </aside>
+    </section>
+
+    <!-- ===== TCP/IP ===== -->
+    <section>
+      <h2>🌐 Modelo TCP/IP — o que roda de verdade</h2>
+      <div class="two-col">
+        <div>
+          <div class="pilha">
+            <div class="camada c7"><span>7 Aplicação</span></div>
+            <div class="camada c6"><span>6 Apresentação</span></div>
+            <div class="camada c5"><span>5 Sessão</span></div>
+            <div class="camada c4"><span>4 Transporte</span></div>
+            <div class="camada c3"><span>3 Rede</span></div>
+            <div class="camada c2"><span>2 Enlace</span></div>
+            <div class="camada c1"><span>1 Física</span></div>
+          </div>
+          <p class="small" style="text-align:center;">OSI</p>
+        </div>
+        <div>
+          <div class="pilha">
+            <div class="camada c6" style="padding:1.15em 0.8em;"><span>Aplicação</span><span>HTTP, DNS</span></div>
+            <div class="camada c4"><span>Transporte</span><span>TCP, UDP</span></div>
+            <div class="camada c3"><span>Internet</span><span>IP, ICMP</span></div>
+            <div class="camada c2" style="padding:0.6em 0.8em;"><span>Acesso à Rede</span><span>Ethernet, Wi-Fi</span></div>
+          </div>
+          <p class="small" style="text-align:center;">TCP/IP</p>
+        </div>
+      </div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> O TCP/IP nasceu da ARPANET (Departamento de Defesa dos EUA, anos 1970) e é a pilha implementada em todos os sistemas operacionais atuais. Tem 4 camadas: Aplicação (junta 7, 6 e 5 do OSI), Transporte (4), Internet (3) e Acesso à Rede (junta 2 e 1). Alguns livros, como o Kurose, usam uma versão de 5 camadas separando Enlace e Física — vale avisar os alunos para não estranharem se encontrarem essa variação.</p>
+        <p><strong>Resumo para a turma:</strong> OSI = mapa para estudar; TCP/IP = o que funciona na prática. Retome agora as hipóteses do gancho e mostre que a resposta era "camadas padronizadas".</p>
+      </aside>
+    </section>
+
+    <!-- ===== TICKET DE SAÍDA ===== -->
+    <section>
+      <h2>🎟️ Ticket de Saída</h2>
+      <div class="callout">1️⃣ Escreva as <strong>7 camadas do OSI</strong> na ordem (vale o mnemônico)</div>
+      <div class="callout info">2️⃣ Na atividade dos envelopes, qual envelope o <strong>Switch</strong> abriria? E o <strong>Roteador</strong>?</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p>Fim do Bloco 1. Recolha os tickets (ou peça foto). Respostas: Física, Enlace, Rede, Transporte, Sessão, Apresentação, Aplicação; o Switch abriria o envelope de Enlace (MAC) e o Roteador o de Rede (IP). Use os erros mais frequentes para abrir o Bloco 2.</p>
+      </aside>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- BLOCO 2 — LABORATÓRIO -->
+    <!-- ============================================================ -->
+
+    <section>
+      <h2 style="color: var(--verde);">🖥️ Bloco 2: Laboratório</h2>
+      <p style="text-align:center;">Vendo o encapsulamento no <strong>Cisco Packet Tracer</strong></p>
+      <div class="callout dica">🃏 Aquecimento: <strong>Monte a pilha</strong> — ordenem os cartões (camadas + PDUs + equipamentos) em 3 min</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Recuperação ativa (10 min):</strong> Cada dupla recebe cartões embaralhados: 7 camadas, 5 PDUs e 3 equipamentos (Hub, Switch, Roteador). Devem montar a pilha correta, colocando cada PDU e equipamento ao lado da camada. Corrija no quadro retomando os mnemônicos. Como houve feriado entre os blocos, esse aquecimento é o que reativa a memória da turma.</p>
+      </aside>
+    </section>
+
+    <section>
+      <h2>🧩 Topologia do laboratório</h2>
+      <pre><code class="language-plaintext">💻 [PC0] ── 🔀 [Switch 2960] ── 🌐 [Router 1941] ══ 🗄️ [Server0]
+  192.168.1.10              G0/0 .1  |  G0/1 10.0.0.1     10.0.0.10</code></pre>
+      <table class="small">
+        <thead><tr><th>Dispositivo</th><th>IP</th><th>Máscara</th><th>Gateway</th></tr></thead>
+        <tbody>
+          <tr><td>PC0</td><td>192.168.1.10</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+          <tr><td>Router G0/0</td><td>192.168.1.1</td><td>255.255.255.0</td><td>—</td></tr>
+          <tr><td>Router G0/1</td><td>10.0.0.1</td><td>255.255.255.0</td><td>—</td></tr>
+          <tr><td>Server0</td><td>10.0.0.10</td><td>255.255.255.0</td><td>10.0.0.1</td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="text-align:center; color:#aaa;">📌 Por enquanto é só copiar — endereçamento IP vem nas próximas unidades</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Cabos:</strong> PC0–Switch e Switch–Router com Copper Straight-Through; Router–Server0 com Copper Cross-Over (ligação direta entre dois equipamentos do mesmo grupo de pinagem — relacione com a crimpagem T568A/T568B). Lembre de ativar as interfaces do roteador (Config → GigabitEthernet → Port Status: On) e confirmar que o serviço HTTP do Server0 está ligado.</p>
+        <p><strong>Plano B:</strong> se a montagem estourar 15 minutos, distribua o arquivo .pkt pronto.</p>
+      </aside>
+    </section>
+
+    <section>
+      <h2>▶️ Modo Simulação — passo a passo</h2>
+      <ol>
+        <li>Clique em <strong>Simulation</strong> (canto inferior direito)</li>
+        <li><em>Edit Filters</em>: deixe só <strong>HTTP</strong> e <strong>ARP</strong></li>
+        <li>PC0 → Desktop → <strong>Web Browser</strong> → <code>10.0.0.10</code> → Go</li>
+        <li><strong>Capture / Forward</strong> ▶| e clique no envelope ✉️</li>
+        <li>Aba <strong>OSI Model</strong>: <em>In Layers</em> ⬆️ e <em>Out Layers</em> ⬇️</li>
+      </ol>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>"Eu faço" (20 min):</strong> Faça a demonstração completa no projetor antes de liberar as máquinas. Pare o envelope no switch e mostre que só as camadas 1 e 2 aparecem ativas em In Layers; pare no roteador e mostre as camadas 1 a 3; pare no Server0 e mostre até a camada 7 com o HTTP. In Layers representa o desencapsulamento (subindo) e Out Layers o encapsulamento (descendo).</p>
+        <p><strong>ARP:</strong> na primeira tentativa aparece um envelope ARP antes do HTTP — o PC precisa descobrir o MAC do gateway. Não aprofunde: é tema da Aula 33 oficial; apenas registre a curiosidade.</p>
+      </aside>
+    </section>
+
+    <section>
+      <h2>📝 Agora é com vocês</h2>
+      <table>
+        <thead><tr><th>Dispositivo</th><th>Abre até a camada</th><th>Lê qual endereço?</th><th>PDU</th></tr></thead>
+        <tbody>
+          <tr><td>🔀 Switch</td><td>?</td><td>?</td><td>?</td></tr>
+          <tr><td>🌐 Roteador</td><td>?</td><td>?</td><td>?</td></tr>
+          <tr><td>🗄️ Server0</td><td>?</td><td>?</td><td>?</td></tr>
+        </tbody>
+      </table>
+      <div class="callout dica small">🏆 <strong>Desafio:</strong> troque por <code>ping 10.0.0.10</code> (filtro ICMP). Que camadas somem no Server0?</div>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Prática (45 min):</strong> 20 min guiados (montagem com acompanhamento) + 25 min independentes (tabela no runbook). Gabarito: Switch — camada 2, MAC, quadro; Roteador — camada 3, IP, pacote; Server0 — camada 7, todos (MAC, IP, porta, dados HTTP), dados.</p>
+        <p><strong>Desafio:</strong> o ICMP (ping) é um protocolo da camada de rede/Internet; no Server0 o processamento vai até a camada 3 e as camadas 4 a 7 não aparecem, porque não há porta nem aplicação envolvida. Isso ajuda a perceber que nem todo tráfego usa todas as camadas.</p>
+      </aside>
+    </section>
+
+    <!-- ===== DIAGNÓSTICO ===== -->
+    <section>
+      <h2>🔧 Diagnóstico: em qual camada está o problema?</h2>
+      <table class="small">
+        <thead><tr><th>Sintoma</th><th>Camada</th></tr></thead>
+        <tbody>
+          <tr><td>🔌 Cabo de rede desconectado</td><td class="fragment">1 · Física</td></tr>
+          <tr><td>🔀 MAC duplicado na rede local</td><td class="fragment">2 · Enlace</td></tr>
+          <tr><td>🌐 Gateway errado no PC</td><td class="fragment">3 · Rede</td></tr>
+          <tr><td>🧱 Firewall bloqueia a porta 443</td><td class="fragment">4 · Transporte</td></tr>
+          <tr><td>🔐 Certificado HTTPS expirado</td><td class="fragment">6 · Apresentação</td></tr>
+          <tr><td>🗄️ Servidor web desligado</td><td class="fragment">7 · Aplicação</td></tr>
+        </tbody>
+      </table>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala (15 min):</strong> 1 minuto de reflexão por item, resposta oral e só então revele o fragmento. Reforce a estratégia do técnico: investigar de baixo para cima.</p>
+        <p><strong>Observação:</strong> o certificado HTTPS (TLS) é classicamente associado à camada de Apresentação no OSI por envolver criptografia; alguns autores o colocam entre transporte e aplicação. Para o nível técnico, aceite Apresentação ou Aplicação desde que o aluno justifique pela criptografia.</p>
+      </aside>
+    </section>
+
+    <!-- ===== ENCERRAMENTO ===== -->
+    <section>
+      <h2>✅ Resumo</h2>
+      <ul>
+        <li>📦 <strong>Encapsulamento:</strong> cada camada põe seu envelope por fora</li>
+        <li>🗂️ <strong>OSI:</strong> 7 camadas — <em>Fiz Esse Resumo Tentando Salvar A Aula</em></li>
+        <li>📛 <strong>PDUs:</strong> Dados → Segmento → Pacote → Quadro → Bits</li>
+        <li>🌐 <strong>TCP/IP:</strong> 4 camadas — o que roda na internet</li>
+        <li>🔀 Switch = camada 2 · 🌐 Roteador = camada 3</li>
+      </ul>
+      <p style="text-align:center;">Próxima aula: <span class="destaque">Camada de Aplicação</span> 🚀</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Fechamento metacognitivo:</strong> cada aluno escreve no caderno 3 coisas que aprendeu na sequência e 1 dúvida que ainda tem. Recolha as dúvidas para abrir a próxima aula. Antecipe: "A partir de agora vamos abrir cada envelope com calma, começando de cima: camada de Aplicação".</p>
+      </aside>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    margin: 0.12,
+    width: 1200,
+    height: 800,
+    plugins: [RevealHighlight, RevealNotes]
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Troubleshooting: ICMP, ARP e Ferramentas</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Troubleshooting na Prática</h2>
+					<h3>Diagnóstico de Redes e Protocolos Auxiliares</h3>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>ICMP: O Informante da Rede</h3>
+					<p>Internet Control Message Protocol</p>
+					<ul>
+						<li>Não envia dados úteis (não manda vídeos ou textos).</li>
+						<li>Envia apenas <strong>mensagens de erro e controle</strong>.</li>
+						<li>Opera na Camada de Rede (Junto com o IP).</li>
+						<li>O comando mais famoso que usa ICMP? O <code>Ping</code>.</li>
+					</ul>
+					<aside class="notes">
+						DESMISTIFICANDO O HACKER DOS FILMES:<br>
+						Quando aparece "código verde rolando na tela preta" nos filmes, muitas vezes é apenas a saída do comando ping ou tracert rodando em loop. Mostre a eles como é fácil ler aquele terminal.<br><br>
+						PING OF DEATH E FIREWALLS:<br>
+						Explique que às vezes o ping falha mesmo com o site online. Isso ocorre porque firewalls corporativos bloqueiam pacotes ICMP Request vindos de fora para evitar ataques de negação de serviço (DDoS) ou varreduras de reconhecimento da rede.
+					</aside>
+				</section>
+
+				<section>
+					<h3>TTL (Time To Live)</h3>
+					<p>Imagine se um pacote ficasse perdido, quicando em roteadores para sempre. A internet travaria.</p>
+					<p>O <strong>TTL</strong> é o número de "vidas" de um pacote. Cada vez que passa por um roteador, perde 1 vida. Se chegar a zero, o pacote morre.</p>
+					<br>
+					<p>A ferramenta <code>tracert / traceroute</code> usa esse "defeito" do pacote morrendo para mapear o caminho dos roteadores!</p>
+					<aside class="notes">
+						DICA FGV - O SEGREDO DO TRACERT:<br>
+						Bancas amam cobrar como o tracert funciona por trás dos panos. O tracert gera mensagens ICMP com o TTL propositalmente baixo, começando em 1. O primeiro roteador zera o TTL e devolve um erro "Time Exceeded". O tracert pega o IP desse roteador, anota na tela, e joga o próximo pacote com TTL = 2, descobrindo o segundo roteador, e assim por diante até o destino. É assim que ele mapeia a rota!
+					</aside>
+				</section>
+
+				<section>
+					<h3>ARP: Address Resolution Protocol</h3>
+					<p>Sabe traduzir de Lógico para Físico.</p>
+					<p><strong>A pergunta que o ARP faz na rede (em Broadcast):</strong></p>
+					<blockquote>"Gente, eu sei que o IP de destino é 192.168.1.10. Alguém sabe qual é a placa de rede (MAC Address) desse IP?"</blockquote>
+					<p>Sem o ARP, seu computador não consegue montar o envelope da camada de Enlace.</p>
+					<aside class="notes">
+						DICA DE CONCURSO (PONTE L2-L3):<br>
+						Se a questão perguntar qual protocolo vincula Endereçamento Lógico (IP) a Endereçamento Físico (MAC) na rede IPv4, a resposta é 100% das vezes: ARP. O ARP é a ponte oficial entre a Camada 3 e a Camada 2.
+					</aside>
+				</section>
+
+				<section>
+					<h3>A Caixa de Ferramentas do Técnico</h3>
+					<ul>
+						<li><code>ipconfig /all</code> (ou <code>ifconfig</code>): Mostra suas configurações locais.</li>
+						<li><code>ping</code>: Testa se você consegue falar com outro IP.</li>
+						<li><code>tracert</code>: Mostra onde o cabo "partiu" no meio da internet.</li>
+						<li><code>nslookup</code>: Testa se o seu Servidor DNS está traduzindo nomes corretamente.</li>
+						<li><code>arp -a</code>: Mostra quem está na sua rede local física.</li>
+					</ul>
+					<aside class="notes">
+						METODOLOGIA DE SUPORTE REAL (BOTTOM-UP):<br>
+						Ensine os alunos a testar problemas subindo as camadas:<br>
+						1. O cabo tá conectado? (Física)<br>
+						2. A placa tem IP e MAC? (Enlace/Rede)<br>
+						3. O ping pro Gateway responde? (Rede Interna)<br>
+						4. O DNS traduz o nome uol.com.br? (Aplicação)<br>
+						Isso faz eles pararem de chutar erros aleatórios e começarem a agir como analistas de fato.
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>

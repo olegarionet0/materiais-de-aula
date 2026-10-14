@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Folha de Campo - Avaliação AMC - 1º Informática</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  body {
+    color: #111;
+    font-size: 11px;
+    background: #fff;
+  }
+  .page {
+    page-break-after: always;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+  .header {
+    border-bottom: 2px solid #1e3a8a;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-left h1 {
+    font-size: 15px;
+    color: #1e3a8a;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .header-left p {
+    font-size: 10px;
+    color: #4b5563;
+    margin-top: 1px;
+  }
+  .header-right {
+    text-align: right;
+    font-size: 9.5px;
+    color: #374151;
+  }
+  .team-card {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 31%;
+  }
+  .team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+  .team-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .team-scenario {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #1e40af;
+    background: #eff6ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #bfdbfe;
+  }
+  .team-meta {
+    font-size: 10px;
+    color: #475569;
+  }
+  .team-body {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+  }
+  .col-members {
+    width: 44%;
+    border-right: 1px dashed #cbd5e1;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .col-members h4 {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+  .member-item {
+    font-size: 10px;
+    color: #1e293b;
+    margin-bottom: 3.5px;
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
+  }
+  .checkbox {
+    width: 10px;
+    height: 10px;
+    border: 1.2px solid #64748b;
+    border-radius: 2px;
+    margin-right: 5px;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .leader-badge {
+    font-size: 8px;
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 700;
+    padding: 1px 3px;
+    border-radius: 3px;
+    border: 0.5px solid #fde68a;
+    margin-left: 4px;
+  }
+  .col-notes {
+    width: 56%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .scores-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-bottom: 5px;
+  }
+  .score-box {
+    border: 1px solid #94a3b8;
+    border-radius: 4px;
+    text-align: center;
+    padding: 2px 1px;
+    background: #f8fafc;
+  }
+  .score-box.total {
+    background: #e0f2fe;
+    border-color: #0284c7;
+  }
+  .score-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: #475569;
+    display: block;
+  }
+  .score-box.total .score-label {
+    color: #0369a1;
+  }
+  .score-limit {
+    font-size: 7.5px;
+    color: #94a3b8;
+  }
+  .values-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: #334155;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+  }
+  .handwriting-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 2px;
+  }
+  .handwriting-title {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .rule-line {
+    border-bottom: 1px solid #cbd5e1;
+    height: 18px;
+    width: 100%;
+  }
+  .footer {
+    text-align: center;
+    font-size: 8.5px;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- PÁGINA 1: EQUIPES 01, 02 E 03 -->
+<div class="page">
+  <div>
+    <div class="header">
+      <div class="header-left">
+        <h1>EEEP Adolfo Ferreira de Sousa • Eixo de TI</h1>
+        <p>Arquitetura e Manutenção de Computadores • 1º Informática (2026.2) • Prof. Olegário Neto</p>
+      </div>
+      <div class="header-right">
+        <b>FOLHA DE CAMPO / AVALIAÇÃO ORAL</b><br>
+        Data: ____/____/2026 • Pág. 1 de 3
+      </div>
+    </div>
+
+    <!-- EQUIPE 01 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 01</span> &nbsp;
+          <span class="team-scenario">Cenário 5: PC Ostentação / Entusiasta</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>Livre</b> | Orçamento: <b>Sem Limite</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Ryan Berg Calacio</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Ana Beatriz Santiago</div>
+          <div class="member-item"><span class="checkbox"></span>Ester Vitoria de Souza</div>
+          <div class="member-item"><span class="checkbox"></span>Laís Lima Sousa</div>
+          <div class="member-item"><span class="checkbox"></span>Pedro Lucas Ferreira Maia</div>
+          <div class="member-item"><span class="checkbox"></span>Gustavo Ariel Santos (Ariel)</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 02 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 02</span> &nbsp;
+          <span class="team-scenario">Cenário 1: PC Office e Estudos (AMD)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>AMD</b> | Orçamento Máx: <b>R$ 2.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Armando Lima de Oliveira</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>José Alisson da Silva</div>
+          <div class="member-item"><span class="checkbox"></span>Pedro Felipe da Silva</div>
+          <div class="member-item"><span class="checkbox"></span>José Jonas Barbosa Filho</div>
+          <div class="member-item"><span class="checkbox"></span>Milton Bezerra Cavalcante</div>
+          <div class="member-item"><span class="checkbox"></span>Kalil da Silva Florencio</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 03 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 03</span> &nbsp;
+          <span class="team-scenario">Cenário 1: PC Office e Estudos (Intel)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>Intel</b> | Orçamento Máx: <b>R$ 2.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Maycon William da Silva</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Antonio Gabriel do Nascimento</div>
+          <div class="member-item"><span class="checkbox"></span>Naomi Gadelha Maia</div>
+          <div class="member-item"><span class="checkbox"></span>Cesar Peres Sousa Moura</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    C1: Compatibilidade (2,5) • C2: Aderência/Orçamento (2,0) • C3: Desafio Notebook (2,0) • C4: Artefatos Planilha/Slides (1,5) • C5: Apresentação Oral (2,0)
+  </div>
+</div>
+
+<!-- PÁGINA 2: EQUIPES 04, 05 E 06 -->
+<div class="page">
+  <div>
+    <div class="header">
+      <div class="header-left">
+        <h1>EEEP Adolfo Ferreira de Sousa • Eixo de TI</h1>
+        <p>Arquitetura e Manutenção de Computadores • 1º Informática (2026.2) • Prof. Olegário Neto</p>
+      </div>
+      <div class="header-right">
+        <b>FOLHA DE CAMPO / AVALIAÇÃO ORAL</b><br>
+        Data: ____/____/2026 • Pág. 2 de 3
+      </div>
+    </div>
+
+    <!-- EQUIPE 04 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 04</span> &nbsp;
+          <span class="team-scenario">Cenário 2: PC Gamer Custo-Benefício (AMD)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>AMD</b> | Orçamento Máx: <b>R$ 4.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Sara Alicia Tomaz</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Maxisteyner Pinheiro (Max)</div>
+          <div class="member-item"><span class="checkbox"></span>Daniel Vasconcelos Silva</div>
+          <div class="member-item"><span class="checkbox"></span>Gustavo Sousa Costa</div>
+          <div class="member-item"><span class="checkbox"></span>Clara Beatriz de Lima</div>
+          <div class="member-item"><span class="checkbox"></span>Amandda Hayra Silva Roque</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 05 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 05</span> &nbsp;
+          <span class="team-scenario">Cenário 4: Workstation / Vídeo e Design (Intel)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>Intel</b> | Orçamento Máx: <b>R$ 8.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Maiara Lima Santos</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Maria Beatriz Forte (Beatriz F.)</div>
+          <div class="member-item"><span class="checkbox"></span>Maria Fernanda Lemos</div>
+          <div class="member-item"><span class="checkbox"></span>Ana Kezia Silva Lopes</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 06 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 06</span> &nbsp;
+          <span class="team-scenario">Cenário 3: PC para Desenvolvedor (Intel)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>Intel</b> | Orçamento Máx: <b>R$ 6.000,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Daniel Silva Andrade</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Erick Levy Pinheiro</div>
+          <div class="member-item"><span class="checkbox"></span>Anthony Marcio Bezerra</div>
+          <div class="member-item"><span class="checkbox"></span>Pâmela Rafaelly Pereira</div>
+          <div class="member-item"><span class="checkbox"></span>Késsia Vitória da Silva</div>
+          <div class="member-item"><span class="checkbox"></span>Antonio Aldemir Medeiros (Neto)</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    C1: Compatibilidade (2,5) • C2: Aderência/Orçamento (2,0) • C3: Desafio Notebook (2,0) • C4: Artefatos Planilha/Slides (1,5) • C5: Apresentação Oral (2,0)
+  </div>
+</div>
+
+<!-- PÁGINA 3: EQUIPES 07, 08 E 09 -->
+<div class="page">
+  <div>
+    <div class="header">
+      <div class="header-left">
+        <h1>EEEP Adolfo Ferreira de Sousa • Eixo de TI</h1>
+        <p>Arquitetura e Manutenção de Computadores • 1º Informática (2026.2) • Prof. Olegário Neto</p>
+      </div>
+      <div class="header-right">
+        <b>FOLHA DE CAMPO / AVALIAÇÃO ORAL</b><br>
+        Data: ____/____/2026 • Pág. 3 de 3
+      </div>
+    </div>
+
+    <!-- EQUIPE 07 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 07</span> &nbsp;
+          <span class="team-scenario">Cenário 2: PC Gamer Custo-Benefício (Intel)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>Intel</b> | Orçamento Máx: <b>R$ 4.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>João Gabriel Almeida</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Samuel Rocha Butrago</div>
+          <div class="member-item"><span class="checkbox"></span>Otávio Naylton de Castro</div>
+          <div class="member-item"><span class="checkbox"></span>Isabelly Miranda Santos</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 08 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 08</span> &nbsp;
+          <span class="team-scenario">Cenário 3: PC para Desenvolvedor (AMD)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>AMD</b> | Orçamento Máx: <b>R$ 6.000,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Francisco Ronney Silva</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Francisco Lucas Eduardo</div>
+          <div class="member-item"><span class="checkbox"></span>Pedro Henrique de Souza</div>
+          <div class="member-item"><span class="checkbox"></span>Antonio Luciano Dantas</div>
+          <div class="member-item"><span class="checkbox"></span>Murilo Gabriel Cunha Silva</div>
+          <div class="member-item"><span class="checkbox"></span>Davi Lima da Silva</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EQUIPE 09 -->
+    <div class="team-card">
+      <div class="team-header">
+        <div>
+          <span class="team-title">EQUIPE 09</span> &nbsp;
+          <span class="team-scenario">Cenário 4: Workstation / Vídeo e Design (AMD)</span>
+        </div>
+        <div class="team-meta">Plataforma: <b>AMD</b> | Orçamento Máx: <b>R$ 8.500,00</b></div>
+      </div>
+      <div class="team-body">
+        <div class="col-members">
+          <h4>Integrantes (Chamada / Fala)</h4>
+          <div class="member-item"><span class="checkbox"></span><b>Pedro Daniel Brilhante</b> <span class="leader-badge">LÍDER</span></div>
+          <div class="member-item"><span class="checkbox"></span>Marcos Paulo Oliveira</div>
+          <div class="member-item"><span class="checkbox"></span>Francisco Guilherme Reis</div>
+          <div class="member-item"><span class="checkbox"></span>Caio Lucas Silva França</div>
+        </div>
+        <div class="col-notes">
+          <div class="scores-grid">
+            <div class="score-box"><span class="score-label">C1: Compat.</span><span class="score-limit">/ 2,5</span></div>
+            <div class="score-box"><span class="score-label">C2: Perfil</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C3: Note</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box"><span class="score-label">C4: Artefat.</span><span class="score-limit">/ 1,5</span></div>
+            <div class="score-box"><span class="score-label">C5: Pitch</span><span class="score-limit">/ 2,0</span></div>
+            <div class="score-box total"><span class="score-label">TOTAL</span><span class="score-limit">/ 10,0</span></div>
+          </div>
+          <div class="values-row">
+            <span>Desktop: R$ _________________</span>
+            <span>Notebook: R$ _________________</span>
+          </div>
+          <div class="handwriting-area">
+            <span class="handwriting-title">Anotações e Observações do Professor (Caneta S-Pen):</span>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    C1: Compatibilidade (2,5) • C2: Aderência/Orçamento (2,0) • C3: Desafio Notebook (2,0) • C4: Artefatos Planilha/Slides (1,5) • C5: Apresentação Oral (2,0)
+  </div>
+</div>
+
+</body>
+</html>

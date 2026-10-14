@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Serviços Essenciais: DNS e DHCP</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Os Bastidores da Web</h2>
+					<h3>DHCP, DNS e HTTP</h3>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>DHCP: Dynamic Host Configuration Protocol</h3>
+					<p>Ninguém escreve IPs na mão em um celular ou notebook quando chega num café. A rede faz isso sozinha.</p>
+					<p>O DHCP é o gerente que <strong>aluga IPs</strong> temporários (Leases) para quem conectar.</p>
+					<aside class="notes">
+						O PROCESSO DORA (Cobrado em provas difíceis da FGV):<br>
+						Quando o PC conecta na rede, ele faz 4 gritos:<br>
+						1. Discover: "Tem alguém do DHCP aí?" (Em broadcast)<br>
+						2. Offer: "Eu tô! Tenho esse IP 192.168.1.10 aqui, quer?"<br>
+						3. Request: "Quero sim, pode registrar no meu nome!"<br>
+						4. Acknowledge (ACK): "Registrado! Tá aqui seu pacote completo com IP, Máscara, Gateway e DNS."
+					</aside>
+				</section>
+
+				<section>
+					<h3>DNS: Domain Name System</h3>
+					<p>Os roteadores não falam português. Eles só leem IPs numéricos (142.250.218.14).</p>
+					<p>Nós não gravamos IPs, gravamos nomes amigáveis (<code>www.google.com.br</code>).</p>
+					<p>O DNS é a <strong>Lista Telefônica Gigante</strong> da internet. Ele traduz nomes humanos para IPs de máquinas.</p>
+					<aside class="notes">
+						DICA DE ORADOR:<br>
+						Sabe quando a internet parece que caiu, o WhatsApp no celular continua funcionando, mas o navegador no PC não abre site nenhum? É 99% de chance de ser falha no servidor DNS da operadora. O WhatsApp usa o IP hardcoded e continua enviando mensagens, mas o navegador não consegue traduzir os nomes dos sites. Como técnico, quando isso acontecer, mude o DNS do cliente para 8.8.8.8 (Google) e seja o herói.
+					</aside>
+				</section>
+
+				<section>
+					<h3>A Dança Completa (Laboratório de Hoje)</h3>
+					<ol>
+						<li>Ligar o PC na rede (DHCP dá o IP, Máscara e o endereço do DNS).</li>
+						<li>Você digita no navegador: <code>www.escola.com.br</code>.</li>
+						<li>O PC grita pro DNS: "Qual o IP dessa escola?"</li>
+						<li>O DNS responde: "É 192.168.10.3".</li>
+						<li>Seu PC pede a página Web (HTTP) direto pro IP .3 e monta o site na sua tela!</li>
+					</ol>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>

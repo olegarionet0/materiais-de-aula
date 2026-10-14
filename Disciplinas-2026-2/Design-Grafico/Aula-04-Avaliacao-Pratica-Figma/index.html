@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação Prática — Design Gráfico | EEEP AFS</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0b0f19;
+    color: #f8fafc;
+    margin: 0;
+    padding: 30px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .card-container {
+    max-width: 680px;
+    width: 100%;
+    background-color: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .header-area {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .school-tag {
+    display: inline-block;
+    background-color: #1e293b;
+    color: #38bdf8;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    border: 1px solid #334155;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 8px 0;
+    color: #ffffff;
+  }
+  p.subtitle {
+    color: #94a3b8;
+    font-size: 13.5px;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin: 24px 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #1f2937;
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14.5px;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+  .action-btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn-specs {
+    background-color: #dc2626;
+    color: #ffffff;
+  }
+  .btn-specs:hover { background-color: #b91c1c; }
+  .btn-pdf {
+    background-color: #2563eb;
+    color: #ffffff;
+  }
+  .btn-pdf:hover { background-color: #1d4ed8; }
+  .btn-info {
+    font-size: 12px;
+    font-weight: normal;
+    opacity: 0.85;
+    margin-top: 3px;
+  }
+
+  /* Form de Upload */
+  .upload-box {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 24px 22px;
+    margin-top: 6px;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-bottom: 6px;
+  }
+  .label-hint {
+    font-size: 11px;
+    font-weight: normal;
+    color: #94a3b8;
+    margin-left: 4px;
+  }
+  input[type="text"], input[type="url"], input[type="file"] {
+    width: 100%;
+    padding: 12px 14px;
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    color: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, input[type="url"]:focus {
+    border-color: #38bdf8;
+  }
+  input[type="file"] {
+    padding: 9px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  input[type="file"]::file-selector-button {
+    background-color: #334155;
+    color: #f8fafc;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 12px;
+  }
+  input[type="file"]::file-selector-button:hover {
+    background-color: #475569;
+  }
+  .btn-submit {
+    width: 100%;
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.15s;
+  }
+  .btn-submit:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+  }
+  .btn-submit:disabled {
+    background-color: #475569;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .status-message {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    display: none;
+  }
+  .status-success {
+    background-color: #064e3b;
+    border: 1px solid #059669;
+    color: #a7f3d0;
+    display: block;
+  }
+  .status-error {
+    background-color: #450a0a;
+    border: 1px solid #dc2626;
+    color: #fecaca;
+    display: block;
+  }
+  footer {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 12px;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+
+<div class="card-container">
+  <div class="header-area">
+    <div class="school-tag">EEEP ADOLFO FERREIRA DE SOUSA</div>
+    <h1>🎨 Avaliação Prática: App StreamVibe</h1>
+    <p class="subtitle">Design de Interfaces Mobile (Figma) — Curso Técnico em Informática</p>
+  </div>
+
+  <div class="section-title">1. Materiais de Consulta e Especificações</div>
+  <div class="btn-group">
+    <a href="wireframes-specs.html" class="action-btn btn-specs" target="_blank">
+      <div>
+        <div>📐 Guia de Wireframes e Specs (Redline)</div>
+        <div class="btn-info">Medidas exatas, padding (24px), botões e banner</div>
+      </div>
+      <span>Abrir ➔</span>
+    </a>
+
+    <a href="%5Bav.%20Pratica%5Drunbook-aluno-04.pdf" class="action-btn btn-pdf" target="_blank">
+      <div>
+        <div>📄 Briefing Completo e Instruções (PDF)</div>
+        <div class="btn-info">Cores, fontes, critérios de avaliação e dicas</div>
+      </div>
+      <span>Baixar PDF ➔</span>
+    </a>
+  </div>
+
+  <div class="section-title">2. Enviar Minha Avaliação</div>
+  <div class="upload-box">
+    <form id="formEntrega">
+      <div class="form-group">
+        <label for="nomeAluno">Nome Completo <span class="label-hint">(se for dupla, digite o nome dos dois)</span></label>
+        <input type="text" id="nomeAluno" name="nome_aluno" placeholder="Ex: Francisco João e Maria Eduarda" required>
+      </div>
+
+      <div class="form-group">
+        <label for="linkFigma">Link do Projeto no Figma <span class="label-hint">(Permissão: Anyone with link can view)</span></label>
+        <input type="url" id="linkFigma" name="link_figma" placeholder="https://www.figma.com/design/..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="arquivoPdf">Arquivo PDF Exportado <span class="label-hint">(File > Export frames to PDF...)</span></label>
+        <input type="file" id="arquivoPdf" name="arquivo_pdf" accept=".pdf" required>
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn-submit">
+        <span>🚀 Enviar Avaliação para o Professor</span>
+      </button>
+
+      <div id="statusMessage" class="status-message"></div>
+    </form>
+  </div>
+
+  <footer>
+    Professor Olegário Neto &nbsp;|&nbsp; Laboratório de Informática EEEP-AFS
+  </footer>
+</div>
+
+<script>
+  const form = document.getElementById('formEntrega');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const statusMsg = document.getElementById('statusMessage');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById('nomeAluno').value.trim();
+    const link = document.getElementById('linkFigma').value.trim();
+    const fileInput = document.getElementById('arquivoPdf');
+
+    if (!nome) {
+      showStatus('Por favor, informe seu nome completo.', 'error');
+      return;
+    }
+    if (!link) {
+      showStatus('Por favor, cole o link do seu projeto no Figma.', 'error');
+      return;
+    }
+    if (!fileInput.files || fileInput.files.length === 0) {
+      showStatus('Por favor, selecione o arquivo PDF para envio.', 'error');
+      return;
+    }
+
+    const formData = new FormData(form);
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span>⏳ Enviando arquivo... Aguarde</span>';
+    statusMsg.className = 'status-message';
+    statusMsg.style.display = 'none';
+
+    try {
+      const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.status === 'ok') {
+        showStatus('✅ ' + data.mensagem + '<br><small style="opacity:0.9">Arquivo gravado: ' + data.arquivo + ' (' + data.tamanho_kb + ' KB)</small>', 'success');
+        form.reset();
+      } else {
+        showStatus('❌ ' + (data.mensagem || 'Ocorreu um erro ao enviar.'), 'error');
+      }
+    } catch (err) {
+      showStatus('❌ Falha na conexão com o servidor local. Verifique se você ainda está conectado na rede do laboratório.', 'error');
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = '<span>🚀 Enviar Avaliação para o Professor</span>';
+    }
+  });
+
+  function showStatus(msg, type) {
+    statusMsg.innerHTML = msg;
+    statusMsg.className = 'status-message ' + (type === 'success' ? 'status-success' : 'status-error');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aulas 03 a 05: Equipamentos e Modos de Comunicação — Redes de Computadores | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    :root {
+      --cor-primaria: #f4a261;
+      --cor-secundaria: #e9c46a;
+      --cor-destaque: #2a9d8f;
+      --cor-alerta: #e76f51;
+      --cor-texto: #f8f9fa;
+      --cor-fundo-card: rgba(255, 255, 255, 0.05);
+    }
+    .reveal { font-size: 1.7rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .reveal h1 { font-size: 2.3rem; color: var(--cor-primaria); font-weight: 700; text-transform: none; }
+    .reveal h2 { font-size: 1.85rem; color: var(--cor-secundaria); font-weight: 600; text-transform: none; }
+    .reveal h3 { font-size: 1.4rem; color: #90e0ef; }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .destaque { color: var(--cor-primaria); font-weight: bold; }
+    .card { background: var(--cor-fundo-card); border-radius: 12px; padding: 1.2rem; margin: 0.8rem 0; border-left: 4px solid var(--cor-secundaria); }
+    .card-alerta { background: rgba(231, 111, 81, 0.1); border-left-color: var(--cor-alerta); }
+    .card-destaque { background: rgba(42, 157, 143, 0.15); border-left-color: var(--cor-destaque); }
+    table { width: 100%; font-size: 0.95rem; margin-top: 1rem !important; border-collapse: collapse; }
+    th { background: rgba(233, 196, 106, 0.2); color: var(--cor-secundaria); padding: 8px 12px; border-bottom: 2px solid var(--cor-secundaria); }
+    td { padding: 8px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    ul { font-size: 1.35rem; line-height: 1.5; }
+    li { margin-bottom: 0.4rem; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; }
+    .badge-camada { background: #457b9d; color: white; }
+    .badge-seg { background: #e76f51; color: white; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section style="text-align: center;">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa · Redenção-CE</p>
+      <h1>Equipamentos, Formas e Modos de Comunicação</h1>
+      <h3>Redes de Computadores · 2º Ano Técnico em Informática</h3>
+      <p style="margin-top: 1.5rem; font-size: 1.1rem; color: #a8dadc;">Prof. Olegário Neto · Aulas 03 a 05</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 O que vamos dominar hoje</h2>
+      <ul>
+        <li>🔌 <strong>Equipamentos de Interconexão:</strong> Hub, Switch, Roteador, AP, ONU/OLT.</li>
+        <li>🛡️ <strong>Arquitetura & Segurança:</strong> Sniffing, Colisão e Domínios de Broadcast.</li>
+        <li>📡 <strong>Formas de Comunicação:</strong> Unicast, Broadcast, Multicast e Anycast.</li>
+        <li>🔄 <strong>Modos de Transmissão:</strong> Simplex, Half-Duplex e Full-Duplex.</li>
+        <li>📝 <strong>Desafio Prático:</strong> Arquiteto de Redes no Papel.</li>
+      </ul>
+      <aside class="notes">
+        Apresente a agenda de forma dinâmica, destacando que entender esses ativos é a base para qualquer profissional de infraestrutura e cibersegurança.
+      </aside>
+    </section>
+
+    <!-- SLIDE 3: O GANCHO -->
+    <section>
+      <h2>🎯 O Grande Desafio</h2>
+      <div class="card card-destaque">
+        <p><em>Você envia um áudio de WhatsApp para um colega no Wi-Fi da sala de aula.</em></p>
+        <p style="font-size: 1.25rem; margin-top: 0.8rem;">
+          Como esse pacote sai da sua antena, atravessa cabos e switches, chega à fibra da escola e atinge <strong>apenas</strong> o destinatário, sem que o celular do coordenador na sala ao lado receba o áudio?
+        </p>
+      </div>
+      <aside class="notes">
+        Utilize o gancho para gerar curiosidade: a inteligência dos switches e roteadores evita o caos e garante a privacidade dos dados.
+      </aside>
+    </section>
+
+    <!-- SLIDE 4: HUB VS SWITCH -->
+    <section>
+      <h2>🔌 Hub vs. Switch: O Salto de Segurança</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>HUB (Concentrador)</th>
+            <th>SWITCH (Comutador)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Camada OSI</strong></td>
+            <td><span class="badge badge-camada">Camada 1 (Física)</span></td>
+            <td><span class="badge badge-camada">Camada 2 (Enlace)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Comportamento</strong></td>
+            <td>Repete o sinal em <strong>todas as portas</strong></td>
+            <td>Encaminha apenas para a porta de <strong>destino (MAC)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Segurança</strong></td>
+            <td>⚠️ <span class="destaque" style="color: #e76f51;">Vulnerável a Sniffing</span></td>
+            <td>🔒 Isolamento de tráfego</td>
+          </tr>
+          <tr>
+            <td><strong>Domínio de Colisão</strong></td>
+            <td>1 único para toda a rede</td>
+            <td>1 domínio por porta</td>
+          </tr>
+        </tbody>
+      </table>
+      <aside class="notes">
+        Explique que no Hub qualquer nó em modo promíscuo usando Wireshark lê tudo. O Switch revolucionou o desempenho e a segurança local com a Tabela CAM (MAC Table).
+      </aside>
+    </section>
+
+    <!-- SLIDE 5: BRIDGE & REPETIDOR -->
+    <section>
+      <h2>🌉 Bridge & Repetidor: Os Precursores</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: #e9c46a;">🔁 Repetidor (Camada 1)</h3>
+          <ul>
+            <li>Regenera e amplifica o sinal elétrico.</li>
+            <li>Usado para vencer o limite de distância do cabo.</li>
+            <li>Não filtra nada; repete colisões.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="color: #2a9d8f;">🌉 Bridge (Camada 2)</h3>
+          <ul>
+            <li>Conecta 2 segmentos e lê endereços MAC.</li>
+            <li><strong>Divide domínios de colisão</strong>.</li>
+            <li>O <em>Switch</em> é uma Bridge multiportas acelerada em hardware.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        Explique como a Bridge pavimentou o caminho para a criação dos Switches modernos.
+      </aside>
+    </section>
+
+    <!-- SLIDE 6: ROTEADOR & GATEWAY -->
+    <section>
+      <h2>🌐 Roteador & Gateway: Conectando Redes</h2>
+      <div class="card">
+        <h3>🧭 Roteador (Camada 3 - Rede)</h3>
+        <p>Interliga redes IP distintas, calcula as melhores rotas e <strong>isola domínios de broadcast</strong>.</p>
+      </div>
+      <div class="card card-destaque">
+        <h3>🚪 Gateway (Porta de Saída)</h3>
+        <p>Conceito de nó intermediador que permite a nós de uma sub-rede alcançar redes externas e a Internet (<em>Default Gateway</em>).</p>
+      </div>
+      <aside class="notes">
+        Destaque: Switch conecta máquinas na mesma LAN; Roteador conecta redes diferentes (LAN com WAN).
+      </aside>
+    </section>
+
+    <!-- SLIDE 7: WI-FI & AP CORPORATIVO -->
+    <section>
+      <h2>📶 Roteador Wi-Fi vs. Access Point (AP)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>🏠 Roteador Wi-Fi Residencial</h4>
+          <p style="font-size: 1.15rem;"><strong>Combo 4-em-1:</strong></p>
+          <ul style="font-size: 1.1rem;">
+            <li>Modem / ONT</li>
+            <li>Roteador NAT</li>
+            <li>Switch 4 portas</li>
+            <li>Ponto de acesso Wi-Fi</li>
+          </ul>
+        </div>
+        <div class="card card-destaque">
+          <h4>🏢 Access Point Corporativo (AP)</h4>
+          <p style="font-size: 1.15rem;"><strong>Equipamento Especializado:</strong></p>
+          <ul style="font-size: 1.1rem;">
+            <li>Converte Ethernet em ondas de rádio (802.11).</li>
+            <li>Instalado no teto de escolas e empresas.</li>
+            <li>Gerenciado centralmente por controladora.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        Explique que a infraestrutura escolar usa APs individuais interligados a switches PoE, e não roteadores caseiros.
+      </aside>
+    </section>
+
+    <!-- SLIDE 8: FIBRA ÓPTICA (ONU / OLT) -->
+    <section>
+      <h2>⚡ Redes Ópticas (FTTH): OLT vs. ONU</h2>
+      <div class="card card-destaque">
+        <h3 style="color: #f4a261;">🏢 OLT (Optical Line Terminal)</h3>
+        <p>Equipamento central de alta capacidade instalado no <strong>provedor de Internet (ISP)</strong> gerenciando a rede óptica (GPON/EPON).</p>
+      </div>
+      <div class="card">
+        <h3 style="color: #90e0ef;">🏠 ONU / ONT (Optical Network Unit / Terminal)</h3>
+        <p>O aparelho instalado na escola ou residência que <strong>converte os pulsos de luz</strong> da fibra em sinal elétrico Ethernet.</p>
+      </div>
+      <aside class="notes">
+        Conecte com a realidade de Redenção-CE: a maioria dos provedores locais entrega fibra com OLT na central e ONU no cliente.
+      </aside>
+    </section>
+
+    <!-- SLIDE 9: FORMAS DE COMUNICAÇÃO -->
+    <section>
+      <h2>📡 Formas de Comunicação (Aula 04)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <strong style="color: #2a9d8f;">🎯 Unicast (1 para 1)</strong>
+          <p style="font-size: 1.1rem;">Envio exclusivo a um nó (Web, SSH, download).</p>
+        </div>
+        <div class="card">
+          <strong style="color: #e76f51;">📢 Broadcast (1 para Todos)</strong>
+          <p style="font-size: 1.1rem;">Envio para toda a rede local (ARP, DHCP Discover).</p>
+        </div>
+        <div class="card">
+          <strong style="color: #e9c46a;">👥 Multicast (1 para Grupo)</strong>
+          <p style="font-size: 1.1rem;">Envio para membros inscritos (IPTV, OSPF).</p>
+        </div>
+        <div class="card">
+          <strong style="color: #90e0ef;">🌍 Anycast (1 para o Mais Próximo)</strong>
+          <p style="font-size: 1.1rem;">Roteamento para o servidor de menor latência (CDNs, DNS Cloudflare/Google).</p>
+        </div>
+      </div>
+      <aside class="notes">
+        Explique o Anycast destacando sua importância para mitigar ataques DDoS nas CDNs da Cloudflare.
+      </aside>
+    </section>
+
+    <!-- SLIDE 10: MODOS DE TRANSMISSÃO -->
+    <section>
+      <h2>🔄 Modos de Transmissão de Dados (Aula 05)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Modo</th>
+            <th>Direção</th>
+            <th>Simultâneo?</th>
+            <th>Exemplo Real</th>
+            <th>Exemplo em Redes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Simplex</strong></td>
+            <td>Unidirecional (A &rarr; B)</td>
+            <td>Apenas envio</td>
+            <td>📻 Rádio FM / TV</td>
+            <td>Teclado &rarr; CPU / Sensores</td>
+          </tr>
+          <tr>
+            <td><strong>Half-Duplex</strong></td>
+            <td>Bidirecional (A &harr; B)</td>
+            <td>❌ Alternado</td>
+            <td>🗣️ Walkie-Talkie</td>
+            <td>Rede com HUB / Wi-Fi</td>
+          </tr>
+          <tr>
+            <td><strong>Full-Duplex</strong></td>
+            <td>Bidirecional (A &harr; B)</td>
+            <td>✅ Simultâneo</td>
+            <td>📞 Chamada Telefônica</td>
+            <td>Switch Ethernet / Fibra</td>
+          </tr>
+        </tbody>
+      </table>
+      <aside class="notes">
+        Destaque que no Full-Duplex não ocorrem colisões porque há vias exclusivas de TX e RX.
+      </aside>
+    </section>
+
+    <!-- SLIDE 11: QUIZ ATIVO -->
+    <section>
+      <h2>🧠 Quiz de Fixação Ativa</h2>
+      <ol style="font-size: 1.25rem; line-height: 1.8;">
+        <li>Se você plugar um notebook com <em>Wireshark</em> em um <strong>Hub</strong>, você vê as senhas dos outros? E em um <strong>Switch</strong>?</li>
+        <li>O que faz o aparelho <strong>ONU</strong> quando a fibra da operadora chega na escola?</li>
+        <li>Uma requisição <strong>ARP</strong> para achar o Gateway é Unicast, Broadcast ou Multicast?</li>
+        <li>A comunicação de um <strong>Walkie-Talkie</strong> é Simplex, Half-Duplex ou Full-Duplex?</li>
+      </ol>
+      <aside class="notes">
+        Faça uma rodada interativa pedindo respostas rápidas dos alunos para consolidar o entendimento.
+      </aside>
+    </section>
+
+    <!-- SLIDE 12: DESAFIO PRÁTICO -->
+    <section>
+      <h2>📝 Desafio: O Diagrama do Laboratório</h2>
+      <div class="card card-destaque">
+        <p><strong>Em duplas, desenhem no papel uma topologia escolar contendo:</strong></p>
+        <ul style="font-size: 1.15rem;">
+          <li>A chegada da fibra óptica da operadora (<strong>OLT &rarr; ONU</strong>).</li>
+          <li>O <strong>Roteador/Firewall</strong> central da escola.</li>
+          <li>A distribuição cabeada para os <strong>Lab 1</strong> e <strong>Lab 2</strong> usando <strong>Switches</strong>.</li>
+          <li>A instalação de 1 <strong>Access Point (AP)</strong> em cada laboratório.</li>
+          <li>Marcar com setas no papel: onde é <strong>Full-Duplex</strong> e onde ocorre <strong>Broadcast</strong>.</li>
+        </ul>
+      </div>
+      <aside class="notes">
+        Circule pelas duplas orientando o posicionamento da ONU, do roteador e dos switches.
+      </aside>
+    </section>
+
+    <!-- SLIDE 13: FECHAMENTO -->
+    <section style="text-align: center;">
+      <h2>✅ Resumo da Aula</h2>
+      <p style="font-size: 1.3rem;">
+        <span class="destaque">Hub (C1)</span> &bull; <span class="destaque">Switch (C2 / MAC)</span> &bull; <span class="destaque">Roteador (C3 / IP)</span> &bull; <span class="destaque">ONU/OLT (Fibra)</span><br>
+        <span style="color: #90e0ef;">Unicast &bull; Broadcast &bull; Multicast &bull; Anycast</span><br>
+        <span style="color: #e9c46a;">Simplex &bull; Half-Duplex &bull; Full-Duplex</span>
+      </p>
+      <div class="card" style="margin-top: 1.5rem;">
+        <p>🔍 <strong>Missão para Casa:</strong> Identifique os equipamentos de rede na sua residência e traga os modelos anotados!</p>
+      </div>
+      <h3 style="color: var(--cor-primaria); margin-top: 1.5rem;">Dúvidas? Bons estudos! 🚀</h3>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    plugins: [RevealHighlight, RevealNotes]
+  });
+</script>
+</body>
+</html>

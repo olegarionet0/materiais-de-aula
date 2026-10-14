@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chave Estrangeira (FK) | Banco de Dados — EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; margin-bottom: 20px; }
+    .reveal p, .reveal li { font-size: 1.3rem; line-height: 1.6; }
+    .reveal blockquote { font-size: 1.15rem; background: #264653; border-left: 5px solid #2a9d8f; padding: 15px; text-align: left; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+    .reveal pre code { font-size: 1rem; }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #2a9d8f; font-weight: bold; }
+    .destaque-azul { color: #90e0ef; font-weight: bold; }
+    section.capa { text-align: center; }
+    .colunas { display: flex; justify-content: space-between; gap: 20px; text-align: left; }
+    .coluna { flex: 1; }
+    .agenda-list li { margin: 14px 0; }
+    table { font-size: 1.05rem; border-collapse: collapse; width: 100%; }
+    th { background: #264653; color: #e9c46a; padding: 8px 12px; }
+    td { padding: 7px 12px; border-bottom: 1px solid #444; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    .pk-badge { background: #f4a261; color: #000; border-radius: 4px; padding: 2px 7px; font-size: 0.88rem; font-weight: bold; }
+    .fk-badge { background: #2a9d8f; color: #fff; border-radius: 4px; padding: 2px 7px; font-size: 0.88rem; font-weight: bold; }
+    .card { border: 2px solid #2a9d8f; border-radius: 10px; padding: 14px 20px; margin: 10px 0; font-size: 1.15rem; }
+    .card-laranja { border-color: #f4a261; }
+    .seta { color: #f4a261; font-size: 1.5rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa</p>
+      <h1 style="margin: 30px 0;">Banco de Dados<br><span style="font-size: 1.4rem; color:#e9c46a;">Chave Estrangeira (FK)</span></h1>
+      <p style="font-size: 1.2rem; color: #90e0ef;">Os losangos do DER viram colunas</p>
+      <p>Prof. Olegário Neto</p>
+      <p style="font-size: 1rem; opacity: 0.6;">Semestre 2026.2 · 23/09/2026</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 Agenda de Hoje</h2>
+      <ul class="agenda-list">
+        <li><span class="destaque">Revisão:</span> PK e Tipos de Dados (retrieval rápido)</li>
+        <li><span class="destaque">Parte 1:</span> O que é FK e Integridade Referencial</li>
+        <li><span class="destaque">Parte 2:</span> Regras por cardinalidade (1:N, 1:1, N:N)</li>
+        <li><span class="destaque">Prática:</span> 3 cenários ao vivo + desafio em dupla</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 3: O GANCHO RESOLVIDO -->
+    <section style="background-color: #1a1a2e;">
+      <h2 style="color: #f4a261;">🤔 Lembra dessa pergunta?</h2>
+      <br>
+      <p style="font-size: 1.5rem;">O losango <strong>"empresta"</strong> do DER...</p>
+      <p style="font-size: 1.5rem;">...como ele aparece nas tabelas?</p>
+      <br>
+      <p style="font-size: 2rem; color: #2a9d8f; font-weight: bold;">→ Como uma <span class="fk-badge" style="font-size:1.3rem;">FOREIGN KEY</span></p>
+    </section>
+
+    <!-- SLIDE 4: O QUE É FK -->
+    <section>
+      <h2>🔗 O que é uma Chave Estrangeira?</h2>
+      <br>
+      <div class="card">
+        Uma <span class="destaque-azul"><strong>Foreign Key (FK)</strong></span> é uma coluna em uma tabela que <strong>guarda o valor da Chave Primária de outra tabela</strong>.
+      </div>
+      <br>
+      <div class="card card-laranja">
+        Ela é a implementação do <span class="destaque">losango (relacionamento)</span> do DER no banco relacional.
+      </div>
+      <blockquote style="margin-top: 20px;">
+        <strong>Metáfora:</strong> A ficha de empréstimo da biblioteca contém o RA do aluno e o código do livro. No banco, essa ficha é a tabela com duas FKs.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 5: INTEGRIDADE REFERENCIAL -->
+    <section>
+      <h2>🛡️ Integridade Referencial</h2>
+      <br>
+      <p>O SGBD garante que uma FK <span class="destaque">nunca pode apontar para um registro inexistente</span>.</p>
+      <br>
+      <div class="colunas">
+        <div class="coluna" style="text-align:center; border: 2px solid #e63946; border-radius: 8px; padding: 15px;">
+          <p style="color: #e63946; font-weight: bold;">❌ Rejeitado</p>
+          <p style="font-size: 1.1rem;">INSERT empréstimo com<br><code>id_aluno = 999</code><br>mas aluno 999 não existe</p>
+        </div>
+        <div class="coluna" style="text-align:center; border: 2px solid #2a9d8f; border-radius: 8px; padding: 15px;">
+          <p style="color: #2a9d8f; font-weight: bold;">✅ Aceito</p>
+          <p style="font-size: 1.1rem;">INSERT empréstimo com<br><code>id_aluno = 3</code><br>e aluno 3 existe na tabela</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: REGRAS POR CARDINALIDADE -->
+    <section>
+      <h2>📐 Regras por Cardinalidade</h2>
+      <br>
+      <table>
+        <tr><th>Cardinalidade</th><th>Regra</th><th>Onde vai a FK</th></tr>
+        <tr>
+          <td><span class="destaque">1:N</span> (um para muitos)</td>
+          <td>FK no lado <strong>N</strong></td>
+          <td>Na tabela do "muitos"</td>
+        </tr>
+        <tr>
+          <td><span class="destaque-verde">1:1</span> (um para um)</td>
+          <td>FK em qualquer lado + <code>UNIQUE</code></td>
+          <td>Em um dos dois lados</td>
+        </tr>
+        <tr>
+          <td><span class="destaque-azul">N:N</span> (muitos para muitos)</td>
+          <td>Criar <strong>tabela associativa</strong></td>
+          <td>Nova tabela intermediária</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 7: CENÁRIO 1:N -->
+    <section>
+      <h2>📌 Cenário 1 — Relacionamento <span class="destaque">1:N</span></h2>
+      <p style="font-size: 1.1rem; color: #90e0ef;"><em>"Um professor leciona muitas turmas. Uma turma tem um único professor."</em></p>
+      <br>
+      <p><strong>Regra:</strong> FK vai para a tabela do lado N → <code>turma</code> recebe <code>id_professor</code></p>
+      <br>
+      <table style="font-size: 1rem;">
+        <tr><th colspan="3" style="color: #90e0ef;">Tabela: turma</th></tr>
+        <tr><th>Coluna</th><th>Tipo</th><th>Restrição</th></tr>
+        <tr><td><span class="pk-badge">id_turma</span></td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>nome</td><td>VARCHAR(20)</td><td>NOT NULL</td></tr>
+        <tr><td>turno</td><td>VARCHAR(10)</td><td>—</td></tr>
+        <tr><td><span class="fk-badge">id_professor</span></td><td>INT</td><td>FK → professor(id_professor)</td></tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 8: CENÁRIO 1:1 -->
+    <section>
+      <h2>📌 Cenário 2 — Relacionamento <span class="destaque-verde">1:1</span></h2>
+      <p style="font-size: 1.1rem; color: #90e0ef;"><em>"Cada funcionário tem um crachá único. Cada crachá pertence a um funcionário."</em></p>
+      <br>
+      <p><strong>Regra:</strong> FK + <code>UNIQUE</code> (garante que nenhum funcionário se repete)</p>
+      <br>
+      <table style="font-size: 1rem;">
+        <tr><th colspan="3" style="color: #90e0ef;">Tabela: cracha</th></tr>
+        <tr><th>Coluna</th><th>Tipo</th><th>Restrição</th></tr>
+        <tr><td><span class="pk-badge">id_cracha</span></td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>numero_serie</td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td></tr>
+        <tr><td><span class="fk-badge">id_funcionario</span></td><td>INT</td><td>FK + <strong>UNIQUE</strong></td></tr>
+      </table>
+      <blockquote style="margin-top: 15px; font-size: 1.1rem;">
+        O <code>UNIQUE</code> na FK é o que transforma o 1:N em 1:1 — impede que um funcionário apareça em mais de um crachá.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 9: CENÁRIO N:N -->
+    <section>
+      <h2>📌 Cenário 3 — Relacionamento <span class="destaque-azul">N:N</span></h2>
+      <p style="font-size: 1.1rem; color: #90e0ef;"><em>"Um aluno pode pegar vários livros. Um livro pode ser emprestado por vários alunos."</em></p>
+      <p><strong>Regra:</strong> Criar tabela associativa <code>emprestimo</code> com duas FKs</p>
+      <br>
+      <table style="font-size: 1rem;">
+        <tr><th colspan="3" style="color: #90e0ef;">Tabela: emprestimo</th></tr>
+        <tr><th>Coluna</th><th>Tipo</th><th>Restrição</th></tr>
+        <tr><td><span class="pk-badge">id_emprestimo</span></td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td><span class="fk-badge">id_aluno</span></td><td>INT</td><td>FK → aluno(id_aluno)</td></tr>
+        <tr><td><span class="fk-badge">id_livro</span></td><td>INT</td><td>FK → livro(id_livro)</td></tr>
+        <tr><td>data_retirada</td><td>DATE</td><td>NOT NULL</td></tr>
+        <tr><td>data_devolucao</td><td>DATE</td><td>— (NULL = não devolveu)</td></tr>
+      </table>
+    </section>
+
+    <!-- SLIDE 10: REGRA DE OURO -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">⚠️ Regra de Ouro do N:N</h2>
+      <br>
+      <p style="font-size: 1.6rem; text-align: center;">Um relacionamento <span class="destaque-azul"><strong>N:N</strong></span></p>
+      <p style="font-size: 1.6rem; text-align: center;"><strong>sempre</strong> gera uma <span class="destaque">nova tabela</span>.</p>
+      <br>
+      <p style="font-size: 1.3rem; color: #ccc; text-align: center;">Nunca tente colocar a FK diretamente<br>em uma das tabelas existentes.</p>
+      <br>
+      <p style="font-size: 1.2rem; text-align: center;">Os atributos do relacionamento (ex: datas)<br>também ficam nessa tabela associativa.</p>
+    </section>
+
+    <!-- SLIDE 11: DESAFIO -->
+    <section>
+      <h2>🏆 Desafio em Dupla</h2>
+      <blockquote>
+        <strong>Minimundo:</strong> Uma escola tem professores e disciplinas. Um professor pode lecionar várias disciplinas. Uma disciplina pode ser lecionada por vários professores (em turmas diferentes).<br><br>
+        Cada professor tem: nome, CPF e email.<br>
+        Cada disciplina tem: nome e carga horária.
+      </blockquote>
+      <br>
+      <p style="font-size: 1.2rem;"><strong>Tarefas:</strong></p>
+      <ol style="font-size: 1.15rem;">
+        <li>Identificar as entidades e a cardinalidade</li>
+        <li>Montar as tabelas com PKs, FKs e tipos de dados</li>
+        <li>Criar a tabela associativa (se necessário)</li>
+      </ol>
+    </section>
+
+    <!-- SLIDE 12: ENCERRAMENTO -->
+    <section>
+      <h2>✅ O que aprendemos hoje</h2>
+      <ul class="agenda-list">
+        <li>FK é a coluna que implementa o relacionamento (losango do DER)</li>
+        <li>Integridade referencial: FK só aceita valores que existem na tabela pai</li>
+        <li><span class="destaque">1:N</span> → FK no lado N</li>
+        <li><span class="destaque-verde">1:1</span> → FK + UNIQUE</li>
+        <li><span class="destaque-azul">N:N</span> → tabela associativa com 2 FKs</li>
+      </ul>
+      <br>
+      <p style="color: #e9c46a; font-size: 1.2rem;"><strong>Próxima aula:</strong> ACID + CRUD — como o banco garante integridade e quais são as 4 operações fundamentais</p>
+      <br>
+      <p style="opacity: 0.6; font-size: 1rem;">Prof. Olegário Neto · EEEP-AFS · Banco de Dados 2026.2</p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    plugins: [ RevealHighlight ]
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Introdução ao SQL (DDL e DML) — Banco de Dados | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; }
+    .reveal pre { font-size: 0.85rem; }
+    .tag-disciplina { font-size: 1rem; color: #90e0ef; opacity: 0.8; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    section.capa { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP-AFS · Banco de Dados</p>
+      <h1>Introdução ao SQL<br><small>(DDL e DML Básico)</small></h1>
+      <p>Prof. Olegário Neto · 30/09/2026</p>
+    </section>
+
+    <!-- AGENDA -->
+    <section>
+      <h2>📋 Agenda</h2>
+      <ul>
+        <li>O que é SQL?</li>
+        <li>DDL: Construindo a Estrutura (Tabelas)</li>
+        <li>Tipos de Dados Essenciais</li>
+        <li>DML: Inserindo e Consultando Dados</li>
+        <li>Atividade Prática (Runbook)</li>
+      </ul>
+    </section>
+
+    <!-- GANCHO -->
+    <section>
+      <h2>🤔 O Gancho: A Planta Baixa Virou Prédio?</h2>
+      <p>Nas aulas passadas nós <span class="destaque">desenhamos</span> o modelo lógico.</p>
+      <p>Mas como nós falamos com o "motor" do banco (MySQL/PostgreSQL) para ele construir essas tabelas de verdade?</p>
+      <p class="fragment">👉 Usamos <strong>SQL</strong> (Structured Query Language)!</p>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> Lembre aos alunos que o modelo lógico era apenas um projeto (uma planta baixa). O SGBD não lê PDF ou imagem. Ele precisa de comandos de texto precisos para saber o que fazer. O SQL é a linguagem universal dos bancos relacionais.</p>
+        <p><strong>Dinâmica de Sala:</strong> Pergunte: "Vocês acham que o MySQL entende português? Não, ele entende SQL."</p>
+      </aside>
+    </section>
+
+    <!-- DDL -->
+    <section>
+      <h2>🏗️ DDL (Data Definition Language)</h2>
+      <ul>
+        <li>São os comandos que mexem na <strong>ESTRUTURA</strong>.</li>
+        <li>Constroem as "prateleiras" onde os dados vão ficar.</li>
+        <li>Principais: <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></li>
+      </ul>
+      <pre><code class="language-sql">CREATE DATABASE escola;
+USE escola;
+
+CREATE TABLE aluno (
+    id_aluno INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    matricula VARCHAR(20) UNIQUE
+);</code></pre>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> DDL é a linguagem de definição. Quando você executa um DDL, você não está colocando nenhum "aluno" no sistema, apenas criando a tabela que irá recebê-los. É como construir uma estante vazia. Pontue o uso do <code>USE banco;</code> para selecionar o banco alvo.</p>
+        <p><strong>Dinâmica de Sala:</strong> Chame a atenção para os pontos-e-vírgulas (;) ao final de cada instrução e a vírgula separando as colunas.</p>
+      </aside>
+    </section>
+
+    <!-- TIPOS DE DADOS -->
+    <section>
+      <h2>🗂️ Tipos de Dados Comuns</h2>
+      <ul>
+        <li><span class="destaque">INT</span>: Números inteiros (1, 100, -5)</li>
+        <li><span class="destaque">VARCHAR(n)</span>: Texto com limite de caracteres (nome, email)</li>
+        <li><span class="destaque">DATE</span>: Data (YYYY-MM-DD)</li>
+        <li><span class="destaque">DECIMAL(p, s)</span>: Número quebrado (ex: preço, nota)</li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> O tipo de dado é uma regra de integridade. Se a coluna é INT e você tenta inserir 'João', o SGBD vai dar erro (Isso garante Consistência - ACID). O VARCHAR economiza espaço em disco em relação ao antigo CHAR estático.</p>
+      </aside>
+    </section>
+
+    <!-- DML -->
+    <section>
+      <h2>✏️ DML (Data Manipulation Language)</h2>
+      <ul>
+        <li>São os comandos que mexem nos <strong>DADOS</strong> (linhas).</li>
+        <li>Eles realizam o famoso <strong>CRUD</strong>!</li>
+        <li>Hoje: <code>INSERT</code> (C) e <code>SELECT</code> (R)</li>
+      </ul>
+      <pre><code class="language-sql">-- Inserindo um registro (CREATE)
+INSERT INTO aluno (nome, matricula) 
+VALUES ('Maria Santos', '20261005');
+
+-- Consultando registros (READ)
+SELECT * FROM aluno;</code></pre>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Teoria/Explicação:</strong> DML popula e lê as prateleiras que o DDL criou. Destaque que textos (VARCHAR) e datas no VALUES precisam estar entre <strong>aspas simples ('')</strong> no SQL, não duplas. O asterisco (*) no SELECT significa "todas as colunas".</p>
+      </aside>
+    </section>
+    
+    <!-- PRATICA -->
+    <section>
+      <h2>💻 Mão na Massa!</h2>
+      <p>Abram o <span class="destaque">Runbook Prático</span>.</p>
+      <ul>
+        <li>Acessem o ambiente (Local ou SQL Fiddle)</li>
+        <li>Crie o banco da biblioteca</li>
+        <li>Crie a tabela `livro`</li>
+        <li>Insira seus livros favoritos</li>
+        <li>Faça uma consulta para verificar!</li>
+      </ul>
+      <aside class="notes">
+        <h3>Conteúdo de Apoio para Explicação:</h3>
+        <p><strong>Dinâmica de Sala:</strong> Dê o comando para começarem a prática. Peça para que quem conseguir primeiro ajude o colega do lado. Fique atento a erros de vírgula e aspas simples ausentes.</p>
+      </aside>
+    </section>
+
+    <!-- ENCERRAMENTO -->
+    <section>
+      <h2>✅ Resumo</h2>
+      <ul>
+        <li><strong>DDL</strong>: <code>CREATE TABLE</code> (estrutura)</li>
+        <li><strong>DML</strong>: <code>INSERT</code> e <code>SELECT</code> (dados/linhas)</li>
+        <li>Aspas simples <code>'texto'</code> para VARCHAR e DATE.</li>
+      </ul>
+      <p><br>Próxima aula: <span class="destaque">O Poder do WHERE (UPDATE e DELETE)</span></p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    plugins: [RevealHighlight]
+  });
+</script>
+</body>
+</html>

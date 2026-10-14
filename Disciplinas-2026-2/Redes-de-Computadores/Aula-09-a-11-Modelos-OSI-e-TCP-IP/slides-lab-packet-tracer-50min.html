@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 50 min: Espionar o Modelo OSI no Packet Tracer | Redes de Computadores | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <style>
+    :root {
+      --bg-dark: #0b1120;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: rgba(148, 163, 184, 0.25);
+      --laranja: #fb923c;
+      --amarelo: #facc15;
+      --azul: #38bdf8;
+      --verde: #4ade80;
+      --vermelho: #f87171;
+      --roxo: #c084fc;
+      --cinza-texto: #cbd5e1;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+    }
+
+    .reveal {
+      font-size: 2.1rem;
+      color: var(--cinza-texto);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .reveal h1 {
+      font-size: 3.1rem;
+      color: var(--laranja);
+      line-height: 1.2;
+      margin-bottom: 0.4em;
+      font-weight: 800;
+    }
+
+    .reveal h2 {
+      font-size: 2.5rem;
+      color: var(--amarelo);
+      margin-bottom: 0.5em;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3em;
+    }
+
+    .reveal h3 {
+      font-size: 1.8rem;
+      color: var(--azul);
+      margin-bottom: 0.4em;
+    }
+
+    .reveal p, .reveal li {
+      color: var(--cinza-texto);
+      line-height: 1.45;
+    }
+
+    /* Badges e tags */
+    .tag-container {
+      display: flex;
+      gap: 0.6em;
+      justify-content: center;
+      margin-bottom: 1.2em;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 1.2rem;
+      padding: 0.2em 0.7em;
+      border-radius: 9999px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tag-escola { background: rgba(56, 189, 248, 0.15); color: var(--azul); border: 1px solid var(--azul); }
+    .tag-tempo { background: rgba(250, 204, 21, 0.15); color: var(--amarelo); border: 1px solid var(--amarelo); }
+    .tag-data { background: rgba(74, 222, 128, 0.15); color: var(--verde); border: 1px solid var(--verde); }
+
+    /* Cards e Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2em;
+      align-items: stretch;
+      margin-top: 0.8em;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.8em;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8em;
+      margin-top: 0.8em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1em 1.2em;
+      text-align: left;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.destaque {
+      border-color: var(--laranja);
+      background: rgba(251, 146, 60, 0.1);
+    }
+
+    .card.azul {
+      border-color: var(--azul);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .card.verde {
+      border-color: var(--verde);
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    .card.amarelo {
+      border-color: var(--amarelo);
+      background: rgba(250, 204, 21, 0.08);
+    }
+
+    .card.vermelho {
+      border-color: var(--vermelho);
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    /* Diagrama da topologia */
+    .topology-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6em;
+      background: #0f172a;
+      border: 2px dashed #334155;
+      padding: 1.2em 0.8em;
+      border-radius: 14px;
+      margin: 0.8em 0;
+    }
+
+    .node {
+      background: #1e293b;
+      border: 2px solid #64748b;
+      border-radius: 10px;
+      padding: 0.6em 0.9em;
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .node.host { border-color: var(--azul); }
+    .node.switch { border-color: var(--verde); }
+    .node.router { border-color: var(--amarelo); }
+    .node.server { border-color: var(--roxo); }
+
+    .node-title {
+      font-weight: 800;
+      font-size: 1.4rem;
+      margin-bottom: 0.2em;
+    }
+    .node.host .node-title { color: var(--azul); }
+    .node.switch .node-title { color: var(--verde); }
+    .node.router .node-title { color: var(--amarelo); }
+    .node.server .node-title { color: var(--roxo); }
+
+    .node-sub {
+      font-size: 1.05rem;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    .node-ip {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #fff;
+      margin-top: 0.3em;
+      font-family: monospace;
+    }
+
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #94a3b8;
+    }
+
+    .connector-line {
+      height: 4px;
+      width: 50px;
+      background: #64748b;
+      margin: 0.3em 0;
+    }
+
+    .connector-line.dashed {
+      background: repeating-linear-gradient(90deg, #f87171 0, #f87171 8px, transparent 8px, transparent 14px);
+      height: 4px;
+    }
+
+    .connector-line.solid {
+      background: var(--verde);
+    }
+
+    /* Tabelas */
+    .table-custom {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.6em 0;
+      font-size: 1.35rem;
+    }
+
+    .table-custom th {
+      background: #1e293b;
+      color: var(--amarelo);
+      padding: 0.6em 0.8em;
+      border-bottom: 2px solid #475569;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .table-custom td {
+      padding: 0.55em 0.8em;
+      border-bottom: 1px solid #334155;
+      text-align: left;
+    }
+
+    .table-custom tr:nth-child(even) {
+      background: rgba(30, 41, 59, 0.4);
+    }
+
+    .code-tag {
+      font-family: 'Courier New', Courier, monospace;
+      background: #020617;
+      padding: 0.15em 0.45em;
+      border-radius: 4px;
+      color: var(--verde);
+      font-weight: 600;
+      font-size: 1.25rem;
+      border: 1px solid #334155;
+    }
+
+    .code-tag.ip { color: var(--azul); }
+    .code-tag.port { color: var(--amarelo); }
+
+    /* Passos numerados */
+    .step-item {
+      display: flex;
+      gap: 0.8em;
+      align-items: flex-start;
+      margin-bottom: 0.7em;
+    }
+
+    .step-num {
+      background: var(--laranja);
+      color: #0b1120;
+      font-weight: 900;
+      width: 1.8em;
+      height: 1.8em;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .step-text {
+      font-size: 1.35rem;
+      text-align: left;
+    }
+
+    .step-text strong {
+      color: #fff;
+    }
+
+    /* Comparativo OSI In vs Out */
+    .osi-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 0.4em;
+    }
+
+    .osi-layer-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25em 0.6em;
+      border-radius: 4px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .layer-7 { background: rgba(255, 173, 173, 0.8); color: #111; }
+    .layer-4 { background: rgba(202, 255, 191, 0.8); color: #111; }
+    .layer-3 { background: rgba(155, 246, 255, 0.9); color: #111; }
+    .layer-2 { background: rgba(160, 196, 255, 0.9); color: #111; }
+    .layer-1 { background: rgba(189, 178, 255, 0.9); color: #111; }
+    .layer-inactive { background: #334155; color: #64748b; text-decoration: line-through; }
+
+    /* Timer banner */
+    .time-badge {
+      display: inline-block;
+      background: #334155;
+      color: var(--amarelo);
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 0.2em 0.6em;
+      border-radius: 6px;
+      margin-bottom: 0.4em;
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ==========================================
+         SLIDE 1: MISSÃO DO DIA
+         ========================================== -->
+    <section>
+      <div class="tag-container">
+        <span class="tag tag-escola">🏫 EEEP-AFS · 2º Ano DS</span>
+        <span class="tag tag-tempo">⏱️ 50 Minutos · Laboratório</span>
+        <span class="tag tag-data">📅 14/10/2026</span>
+      </div>
+
+      <h1>🔬 Missão do Dia: Espionar o Modelo OSI</h1>
+      <h3 style="color: var(--cinza-texto); font-weight: 400; margin-bottom: 1em;">
+        Inspeção Prática de Pacotes no Cisco Packet Tracer
+      </h3>
+
+      <div class="grid-3">
+        <div class="card azul">
+          <div class="time-badge">Fase 1 · 15 min</div>
+          <h4 style="color: var(--azul); margin: 0 0 0.3em 0;">1. Montagem</h4>
+          <p style="font-size: 1.25rem;">Montar topologia de 4 nós, conectar cabos corretos e atribuir IPs e rotas de gateway.</p>
+        </div>
+
+        <div class="card amarelo">
+          <div class="time-badge">Fase 2 · 15 min</div>
+          <h4 style="color: var(--amarelo); margin: 0 0 0.3em 0;">2. Simulação</h4>
+          <p style="font-size: 1.25rem;">Filtrar protocolos HTTP/ARP e congelar o tráfego do navegador quadro a quadro.</p>
+        </div>
+
+        <div class="card verde">
+          <div class="time-badge">Fase 3 · 20 min</div>
+          <h4 style="color: var(--verde); margin: 0 0 0.3em 0;">3. Auditoria OSI</h4>
+          <p style="font-size: 1.25rem;">Abrir o envelope em cada salto, contrastar <em>In</em> vs <em>Out Layers</em> e entregar a tabela do runbook.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 1.2em; font-size: 1.3rem; color: #94a3b8;">
+        ⌨️ <em>Acomodem-se em duplas, iniciem o Packet Tracer e mantenham o Runbook (Seção 8) aberto na bancada.</em>
+      </p>
+
+      <aside class="notes">
+        <h3>Orientações Pedagógicas (00–05 min):</h3>
+        <ul>
+          <li>Dar o comando para a turma logar no Packet Tracer sem delongas.</li>
+          <li>Indicar que a aula de hoje é a materialização do que fizeram com envelopes de papel no Bloco 1.</li>
+          <li>Apontar que a avaliação prática da aula consiste no visto presencial da Seção 8 do Runbook preenchida ao final dos 50 minutos.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: MAPA DA TOPOLOGIA
+         ========================================== -->
+    <section>
+      <h2>🗺️ Mapa da Topologia de Rede</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Duas sub-redes distintas conectadas pelo Roteador 1941</p>
+
+      <div class="topology-flow">
+        <!-- PC0 -->
+        <div class="node host">
+          <div class="node-title">PC0</div>
+          <div class="node-sub">Porta Fa0</div>
+          <div class="node-ip">192.168.1.10</div>
+          <div class="node-sub" style="color: var(--laranja);">GW: .1.1</div>
+        </div>
+
+        <!-- Cabo Direto -->
+        <div class="connector">
+          <span style="font-size:0.95rem; color:#4ade80;">Direto</span>
+          <div class="connector-line solid"></div>
+          <span style="font-size:0.85rem;">Fa0/1</span>
+        </div>
+
+        <!-- Switch 2960 -->
+        <div class="node switch">
+          <div class="node-title">Switch 2960</div>
+          <div class="node-sub">24 Portas Fast</div>
+          <div class="node-ip" style="font-size: 0.95rem; color:#94a3b8;">Camada 2 Pura</div>
+          <div class="node-sub" style="color: var(--verde);">Sem IP de porta</div>
+        </div>
+
+        <!-- Cabo Direto -->
+        <div class="connector">
+          <span style="font-size:0.95rem; color:#4ade80;">Direto</span>
+          <div class="connector-line solid"></div>
+          <span style="font-size:0.85rem;">Fa0/2 ➔ G0/0</span>
+        </div>
+
+        <!-- Router 1941 -->
+        <div class="node router">
+          <div class="node-title">Router 1941</div>
+          <div class="node-sub">G0/0: 192.168.1.1</div>
+          <div class="node-ip" style="color: var(--amarelo);">G0/1: 10.0.0.1</div>
+          <div class="node-sub" style="color:#ef4444;">Port Status: ON</div>
+        </div>
+
+        <!-- Cabo Cruzado -->
+        <div class="connector">
+          <span style="font-size:0.95rem; color:#f87171;">Cruzado</span>
+          <div class="connector-line dashed"></div>
+          <span style="font-size:0.85rem;">G0/1 ➔ Fa0</span>
+        </div>
+
+        <!-- Server0 -->
+        <div class="node server">
+          <div class="node-title">Server0</div>
+          <div class="node-sub">HTTP Server</div>
+          <div class="node-ip">10.0.0.10</div>
+          <div class="node-sub" style="color: var(--laranja);">GW: 10.0.0.1</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 0.6em;">
+        <div class="card azul">
+          <h4 style="color: var(--azul); margin: 0 0 0.2em 0; font-size: 1.4rem;">Sub-rede Local (LAN Cliente)</h4>
+          <p style="font-size: 1.2rem; margin: 0;">Faixa: <span class="code-tag ip">192.168.1.0 /24</span> · Conecta PC0 ao Switch e à interface G0/0 do Roteador.</p>
+        </div>
+        <div class="card roxo">
+          <h4 style="color: var(--roxo); margin: 0 0 0.2em 0; font-size: 1.4rem;">Sub-rede Servidor (DMZ/Remota)</h4>
+          <p style="font-size: 1.2rem; margin: 0;">Faixa: <span class="code-tag ip">10.0.0.0 /24</span> · Conecta a interface G0/1 do Roteador diretamente ao Server0.</p>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <h3>Explicação da Topologia (05–10 min):</h3>
+        <ul>
+          <li>Ressaltar que o PC e o Servidor estão em redes lógicas diferentes (192.168.1.x vs 10.0.0.x).</li>
+          <li>Portanto, a comunicação obrigatoriamente passará pelo Roteador (Camada 3) para cruzar as fronteiras de rede.</li>
+          <li>O switch apenas concentra o tráfego do segmento local (Camada 2).</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: CHECKLIST DE CABAGEM
+         ========================================== -->
+    <section>
+      <h2>🔌 Checklist de Cabagem no Simulador</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Qual cabo utilizar para não fechar link em falha física (Camada 1)?</p>
+
+      <div class="grid-2">
+        <div class="card verde">
+          <h3 style="color: var(--verde); font-size: 1.6rem; margin-bottom: 0.4em;">
+            🟢 Cabo Direto (Straight-Through)
+          </h3>
+          <p style="font-size: 1.25rem;">Ícone: <strong>Linha preta contínua</strong> no Packet Tracer.</p>
+          <ul style="font-size: 1.2rem; margin-top: 0.4em;">
+            <li><strong>PC0 (Fa0) ➔ Switch 2960 (Fa0/1)</strong></li>
+            <li><strong>Switch 2960 (Fa0/2) ➔ Router 1941 (G0/0)</strong></li>
+          </ul>
+          <div style="background: rgba(74,222,128,0.15); border-left: 3px solid var(--verde); padding: 0.4em 0.7em; margin-top: 0.6em; font-size: 1.15rem;">
+            <strong>Regra:</strong> Dispositivos de categorias diferentes (Host/Router ↔ Switch).
+          </div>
+        </div>
+
+        <div class="card vermelho">
+          <h3 style="color: var(--vermelho); font-size: 1.6rem; margin-bottom: 0.4em;">
+            🔴 Cabo Cruzado (Cross-Over)
+          </h3>
+          <p style="font-size: 1.25rem;">Ícone: <strong>Linha tracejada</strong> no Packet Tracer.</p>
+          <ul style="font-size: 1.2rem; margin-top: 0.4em;">
+            <li><strong>Router 1941 (G0/1) ➔ Server0 (Fa0)</strong></li>
+          </ul>
+          <div style="background: rgba(248,113,113,0.15); border-left: 3px solid var(--vermelho); padding: 0.4em 0.7em; margin-top: 0.6em; font-size: 1.15rem;">
+            <strong>Regra:</strong> Dispositivos da mesma categoria física (Router ↔ Server/PC) sem switch intermediário.
+          </div>
+        </div>
+      </div>
+
+      <div class="card amarelo" style="margin-top: 0.8em;">
+        <h4 style="color: var(--amarelo); margin: 0 0 0.3em 0; font-size: 1.35rem;">
+          ⚠️ Diagnóstico Visual de Camada 1 e 2 no Packet Tracer:
+        </h4>
+        <div style="display: flex; gap: 1.5em; font-size: 1.2rem;">
+          <span>🔴 <strong>Luz Vermelha no Router:</strong> Porta desligada. Acesse a porta e marque <em>"Port Status: On"</em>.</span>
+          <span>🟠 <strong>Luz Âmbar no Switch:</strong> STP convergindo (aguarde 30s ou aperte <em>Fast Forward Time</em>).</span>
+          <span>🟢 <strong>Luz Verde:</strong> Link físico e enlace ativos.</span>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <h3>Pontos de Atenção na Cabagem (10–15 min):</h3>
+        <ul>
+          <li>O erro mais comum dos alunos: colocar cabo direto entre Router e Server, ou esquecer de ligar a porta do roteador (permanece vermelha).</li>
+          <li>Explicar brevemente a tecla de atalho "Fast Forward Time" (Alt + D ou duplo clique no ícone de avanço rápido) para sair da luz âmbar do Switch.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: TABELA RÁPIDA DE IPS E GATEWAY
+         ========================================== -->
+    <section>
+      <h2>📋 Tabela Rápida de IPs e Portas</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Configure exatamente os parâmetros abaixo em cada equipamento:</p>
+
+      <table class="table-custom">
+        <thead>
+          <tr>
+            <th>Dispositivo</th>
+            <th>Onde Configurar</th>
+            <th>Endereço IP</th>
+            <th>Máscara</th>
+            <th>Gateway Padrão</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PC0</strong></td>
+            <td>Desktop ➔ IP Configuration</td>
+            <td><span class="code-tag ip">192.168.1.10</span></td>
+            <td><span class="code-tag">255.255.255.0</span></td>
+            <td><span class="code-tag ip">192.168.1.1</span></td>
+          </tr>
+          <tr>
+            <td><strong>Router 1941</strong></td>
+            <td>Config ➔ GigEthernet0/0</td>
+            <td><span class="code-tag ip">192.168.1.1</span></td>
+            <td><span class="code-tag">255.255.255.0</span></td>
+            <td><em style="color:#64748b;">(Port Status: ON)</em></td>
+          </tr>
+          <tr>
+            <td><strong>Router 1941</strong></td>
+            <td>Config ➔ GigEthernet0/1</td>
+            <td><span class="code-tag ip">10.0.0.1</span></td>
+            <td><span class="code-tag">255.255.255.0</span></td>
+            <td><em style="color:#64748b;">(Port Status: ON)</em></td>
+          </tr>
+          <tr>
+            <td><strong>Server0</strong></td>
+            <td>Desktop ➔ IP Configuration</td>
+            <td><span class="code-tag ip">10.0.0.10</span></td>
+            <td><span class="code-tag">255.255.255.0</span></td>
+            <td><span class="code-tag ip">10.0.0.1</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card destaque" style="margin-top: 0.6em; padding: 0.7em 1.2em;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 1.25rem;">
+            🌐 <strong>Verificação do Serviço Web no Server0:</strong> Aba <em>Services</em> ➔ <em>HTTP</em> ➔ Garantir que está marcado <strong>On</strong>.
+          </div>
+          <span class="tag tag-data" style="font-size: 1.1rem;">HTTP Port 80</span>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <h3>Acompanhamento de Bancada (15–25 min):</h3>
+        <ul>
+          <li>Andar pelas bancadas verificando se o Gateway do PC0 está preenchido como 192.168.1.1. Sem gateway, o PC não envia para o roteador.</li>
+          <li>Garantir que no Server0 o gateway foi colocado como 10.0.0.1.</li>
+          <li>Verificar se todas as luzes da topologia ficaram verdes antes de mudar para o modo de simulação.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: MODO SIMULAÇÃO E DISPARO
+         ========================================== -->
+    <section>
+      <h2>⏱️ Modo Simulação: Tráfego em Câmera Lenta</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Prepare o laboratório para capturar a conversa entre PC e Servidor</p>
+
+      <div class="grid-2">
+        <div class="card azul">
+          <h3 style="color: var(--azul); font-size: 1.5rem; margin-bottom: 0.4em;">Passo A: Ajustar Filtros</h3>
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">Clique no botão <strong>Simulation</strong> (canto inferior direito ou <code>Shift + S</code>).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">Clique em <strong>Show None</strong> para desmarcar tudo.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">Clique em <strong>Edit Filters</strong> e selecione apenas:
+              <br><span class="code-tag port">HTTP</span> (Aba Misc) e <span class="code-tag port">ARP</span> (Aba IPv4).
+            </div>
+          </div>
+        </div>
+
+        <div class="card verde">
+          <h3 style="color: var(--verde); font-size: 1.5rem; margin-bottom: 0.4em;">Passo B: Gerar a Requisição</h3>
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">No <strong>PC0</strong>, abra a aba <strong>Desktop</strong> ➔ <strong>Web Browser</strong>.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">Na barra de URL, digite: <span class="code-tag ip">10.0.0.10</span> e clique em <strong>Go</strong>.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">O envelope aparecerá ao lado do PC0. Clique repetidamente no botão <strong>Capture / Forward</strong> (▶|) para avançar salto a salto.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card amarelo" style="margin-top: 0.8em; padding: 0.6em 1em; font-size: 1.25rem;">
+        🔍 <strong>O que observar na esteira de eventos:</strong>
+        <br>Se for o primeiro disparo, um envelope verde <strong>ARP</strong> sairá antes do envelope azul claro <strong>HTTP</strong>. Por quê? Porque o PC0 precisa descobrir o MAC do Gateway antes de poder enviar o quadro!
+      </div>
+
+      <aside class="notes">
+        <h3>Orientação de Simulação (25–35 min):</h3>
+        <ul>
+          <li>Explicar aos alunos o significado do botão Capture/Forward (a seta com a barra vertical): ela é o "avanço de frame" da rede.</li>
+          <li>Evitar clicar em "Play / Auto Capture", senão os pacotes passam voando e a turma não consegue clicar no envelope para ver os detalhes.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: O MOMENTO REVELADOR (IN VS OUT LAYERS)
+         ========================================== -->
+    <section>
+      <h2>📦 O Momento Revelador: In Layers vs Out Layers</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Clique no envelope enquanto ele estiver sobre cada equipamento (PDU Information)</p>
+
+      <div class="grid-3">
+        <!-- Switch -->
+        <div class="card verde">
+          <div style="text-align: center; margin-bottom: 0.4em;">
+            <span class="tag" style="background: rgba(74,222,128,0.2); color: var(--verde);">🔀 SWITCH 2960</span>
+          </div>
+          <div class="osi-layers">
+            <div class="osi-layer-row layer-inactive">7 - Aplicação</div>
+            <div class="osi-layer-row layer-inactive">4 - Transporte</div>
+            <div class="osi-layer-row layer-inactive">3 - Rede</div>
+            <div class="osi-layer-row layer-2">2 - Enlace (MAC)</div>
+            <div class="osi-layer-row layer-1">1 - Física (Portas)</div>
+          </div>
+          <p style="font-size: 1.15rem; margin-top: 0.6em;">
+            <strong>Para na Camada 2:</strong> Lê apenas o endereço MAC de destino do quadro. Não olha IP nem URL.
+          </p>
+        </div>
+
+        <!-- Roteador -->
+        <div class="card amarelo">
+          <div style="text-align: center; margin-bottom: 0.4em;">
+            <span class="tag" style="background: rgba(250,204,21,0.2); color: var(--amarelo);">🌐 ROUTER 1941</span>
+          </div>
+          <div class="osi-layers">
+            <div class="osi-layer-row layer-inactive">7 - Aplicação</div>
+            <div class="osi-layer-row layer-inactive">4 - Transporte</div>
+            <div class="osi-layer-row layer-3">3 - Rede (IP Rota)</div>
+            <div class="osi-layer-row layer-2">2 - Enlace (MAC)</div>
+            <div class="osi-layer-row layer-1">1 - Física (Portas)</div>
+          </div>
+          <p style="font-size: 1.15rem; margin-top: 0.6em;">
+            <strong>Sobe até a Camada 3:</strong> Abre o quadro, lê o IP de destino no pacote, troca o MAC de origem/destino e reencaminha.
+          </p>
+        </div>
+
+        <!-- Servidor -->
+        <div class="card roxo">
+          <div style="text-align: center; margin-bottom: 0.4em;">
+            <span class="tag" style="background: rgba(192,132,252,0.2); color: var(--roxo);">🗄️ SERVER0 (Host)</span>
+          </div>
+          <div class="osi-layers">
+            <div class="osi-layer-row layer-7">7 - Aplicação (HTTP)</div>
+            <div class="osi-layer-row layer-4">4 - Transporte (TCP:80)</div>
+            <div class="osi-layer-row layer-3">3 - Rede (IP)</div>
+            <div class="osi-layer-row layer-2">2 - Enlace (MAC)</div>
+            <div class="osi-layer-row layer-1">1 - Física (Bits)</div>
+          </div>
+          <p style="font-size: 1.15rem; margin-top: 0.6em;">
+            <strong>Abre as 7 Camadas:</strong> Desencapsula tudo até a Camada 7 para ler o comando <code style="color:var(--laranja);">GET /</code> e responder.
+          </p>
+        </div>
+      </div>
+
+      <div class="card destaque" style="margin-top: 0.6em; padding: 0.5em 1em; text-align: center; font-size: 1.25rem;">
+        💡 <strong>Princípio Fundamental:</strong> O equipamento intermediário só abre até a camada estritamente necessária para tomar sua decisão de encaminhamento!
+      </div>
+
+      <aside class="notes">
+        <h3>Momento Didático Chave (35–45 min):</h3>
+        <ul>
+          <li>Projetar a tela do Packet Tracer e clicar no envelope dentro do switch. Mostrar que as caixas das camadas 3 a 7 estão completamente apagadas.</li>
+          <li>Depois clicar no envelope dentro do roteador: mostrar que a camada 3 está colorida e ativa. Na aba Out Layers, mostrar que o roteador trocou o cabeçalho Ethernet da Camada 2!</li>
+          <li>Esse é o objetivo da aula: entender concretamente a razão do switch ser Camada 2 e o roteador ser Camada 3.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: DESAFIO RELÂMPAGO E VISTO
+         ========================================== -->
+    <section>
+      <h2>🏁 Desafio Relâmpago & Visto de Laboratório</h2>
+      <p style="font-size: 1.3rem; margin-top: -0.3em;">Preencha a Seção 8 do Runbook para validação presencial</p>
+
+      <div class="grid-2">
+        <div class="card azul">
+          <h3 style="color: var(--azul); font-size: 1.45rem; margin-bottom: 0.3em;">📝 Tabela de Observação (Runbook § 8)</h3>
+          <p style="font-size: 1.15rem; margin-bottom: 0.5em;">Complete em sua apostila física/digital:</p>
+          <table class="table-custom" style="font-size: 1.15rem;">
+            <thead>
+              <tr>
+                <th>Dispositivo</th>
+                <th>Camadas In</th>
+                <th>Endereço Lido</th>
+                <th>PDU Tratada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Switch</strong></td>
+                <td>1 e 2</td>
+                <td>MAC (Físico)</td>
+                <td>Quadro (Frame)</td>
+              </tr>
+              <tr>
+                <td><strong>Roteador</strong></td>
+                <td>1, 2 e 3</td>
+                <td>IP (Lógico)</td>
+                <td>Pacote (Packet)</td>
+              </tr>
+              <tr>
+                <td><strong>Server0</strong></td>
+                <td>1 até 7</td>
+                <td>Porta 80 / Dados</td>
+                <td>Mensagem / Dados</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card amarelo">
+          <h3 style="color: var(--amarelo); font-size: 1.45rem; margin-bottom: 0.3em;">⚡ Pergunta-Chave de Fechamento</h3>
+          <div style="background: rgba(250,204,21,0.1); border-left: 3px solid var(--amarelo); padding: 0.6em; font-size: 1.2rem; margin-bottom: 0.6em;">
+            <em>"Por que o Switch não precisa saber o endereço IP nem a URL do site para encaminhar a mensagem?"</em>
+          </div>
+          <p style="font-size: 1.15rem;">
+            <strong>Resposta Técnica:</strong> Porque o switch opera apenas na Camada 2 (Enlace) e toma decisões com base exclusiva na tabela de endereços MAC locais. O IP só é lido pelo Roteador na Camada 3!
+          </p>
+        </div>
+      </div>
+
+      <div class="card verde" style="margin-top: 0.7em; padding: 0.6em 1.2em; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 1.3rem;">
+          ✅ <strong>Critério para Visto do Professor:</strong> Topologia com página web aberta + Tabela preenchida no Runbook.
+        </span>
+        <span class="tag tag-data" style="font-size: 1.1rem;">Próxima Aula: Camada de Aplicação</span>
+      </div>
+
+      <aside class="notes">
+        <h3>Encerramento e Vistos (45–50 min):</h3>
+        <ul>
+          <li>Passar de bancada em bancada dando o visto na folha/caderno ou no runbook dos alunos.</li>
+          <li>Perguntar a um aluno aleatório de cada dupla qual a PDU do switch e qual a do roteador para testar a fixação.</li>
+          <li>Fazer os alunos salvarem o arquivo .pkt em suas pastas para consultas posteriores.</li>
+        </ul>
+      </aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    margin: 0.08,
+    width: 1280,
+    height: 720,
+    controls: true,
+    progress: true,
+    center: true,
+    transition: 'fade',
+    plugins: [RevealNotes]
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Infraestrutura: VLANs e Divisão Lógica</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Infraestrutura Corporativa</h2>
+					<h3>VLANs e Domínios de Broadcast</h3>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>O Problema: O Grito do Broadcast</h3>
+					<p>Toda vez que um PC procura um IP com ARP, ele emite um "grito" em Broadcast.</p>
+					<p>Se tivermos 500 computadores em um Switch gigante, o ruído da rede derruba a performance de todos.</p>
+					<p><strong>A solução cara:</strong> Comprar 1 switch para cada 20 PCs (Isolamento Físico).</p>
+					<p><strong>A solução inteligente:</strong> Criar fatias virtuais no switch (Isolamento Lógico).</p>
+					<aside class="notes">
+						ANALOGIA DA VLAN PARA A TURMA:<br>
+						Um Switch sem VLAN é como um ginásio fechado com 50 pessoas gritando ao mesmo tempo. Ninguém se entende. A VLAN levanta "paredes virtuais" à prova de som dentro do ginásio, dividindo em várias salinhas (Diretoria, TI, Alunos).
+					</aside>
+				</section>
+
+				<section>
+					<h3>O que é uma VLAN?</h3>
+					<p><strong>Virtual Local Area Network</strong> (Camada 2 - Enlace).</p>
+					<ul>
+						<li>Quebra o Domínio de Broadcast.</li>
+						<li>Gera segurança: Uma VLAN não fala com a outra por acidente.</li>
+						<li>Economiza dinheiro.</li>
+						<li>Dá flexibilidade: O PC do RH pode estar no 1º andar e o do chefe do RH no 10º andar, ligados na mesma VLAN.</li>
+					</ul>
+					<aside class="notes">
+						DICA DE CONCURSO:<br>
+						Bancas perguntam como dois computadores em VLANs DIFERENTES podem se comunicar. A resposta é: Precisam de um Roteador ou de um Switch Layer 3. A VLAN quebra a comunicação de camada 2. Para reconectar as paredes, só subindo para a camada 3.
+					</aside>
+				</section>
+
+				<section>
+					<h3>Access Port x Trunk Port</h3>
+					<table>
+						<thead>
+							<tr><th>Tipo</th><th>Uso</th><th>Etiqueta (Tag 802.1Q)</th></tr>
+						</thead>
+						<tbody>
+							<tr><td><strong>Access</strong></td><td>Liga direto no PC ou Impressora</td><td>Não tem. O PC não sabe o que é VLAN.</td></tr>
+							<tr><td><strong>Trunk</strong></td><td>Liga Switch com Switch ou Roteador</td><td>Coloca uma etiqueta no pacote dizendo "Esse cara é da VLAN 10".</td></tr>
+						</tbody>
+					</table>
+					<aside class="notes">
+						A ANALOGIA DA ETIQUETA (TRUNK):<br>
+						Imagine dois navios (Switches) cheios de passageiros (PCs) de classes diferentes. Quando o barco menor transfere pessoas de um navio pro outro, as pessoas ganham um crachá de cor (Tag 802.1Q) para não se misturarem quando chegarem no navio 2. Essa ponte que exige crachá é a Porta Trunk!
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Especificações Técnicas de Wireframe — StreamVibe App</title>
+<style>
+  :root {
+    --bg-canvas: #0b0f19;
+    --card-bg: #111827;
+    --card-border: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --accent-redline: #ef4444;
+    --accent-redline-bg: rgba(239, 68, 68, 0.15);
+    --badge-bg: #dc2626;
+    --wire-bg: #ffffff;
+    --wire-element: #e2e8f0;
+    --wire-border: #cbd5e1;
+    --wire-text: #475569;
+    --wire-btn: #334155;
+    --wire-btn-text: #ffffff;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 30px 20px 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    text-align: center;
+    max-width: 900px;
+    margin-bottom: 35px;
+  }
+
+  h1 {
+    font-size: 26px;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  header p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Painel Resumo de Medidas */
+  .quick-specs-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 1320px;
+    margin-bottom: 35px;
+  }
+
+  .quick-spec-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .quick-spec-card strong {
+    display: block;
+    color: #ef4444;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .quick-spec-card span {
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* Container das Telas */
+  .screens-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1450px;
+  }
+
+  .screen-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .screen-header-badge {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Moldura do Celular */
+  .device-frame {
+    width: 390px;
+    height: 844px;
+    background-color: var(--wire-bg);
+    border-radius: 44px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 10px #1f2937, 0 0 0 12px #374151;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic Island / Notch */
+  .dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 28px;
+    background-color: #000;
+    border-radius: 20px;
+    z-index: 100;
+  }
+
+  /* Réguas de Padding Lateral de 24px */
+  .padding-ruler-left, .padding-ruler-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(239, 68, 68, 0.08),
+      rgba(239, 68, 68, 0.08) 6px,
+      rgba(239, 68, 68, 0.16) 6px,
+      rgba(239, 68, 68, 0.16) 12px
+    );
+    border-right: 1px dashed rgba(239, 68, 68, 0.5);
+    z-index: 50;
+    pointer-events: none;
+  }
+  .padding-ruler-left { left: 0; }
+  .padding-ruler-right { right: 0; border-right: none; border-left: 1px dashed rgba(239, 68, 68, 0.5); }
+
+  /* Indicadores de Redline (Cotas) */
+  .badge-spec {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #dc2626;
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 700;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    padding: 2px 7px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+
+  .badge-spec.blue { background-color: #2563eb; }
+  .badge-spec.purple { background-color: #7c3aed; }
+  .badge-spec.dark { background-color: #0f172a; border: 1px solid #334155; }
+
+  /* Elementos Internos dos Wireframes */
+  .screen-content {
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+  }
+
+  .wire-box {
+    background-color: var(--wire-element);
+    border: 1.5px solid var(--wire-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    color: var(--wire-text);
+    font-size: 13px;
+    font-weight: 500;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .wire-btn {
+    background-color: var(--wire-btn);
+    border: none;
+    color: var(--wire-btn-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* Guia de Espaçamento Vertical */
+  .guide-gap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .guide-gap::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(239, 68, 68, 0.6);
+  }
+
+  .guide-gap span {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* HOME ESPECÍFICA */
+  .home-content {
+    padding: 0;
+  }
+
+  .hero-banner {
+    width: 100%;
+    height: 400px;
+    background-color: #cbd5e1;
+    border-radius: 0 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 45px 24px 24px 24px;
+    position: relative;
+    border: none;
+  }
+
+  .hero-badge-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .section-row {
+    padding-left: 24px;
+    margin-top: 18px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .carousel-row {
+    display: flex;
+    gap: 16px;
+    overflow: hidden;
+    padding-bottom: 6px;
+  }
+
+  .movie-card {
+    width: 120px;
+    height: 180px;
+    background-color: #e2e8f0;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 8px;
+    font-size: 12px;
+    color: #475569;
+  }
+
+  /* Legenda de Cotas */
+  .footer-legend {
+    margin-top: 40px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 18px 24px;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📐 Guia Visual de Estrutura e Redline (StreamVibe)</h1>
+  <p>Consulte as cotas, margens e raios de arredondamento abaixo para construir seus frames e wireframes com precisão de pixel no Figma.</p>
+</header>
+
+<!-- BARRA DE ESPECIFICAÇÕES RÁPIDAS (DESIGN TOKENS) -->
+<div class="quick-specs-bar">
+  <div class="quick-spec-card">
+    <strong>Tamanho do Frame</strong>
+    <span>390 × 844 px</span>
+  </div>
+  <div class="quick-spec-card">
+    <strong>Margens Laterais</strong>
+    <span>Padding: 24 px</span>
+  </div>
+  <div class="quick-spec-card">
+    <strong>Inputs de Texto</strong>
+    <span>H: 56px | Radius: 8px</span>
+  </div>
+  <div class="quick-spec-card">
+    <strong>Botões de Ação</strong>
+    <span>H: 56px | Radius: 12px</span>
+  </div>
+  <div class="quick-spec-card">
+    <strong>Hero Banner</strong>
+    <span>H: 400px | Bottom: 24px</span>
+  </div>
+  <div class="quick-spec-card">
+    <strong>Cards de Filme</strong>
+    <span>120 × 180 px | Rad: 8px</span>
+  </div>
+</div>
+
+<!-- CONTAINER PRINCIPAL DAS 3 TELAS -->
+<div class="screens-container">
+
+  <!-- ================= TELA 1: LOGIN ================= -->
+  <div class="screen-column">
+    <div class="screen-header-badge">
+      <span>1. Tela de Login</span>
+      <span class="badge-spec dark">390 × 844</span>
+    </div>
+
+    <div class="device-frame">
+      <div class="dynamic-island"></div>
+      <div class="padding-ruler-left"></div>
+      <div class="padding-ruler-right"></div>
+
+      <div class="screen-content">
+        <!-- Espaço Topo -> Logo: 120px -->
+        <div class="guide-gap" style="height: 120px;">
+          <span class="badge-spec">Top: 120 px</span>
+        </div>
+
+        <!-- Logo: 80px -->
+        <div class="wire-box" style="height: 80px; border-radius: 12px; justify-content: center; font-weight: bold; background-color: #cbd5e1;">
+          <span>LOGO STREAMVIBE</span>
+          <span class="badge-spec" style="position: absolute; right: 12px;">H: 80 px | R: 12 px</span>
+        </div>
+
+        <!-- Espaço Logo -> Inputs: 60px -->
+        <div class="guide-gap" style="height: 60px;">
+          <span class="badge-spec">Gap: 60 px</span>
+        </div>
+
+        <!-- Input E-mail -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>E-mail</span>
+          <span class="badge-spec">H: 56 px | R: 8 px</span>
+        </div>
+
+        <!-- Gap entre Inputs: 16px -->
+        <div class="guide-gap" style="height: 16px;">
+          <span class="badge-spec">Gap: 16 px</span>
+        </div>
+
+        <!-- Input Senha -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>Senha</span>
+          <span class="badge-spec">H: 56 px</span>
+        </div>
+
+        <!-- Espaço Inputs -> Botão: 32px -->
+        <div class="guide-gap" style="height: 32px;">
+          <span class="badge-spec">Margin-Top: 32 px</span>
+        </div>
+
+        <!-- Botão Entrar -->
+        <div class="wire-box wire-btn" style="height: 56px; border-radius: 12px; justify-content: center;">
+          <span>Entrar</span>
+          <span class="badge-spec" style="position: absolute; right: 12px; background-color: #ef4444;">H: 56 px | R: 12 px</span>
+        </div>
+
+        <!-- Espaço Botão -> Link: 24px -->
+        <div class="guide-gap" style="height: 24px;">
+          <span class="badge-spec">Margin-Top: 24 px</span>
+        </div>
+
+        <!-- Link Criar Conta -->
+        <div style="text-align: center; color: #2563eb; font-weight: 600; font-size: 14px;">
+          Criar nova conta
+        </div>
+
+        <!-- Indicação de Padding Lateral 24px -->
+        <div style="position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%);">
+          <span class="badge-spec blue">Padding Lateral: 24 px</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TELA 2: CADASTRO ================= -->
+  <div class="screen-column">
+    <div class="screen-header-badge">
+      <span>2. Tela de Cadastro</span>
+      <span class="badge-spec dark">390 × 844</span>
+    </div>
+
+    <div class="device-frame">
+      <div class="dynamic-island"></div>
+      <div class="padding-ruler-left"></div>
+      <div class="padding-ruler-right"></div>
+
+      <div class="screen-content">
+        <!-- Espaço Topo -> Logo: 70px -->
+        <div class="guide-gap" style="height: 70px;">
+          <span class="badge-spec">Top: 70 px</span>
+        </div>
+
+        <!-- Logo Menor: 60px -->
+        <div class="wire-box" style="height: 60px; border-radius: 12px; justify-content: center; font-weight: bold; background-color: #cbd5e1;">
+          <span>LOGO REDUZIDA</span>
+          <span class="badge-spec" style="position: absolute; right: 12px;">H: 60 px | R: 12 px</span>
+        </div>
+
+        <!-- Espaço Logo -> Inputs: 36px -->
+        <div class="guide-gap" style="height: 36px;">
+          <span class="badge-spec">Gap: 36 px</span>
+        </div>
+
+        <!-- Input 1: Nome -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>Nome Completo</span>
+          <span class="badge-spec">H: 56 px | R: 8 px</span>
+        </div>
+
+        <!-- Gap 16px -->
+        <div class="guide-gap" style="height: 16px;">
+          <span class="badge-spec">Gap: 16 px</span>
+        </div>
+
+        <!-- Input 2: E-mail -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>E-mail</span>
+          <span class="badge-spec">H: 56 px</span>
+        </div>
+
+        <!-- Gap 16px -->
+        <div class="guide-gap" style="height: 16px;">
+          <span class="badge-spec">Gap: 16 px</span>
+        </div>
+
+        <!-- Input 3: Senha -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>Senha</span>
+          <span class="badge-spec">H: 56 px</span>
+        </div>
+
+        <!-- Gap 16px -->
+        <div class="guide-gap" style="height: 16px;">
+          <span class="badge-spec">Gap: 16 px</span>
+        </div>
+
+        <!-- Input 4: Confirmar Senha -->
+        <div class="wire-box" style="height: 56px; border-radius: 8px;">
+          <span>Confirmar Senha</span>
+          <span class="badge-spec">H: 56 px</span>
+        </div>
+
+        <!-- Espaço Inputs -> Botão: 24px -->
+        <div class="guide-gap" style="height: 24px;">
+          <span class="badge-spec">Margin-Top: 24 px</span>
+        </div>
+
+        <!-- Botão Cadastrar -->
+        <div class="wire-box wire-btn" style="height: 56px; border-radius: 12px; justify-content: center;">
+          <span>Cadastrar</span>
+          <span class="badge-spec" style="position: absolute; right: 12px; background-color: #ef4444;">H: 56 px | R: 12 px</span>
+        </div>
+
+        <!-- Espaço Botão -> Link: 18px -->
+        <div class="guide-gap" style="height: 18px;">
+          <span class="badge-spec">Margin-Top: 18 px</span>
+        </div>
+
+        <!-- Link Já tenho conta -->
+        <div style="text-align: center; color: #2563eb; font-weight: 600; font-size: 14px;">
+          Já possui conta? Entrar
+        </div>
+
+        <!-- Indicação de Padding Lateral 24px -->
+        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
+          <span class="badge-spec blue">Padding Lateral: 24 px</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TELA 3: HOME ================= -->
+  <div class="screen-column">
+    <div class="screen-header-badge">
+      <span>3. Home Principal</span>
+      <span class="badge-spec dark">390 × 844</span>
+    </div>
+
+    <div class="device-frame">
+      <div class="dynamic-island"></div>
+
+      <div class="screen-content home-content">
+        <!-- Hero Banner: 400px com bottom-radius 24px -->
+        <div class="hero-banner">
+          <div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 10px;">
+            HERO BANNER (DESTAQUE)
+          </div>
+          
+          <div class="hero-badge-container">
+            <span class="badge-spec">Largura: 390 px (Full)</span>
+            <span class="badge-spec">Altura: 400 px</span>
+          </div>
+
+          <!-- Botão Assistir dentro do Hero -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div class="wire-box wire-btn" style="height: 48px; border-radius: 10px; width: 140px; justify-content: center;">
+              ▶ Assistir
+            </div>
+            <span class="badge-spec purple">Radius Inferior: 24 px</span>
+          </div>
+        </div>
+
+        <!-- Espaço Hero -> Categoria 1: 20px -->
+        <div class="guide-gap" style="height: 20px;">
+          <span class="badge-spec" style="font-size: 9.5px;">Margin-Bottom: 20 px</span>
+        </div>
+
+        <!-- Categoria 1: Em Alta -->
+        <div class="section-row">
+          <div class="section-title">
+            <span>Em Alta</span>
+            <span class="badge-spec" style="font-size: 9.5px;">Pl: 24 px | 16px Bold</span>
+          </div>
+
+          <div class="carousel-row">
+            <!-- Card 1 com Cota -->
+            <div class="movie-card" style="border-color: #ef4444;">
+              <span class="badge-spec" style="font-size: 9px; padding: 1px 4px;">120 × 180 px</span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span class="badge-spec" style="font-size: 9px; padding: 1px 4px;">Rad: 8 px</span>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="movie-card">
+              <span></span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span></span>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="movie-card">
+              <span></span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Espaço entre Categorias: 28px -->
+        <div class="guide-gap" style="height: 28px; margin-top: 4px;">
+          <span class="badge-spec" style="font-size: 9.5px;">Gap Seções: 28 px</span>
+        </div>
+
+        <!-- Categoria 2: Ação -->
+        <div class="section-row" style="margin-top: 0;">
+          <div class="section-title">
+            <span>Ação e Aventura</span>
+            <span class="badge-spec" style="font-size: 9.5px;">Gap Cards: 16 px</span>
+          </div>
+
+          <div class="carousel-row">
+            <div class="movie-card">
+              <span></span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span></span>
+            </div>
+            <div class="movie-card">
+              <span></span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span></span>
+            </div>
+            <div class="movie-card">
+              <span></span>
+              <span style="font-weight: 600;">Capa Filme</span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LEGENDA TÉCNICA INFERIOR -->
+<div class="footer-legend">
+  <div class="legend-item">
+    <span class="badge-spec">Vermelho</span>
+    <span>Medidas de Altura (H), Largura (W) e Espaçamento (Gap/Margin)</span>
+  </div>
+  <div class="legend-item">
+    <span class="badge-spec blue">Azul</span>
+    <span>Margem Interna Lateral (Padding de 24px)</span>
+  </div>
+  <div class="legend-item">
+    <span class="badge-spec purple">Roxo</span>
+    <span>Raio de Arredondamento de Cantos (Corner Radius)</span>
+  </div>
+</div>
+
+</body>
+</html>

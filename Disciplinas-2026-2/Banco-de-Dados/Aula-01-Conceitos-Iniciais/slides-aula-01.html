@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Conceitos Iniciais de Banco de Dados | EEEP-AFS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/monokai.min.css">
+  <style>
+    .reveal { font-size: 1.8rem; }
+    .reveal h1 { font-size: 2.2rem; color: #f4a261; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .reveal h2 { font-size: 1.9rem; color: #e9c46a; margin-bottom: 20px; }
+    .reveal p, .reveal li { font-size: 1.3rem; line-height: 1.6; }
+    .reveal blockquote { font-size: 1.2rem; background: #264653; border-left: 5px solid #2a9d8f; padding: 15px; text-align: left; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+    .reveal pre { font-size: 0.95rem; border-radius: 8px; box-shadow: 3px 3px 6px rgba(0,0,0,0.4); }
+    .tag-disciplina { font-size: 1.1rem; color: #90e0ef; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; }
+    .destaque { color: #f4a261; font-weight: bold; }
+    .destaque-verde { color: #2a9d8f; font-weight: bold; }
+    section.capa { text-align: center; }
+    .colunas { display: flex; justify-content: space-between; gap: 20px; text-align: left; }
+    .coluna { flex: 1; }
+    .agenda-list li { margin: 15px 0; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="capa">
+      <p class="tag-disciplina">🏫 EEEP Adolfo Ferreira de Sousa</p>
+      <h1 style="margin: 30px 0;">Banco de Dados<br><span style="font-size: 1.5rem; color:#e9c46a;">Conceitos Iniciais</span></h1>
+      <p>Prof. Olegário Neto</p>
+      <p style="font-size: 1rem; opacity: 0.6;">Semestre 2026.2 · 04/08/2026</p>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section>
+      <h2>📋 Agenda de Hoje</h2>
+      <ul class="agenda-list">
+        <li><span class="destaque">Parte 1:</span> Dado, Informação, Fato e Metadados</li>
+        <li><span class="destaque">Parte 2:</span> Histórico e Evolução dos Bancos de Dados</li>
+        <li><span class="destaque">Parte 3:</span> O que é um Banco de Dados e SGBD?</li>
+        <li><span class="destaque">Parte 4:</span> Abstração de Dados e Arquitetura ANSI/SPARC</li>
+        <li><span class="destaque">Prática:</span> Exercício de Fixação</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 3: TRANSIÇÃO PARTE 1 -->
+    <section style="background-color: #264653;">
+      <h2 style="color: #f4a261;">Parte 1</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Dado, Informação, Fato e Metadados</h1>
+      <p>Construindo os blocos fundamentais dos sistemas de informação.</p>
+    </section>
+
+    <!-- SLIDE 4: DADO -->
+    <section>
+      <h2>🔢 O que é um Dado?</h2>
+      <ul>
+        <li>Elemento em seu <strong>estado bruto</strong>, cru.</li>
+        <li>Desconectado de qualquer contexto.</li>
+        <li>Sozinho, não possui significado intrínseco ou utilidade imediata.</li>
+      </ul>
+      <blockquote style="margin-top: 30px;">
+        <strong>Exemplos:</strong><br>
+        • <span class="destaque">35</span> (Pode ser uma idade, uma temperatura, o número de uma casa...)<br>
+        • <span class="destaque">"Maria"</span> (Apenas um nome sem saber quem é ou o que faz...)
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 5: INFORMAÇÃO -->
+    <section>
+      <h2>💡 O que é Informação?</h2>
+      <ul>
+        <li>É o dado <strong>contextualizado</strong> e processado.</li>
+        <li>Adquire um significado, reduz a incerteza e apoia decisões.</li>
+      </ul>
+      <blockquote style="margin-top: 30px;">
+        <strong>Exemplos:</strong><br>
+        • "A temperatura média em Redenção hoje é de <span class="destaque-verde">35°C</span>."<br>
+        • "A aluna matriculada no curso de TI se chama <span class="destaque-verde">Maria</span>."
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 6: FATO -->
+    <section>
+      <h2>📌 O que é um Fato?</h2>
+      <ul>
+        <li>Uma ocorrência ou registro de algo <strong>verificável e real</strong>.</li>
+        <li>O dado histórico imutável após ser armazenado em um sistema.</li>
+      </ul>
+      <blockquote style="margin-top: 30px;">
+        <strong>Exemplos:</strong><br>
+        • "A temperatura máxima em Redenção em 04/08/2026 registrou <span class="destaque">35°C</span>."<br>
+        • "A estudante <span class="destaque">Maria</span> tirou nota <span class="destaque">10</span> no primeiro laboratório."
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 7: METADADOS -->
+    <section>
+      <h2>🏷️ O que são Metadados?</h2>
+      <ul>
+        <li><strong>Dados sobre dados</strong>.</li>
+        <li>Descrevem a estrutura física e as regras dos dados salvos no sistema.</li>
+        <li>Funcionam como o "molde" ou "esqueleto" do banco.</li>
+      </ul>
+      <blockquote style="margin-top: 30px;">
+        <strong>Exemplos de Metadados de uma Tabela:</strong><br>
+        • O campo <code>temperatura</code> deve aceitar apenas <strong>número decimal</strong>.<br>
+        • O campo <code>nome_aluno</code> deve ser texto com máximo de <strong>100 caracteres</strong>.<br>
+        • A data deve ser gravada no formato padrão <strong>AAAA-MM-DD</strong>.
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 8: TRANSIÇÃO PARTE 2 -->
+    <section style="background-color: #1d3557;">
+      <h2 style="color: #e63946;">Parte 2</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Histórico e Evolução</h1>
+      <p>Do papel aos modernos sistemas de arquivos e bancos relacionais.</p>
+    </section>
+
+    <!-- SLIDE 9: ERA PRÉ-BANCO -->
+    <section>
+      <h2>📂 A Era dos Arquivos Planos (Flat Files)</h2>
+      <p>No início, os dados de sistemas eram guardados em arquivos de texto simples (como <code>.txt</code> ou <code>.csv</code>) ou planilhas independentes para cada setor.</p>
+      <div style="margin-top: 20px;" class="colunas">
+        <div class="coluna" style="background-color: #3d5a80; padding: 15px; border-radius: 8px;">
+          <h3 style="color: #ee6c4d; font-size: 1.2rem; margin-top:0;">Dores Comuns:</h3>
+          <p style="font-size: 1.1rem; margin: 5px 0;">❌ <strong>Redundância</strong>: Dados iguais repetidos em locais diferentes.</p>
+          <p style="font-size: 1.1rem; margin: 5px 0;">❌ <strong>Inconsistência</strong>: Dados diferentes para o mesmo conceito.</p>
+          <p style="font-size: 1.1rem; margin: 5px 0;">❌ <strong>Insegurança</strong>: Falta de controle refinado de quem acessa o quê.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: MODELO RELACIONAL -->
+    <section>
+      <h2>🚀 O Modelo Relacional (1970)</h2>
+      <ul>
+        <li>Proposto pelo matemático <strong>Edgar F. Codd (IBM)</strong>.</li>
+        <li>Propôs organizar informações em <strong>tabelas (linhas e colunas)</strong> ligadas entre si.</li>
+        <li>Criou as bases matemáticas para os bancos de dados modernos e para a linguagem SQL.</li>
+      </ul>
+      <blockquote style="margin-top: 25px;">
+        "O Modelo Relacional separou definitivamente a forma como o usuário vê as informações (lógica) da forma como são guardadas no disco (física)."
+      </blockquote>
+    </section>
+
+    <!-- SLIDE 11: TRANSIÇÃO PARTE 3 -->
+    <section style="background-color: #2a9d8f;">
+      <h2 style="color: #e9c46a;">Parte 3</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">O que é Banco de Dados e SGBD?</h1>
+      <p>A arquitetura de software para gerência de dados em larga escala.</p>
+    </section>
+
+    <!-- SLIDE 12: CONCEITUAÇÃO BD E SGBD -->
+    <section>
+      <h2>🖥️ Definições Fundamentais</h2>
+      <div class="colunas">
+        <div class="coluna" style="background-color: #264653; padding: 15px; border-radius: 8px;">
+          <h3 style="color:#f4a261; font-size:1.3rem; margin-top:0;">Banco de Dados</h3>
+          <p style="font-size:1.1rem;">Coleção lógica e coerente de dados correlacionados com algum significado inerente, simulando as regras de um <strong>mini-mundo real</strong> (ex: Escola, E-commerce).</p>
+        </div>
+        <div class="coluna" style="background-color: #264653; padding: 15px; border-radius: 8px;">
+          <h3 style="color:#2a9d8f; font-size:1.3rem; margin-top:0;">SGBD</h3>
+          <p style="font-size:1.1rem;">Software intermediário que gerencia o acesso, a integridade física, a segurança contra falhas e as consultas ao Banco de Dados (ex: MySQL, Postgres, SQL Server).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13: TRANSIÇÃO PARTE 4 -->
+    <section style="background-color: #e76f51;">
+      <h2 style="color: #e9c46a;">Parte 4</h2>
+      <h1 style="color: #fff; font-size: 2.5rem;">Abstração de Dados</h1>
+      <p>Entendendo a Arquitetura de Três Esquemas (ANSI/SPARC).</p>
+    </section>
+
+    <!-- SLIDE 14: OS 3 NÍVEIS -->
+    <section>
+      <h2>🏗️ A Arquitetura ANSI/SPARC</h2>
+      <p>Os bancos de dados modernos se organizam em 3 camadas de abstração:</p>
+      <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: #2a9d8f; padding: 10px; border-radius: 5px;">
+          <strong style="color: #e9c46a;">1. Nível Externo (Visão)</strong> — Como as visões de usuários finais e aplicativos são exibidas.
+        </div>
+        <div style="background: #264653; padding: 10px; border-radius: 5px;">
+          <strong style="color: #f4a261;">2. Nível Conceitual (Lógico)</strong> — Quais dados existem e como estão estruturados (tabelas e chaves).
+        </div>
+        <div style="background: #1d3557; padding: 10px; border-radius: 5px;">
+          <strong style="color: #90e0ef;">3. Nível Interno (Físico)</strong> — Como os arquivos binários de dados estão alocados nos discos do servidor.
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 15: INDEPENDÊNCIA -->
+    <section>
+      <h2>🔄 Independência de Dados</h2>
+      <ul>
+        <li><strong>Física:</strong> Capacidade de mudar a estrutura física (ex: migrar do HD para o SSD, ou alterar indexadores de disco) sem precisar modificar as tabelas ou consultas SQL lógicas.</li>
+        <li><strong>Lógica:</strong> Capacidade de alterar a estrutura de tabelas (ex: adicionar campos) sem quebrar as aplicações antigas (usando <em>Views</em> de segurança).</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 16: PRÁTICA GUIADA -->
+    <section>
+      <h2>💻 Prática Guiada: O Sistema SICE</h2>
+      <p>Vamos esquematizar no quadro o fluxo do sistema escolar da nossa escola:</p>
+      <ul style="margin-top: 20px;">
+        <li>Identificar os <strong class="destaque">Dados</strong> e as <strong class="destaque">Informações</strong> no boletim escolar.</li>
+        <li>Identificar os <strong class="destaque">Metadados</strong> das notas de aprovação da escola.</li>
+        <li>Quais seriam as <strong class="destaque">Visões Externas</strong> de alunos, pais, professores e diretores?</li>
+      </ul>
+    </section>
+
+    <!-- SLIDE 17: DESAFIO PRÁTICO -->
+    <section>
+      <h2>🏆 Desafio Prático Individual</h2>
+      <ul>
+        <li>Abra o arquivo <code>runbook-2026-08-04-conceitos-iniciais.md</code> no seu ambiente.</li>
+        <li>Responda às questões de classificação e fixação.</li>
+        <li>Foco principal: Fixar a diferença de dados e metadados e os níveis ANSI/SPARC.</li>
+      </ul>
+      <p style="margin-top:30px; font-weight: bold;" class="destaque">Tempo: 10 - 15 minutos</p>
+    </section>
+
+    <!-- SLIDE 18: RESUMO E ENCERRAMENTO -->
+    <section>
+      <h2>✅ Resumo de Hoje</h2>
+      <ul>
+        <li><strong>Dado</strong> (cru) $\rightarrow$ <strong>Informação</strong> (contexto) $\rightarrow$ <strong>Fato</strong> (histórico imutável).</li>
+        <li><strong>Metadados</strong>: O mapeamento e a estrutura lógica do banco.</li>
+        <li><strong>SGBD</strong>: O motor de software que assegura a integridade de dados.</li>
+        <li><strong>ANSI/SPARC</strong>: Arquitetura física, conceitual e de visão.</li>
+      </ul>
+      <p style="margin-top: 30px;">Próxima aula: <span class="destaque">Introdução ao Modelo Relacional</span></p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    plugins: [RevealHighlight]
+  });
+</script>
+</body>
+</html>

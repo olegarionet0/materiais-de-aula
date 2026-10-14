@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Camada de Transporte: TCP x UDP</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Camada de Transporte</h2>
+					<h3>O Correio da Internet</h3>
+					<p>TCP, UDP e Portas Lógicas</p>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<section>
+					<h3>A Camada de Transporte</h3>
+					<p>A Camada de Rede (IP) encontra o caminho da origem até a máquina de destino.</p>
+					<p>Mas, dentro da máquina, qual aplicativo deve receber a mensagem? O Navegador? O Jogo? O Spotify?</p>
+					<p><strong>A resposta:</strong> Portas Lógicas.</p>
+					<aside class="notes">
+						ANALOGIA DO CONDOMÍNIO (Fale isso para a turma):<br>
+						- Endereço MAC (Enlace): É o chassi do carro do carteiro.<br>
+						- IP (Rede): É o CEP e o número do prédio. Faz o pacote chegar na portaria correta.<br>
+						- Porta Lógica (Transporte): É o número do apartamento. Não adianta entregar no prédio se não souber se o pacote é pro navegador (80) ou pro jogo (aleatória).
+					</aside>
+				</section>
+
+				<section>
+					<h3>TCP: Transmission Control Protocol</h3>
+					<ul>
+						<li><strong>Confiável:</strong> Garante que o pacote chegou. Se perder, retransmite.</li>
+						<li><strong>Orientado à Conexão:</strong> Faz um "acordo" antes de enviar dados.</li>
+						<li><strong>Ordenado:</strong> Monta as peças na ordem correta.</li>
+						<li><strong>Analogia:</strong> Correio com Aviso de Recebimento (AR).</li>
+						<li><strong>Uso:</strong> E-mail, Navegação Web, Transferência de Arquivos.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>O 3-Way Handshake do TCP</h3>
+					<p>Antes de enviar dados, o TCP faz 3 passos:</p>
+					<ol>
+						<li><strong>Cliente:</strong> "SYN" (Quero conectar, você me ouve?)</li>
+						<li><strong>Servidor:</strong> "SYN-ACK" (Ouço sim, e eu, você ouve?)</li>
+						<li><strong>Cliente:</strong> "ACK" (Ouço sim, vamos começar!)</li>
+					</ol>
+					<aside class="notes">
+						DICA FGV: As bancas amam cobrar a ordem exata das flags: SYN -> SYN-ACK -> ACK. Pense num telefonema: "Alô?" -> "Tô ouvindo, quem é?" -> "Sou eu, vou começar a falar".<br><br>
+						PORTAS EFÊMERAS: Lembre os alunos que a porta de destino é a 80 ou 443, mas a porta de origem do cliente (PC do aluno) NUNCA é a 443! O SO escolhe uma porta alta e aleatória (ex: 51324) para saber para qual aba do navegador ele deve devolver a resposta quando o servidor responder.
+					</aside>
+				</section>
+
+				<section>
+					<h3>UDP: User Datagram Protocol</h3>
+					<ul>
+						<li><strong>Rápido:</strong> Não confere se chegou.</li>
+						<li><strong>Sem Conexão:</strong> Apenas dispara os dados.</li>
+						<li><strong>Sem retransmissão:</strong> Se perder, perdeu. A vida segue.</li>
+						<li><strong>Analogia:</strong> Transmissão de rádio FM.</li>
+						<li><strong>Uso:</strong> Streaming de Vídeo, Jogos Online, VoIP (Ligação).</li>
+					</ul>
+					<aside class="notes">
+						O MITO DO UDP SER RUIM:<br>
+						Alunos acham que UDP é ruim porque perde pacote. Diga a eles: "Imagine jogar CS:GO via TCP. Se perder um pacote indicando a posição do inimigo, o jogo trava esperando retransmitir o dado antigo. No UDP, você dá uma travadinha de 1ms, perde o passado, e já recebe a nova posição atualizada no próximo quadro. Para vídeo e jogos em tempo real, o atraso é infinitamente pior que a perda de 1 pixel!"
+					</aside>
+				</section>
+
+				<section>
+					<h3>As Portas Lógicas de Ouro</h3>
+					<table>
+						<thead>
+							<tr><th>Porta</th><th>Serviço</th><th>Protocolo</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>80</td><td>HTTP (Web Aberta)</td><td>TCP</td></tr>
+							<tr><td>443</td><td>HTTPS (Web Segura)</td><td>TCP</td></tr>
+							<tr><td>53</td><td>DNS (Nomes p/ IP)</td><td>UDP</td></tr>
+							<tr><td>22</td><td>SSH (Acesso Remoto)</td><td>TCP</td></tr>
+							<tr><td>20/21</td><td>FTP (Arquivos)</td><td>TCP</td></tr>
+						</tbody>
+					</table>
+					<aside class="notes">
+						DICA FGV: O DNS opera em ambos! UDP para consultas normais de clientes (rápido e pequeno), e TCP para "Transferência de Zonas" entre servidores DNS (exige confiabilidade). Na dúvida genérica, a banca dá gabarito como UDP (Porta 53).<br><br>
+						Diga à turma: "Memorizar essas 5 portas resolve 90% das questões de provas técnicas de nível médio."
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+			});
+		</script>
+	</body>
+</html>
