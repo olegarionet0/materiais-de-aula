@@ -11,6 +11,8 @@ status: "concluído"
 
 ### 📋 Notas do Professor
 * [ ] Projetar a imagem do wireframe de referência na lousa.
+* [ ] Demonstrar o erro clássico de aninhamento: elemento posicionado visualmente sobre a tela, mas fora da camada do Frame (não aparece no play).
+* [ ] Ensinar o atalho `Ctrl + Clique` para seleção direta e o uso do cadeado para travar o background.
 * [ ] Lembrar os alunos que a tela de Login e Cadastro são similares (eles devem copiar/colar blocos para ganhar tempo).
 * [ ] Reforçar que o bônus do "Content Reel" é independente e só deve ser feito após a estrutura das 3 telas estar pronta.
 
@@ -73,6 +75,20 @@ Para garantir o alinhamento perfeito, construa o seu wireframe respeitando exata
   * Proporção da Capa: `120 x 180`
   * Arredondamento: `8px`
   * Distância entre os filmes (`Gap`): `16px`
+
+---
+
+## ⚡ Dicas de Ouro & Atalhos de Produtividade
+
+* **Hierarquia e Camadas:**
+  * Camadas no topo da lista ficam **à frente** no visual.
+  * **Travar Background:** use o ícone de **cadeado** na imagem de fundo para evitar movê-la sem querer ao arrastar outros elementos.
+  * **Seleção Direta:** segure `Ctrl + Clique` para selecionar diretamente um item aninhado dentro de um grupo ou frame sem precisar caçá-lo na árvore de camadas.
+* **Atenção à "Pegadinha do Frame":**
+  * Se um botão ou card sumir quando você der Play no protótipo, verifique se a camada está realmente **dentro** do Frame na barra esquerda.
+  * Se estiver fora: dê `Ctrl + X` no objeto, clique no título do Frame e aperte `Ctrl + V`.
+* **Componentes Reutilizáveis:**
+  * Crie ícones ou botões-padrão e transforme-os em componentes (`Ctrl + Alt + K`). Ao duplicá-los entre Login, Cadastro e Home, qualquer ajuste no original atualizará todas as instâncias.
 
 ---
 

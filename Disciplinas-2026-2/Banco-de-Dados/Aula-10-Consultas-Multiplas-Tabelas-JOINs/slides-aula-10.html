@@ -154,37 +154,74 @@
 				<section>
 					<h2>Por que dividir em tabelas?</h2>
 					
-					<div class="card-alerta fragment fade-up">
-						❌ <strong>Tabela Única (Desastre de Engenharia):</strong><br>
-						Se colocarmos o nome da categoria escrito em cada produto, repetiremos 'Eletrônicos' 1.000 vezes. Se a categoria mudar para 'Tecnologia', teremos que alterar 1.000 linhas no banco!
+					<div class="grid-2">
+						<div class="card-alerta fragment fade-up" style="margin: 0;">
+							❌ <strong>Tabela Única (Desastre):</strong><br>
+							Repetir 'Eletrônicos' 1.000 vezes. Se a categoria mudar para 'Tecnologia', teremos que alterar 1.000 linhas!
+						</div>
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #50fa7b;">
+							✔️ <strong>Solução Relacional (Normalização):</strong><br>
+							Criamos a tabela <code>categorias</code> e em <code>produtos</code> guardamos só a Chave Estrangeira (<code>categoria_id</code>).
+						</div>
 					</div>
 
-					<div class="card-box fragment fade-up" style="border-left-color: #50fa7b;">
-						✔️ <strong>Solução Relacional (Normalização):</strong><br>
-						Criamos a tabela <code>categorias</code> (com <code>id</code> e <code>nome</code>) e na tabela <code>produtos</code> guardamos apenas a Chave Estrangeira (<code>categoria_id</code>).
-					</div>
+					<!-- Diagrama Ampliado e em Alta Resolução da Ligação FK -> PK -->
+					<div class="fragment fade-up" style="margin-top: 25px;">
+						<svg class="venn-svg" viewBox="0 0 1040 220" style="width: 100%; max-width: 1150px; height: 230px;">
+							<!-- TABELA PRODUTOS (ESQUERDA) -->
+							<g>
+								<rect x="10" y="10" width="430" height="195" rx="12" fill="#1e1f29" stroke="#8be9fd" stroke-width="3"/>
+								<rect x="10" y="10" width="430" height="46" rx="12" fill="#282a36"/>
+								<text x="225" y="40" fill="#8be9fd" font-size="21" font-weight="bold" text-anchor="middle">TABELA produtos</text>
+								
+								<!-- Cabeçalho das Colunas -->
+								<rect x="10" y="56" width="430" height="34" fill="rgba(255,255,255,0.06)"/>
+								<text x="35" y="79" fill="#bd93f9" font-size="16" font-weight="bold">id</text>
+								<text x="135" y="79" fill="#bd93f9" font-size="16" font-weight="bold">nome</text>
+								<text x="340" y="79" fill="#50fa7b" font-size="16" font-weight="bold" text-anchor="middle">categoria_id (FK)</text>
 
-					<!-- Diagrama Ilustrativo Vetorial da Ponte PK -> FK -->
-					<div class="fragment fade-up" style="margin-top: 20px;">
-						<svg class="venn-svg" viewBox="0 0 760 140" style="max-width: 720px; height: 120px;">
-							<!-- Tabela Produtos -->
-							<rect x="20" y="20" width="280" height="95" rx="10" fill="#282a36" stroke="#8be9fd" stroke-width="2.5"/>
-							<rect x="20" y="20" width="280" height="30" rx="10" fill="#44475a"/>
-							<text x="160" y="41" fill="#8be9fd" font-size="16" font-weight="bold" text-anchor="middle">TABELA produtos</text>
-							<text x="35" y="75" fill="#f8f8f2" font-size="14">id: 101 | nome: 'Mouse'</text>
-							<text x="35" y="98" fill="#50fa7b" font-weight="bold" font-size="14">categoria_id: 1 (FK)</text>
+								<!-- Linha 1 (Correspondente) -->
+								<text x="35" y="122" fill="#f8f8f2" font-size="18">101</text>
+								<text x="135" y="122" fill="#f8f8f2" font-size="18">'Mouse Gamer'</text>
+								<rect x="310" y="100" width="60" height="32" rx="6" fill="rgba(80, 250, 123, 0.25)" stroke="#50fa7b" stroke-width="2"/>
+								<text x="340" y="123" fill="#50fa7b" font-size="20" font-weight="900" text-anchor="middle">1</text>
 
-							<!-- Seta de Ligação (Ponte) -->
-							<path d="M 305 95 L 435 95" stroke="#f1fa8c" stroke-width="3.5" stroke-dasharray="6,4" fill="none"/>
-							<polygon points="445,95 432,88 432,102" fill="#f1fa8c"/>
-							<text x="370" y="82" fill="#f1fa8c" font-size="13" font-weight="bold" text-anchor="middle">ON FK = PK</text>
+								<!-- Linha 2 -->
+								<text x="35" y="172" fill="#6272a4" font-size="18">102</text>
+								<text x="135" y="172" fill="#6272a4" font-size="18">'Teclado RGB'</text>
+								<text x="340" y="172" fill="#6272a4" font-size="18" text-anchor="middle">1</text>
+							</g>
 
-							<!-- Tabela Categorias -->
-							<rect x="450" y="20" width="280" height="95" rx="10" fill="#282a36" stroke="#50fa7b" stroke-width="2.5"/>
-							<rect x="450" y="20" width="280" height="30" rx="10" fill="#44475a"/>
-							<text x="590" y="41" fill="#50fa7b" font-size="16" font-weight="bold" text-anchor="middle">TABELA categorias</text>
-							<text x="465" y="75" fill="#50fa7b" font-weight="bold" font-size="14">id: 1 (PK)</text>
-							<text x="465" y="98" fill="#f8f8f2" font-size="14">nome: 'Periféricos'</text>
+							<!-- PONTE DE LIGAÇÃO (SETA E BADGE) -->
+							<g>
+								<path d="M 375 116 L 620 116" stroke="#f1fa8c" stroke-width="4.5" stroke-dasharray="9,5" fill="none"/>
+								<polygon points="635,116 618,107 618,125" fill="#f1fa8c"/>
+								
+								<!-- Badge de Junção -->
+								<rect x="420" y="80" width="170" height="36" rx="8" fill="#1e1f29" stroke="#f1fa8c" stroke-width="2.5"/>
+								<text x="505" y="103" fill="#f1fa8c" font-size="15" font-weight="bold" text-anchor="middle">ON FK = PK</text>
+							</g>
+
+							<!-- TABELA CATEGORIAS (DIREITA) -->
+							<g>
+								<rect x="640" y="10" width="390" height="195" rx="12" fill="#1e1f29" stroke="#50fa7b" stroke-width="3"/>
+								<rect x="640" y="10" width="390" height="46" rx="12" fill="#282a36"/>
+								<text x="835" y="40" fill="#50fa7b" font-size="21" font-weight="bold" text-anchor="middle">TABELA categorias</text>
+								
+								<!-- Cabeçalho das Colunas -->
+								<rect x="640" y="56" width="390" height="34" fill="rgba(255,255,255,0.06)"/>
+								<text x="705" y="79" fill="#50fa7b" font-size="16" font-weight="bold" text-anchor="middle">id (PK)</text>
+								<text x="850" y="79" fill="#bd93f9" font-size="16" font-weight="bold">nome</text>
+
+								<!-- Linha 1 (Correspondente) -->
+								<rect x="675" y="100" width="60" height="32" rx="6" fill="rgba(80, 250, 123, 0.25)" stroke="#50fa7b" stroke-width="2"/>
+								<text x="705" y="123" fill="#50fa7b" font-size="20" font-weight="900" text-anchor="middle">1</text>
+								<text x="850" y="122" fill="#f8f8f2" font-size="18">'Periféricos'</text>
+
+								<!-- Linha 2 -->
+								<text x="705" y="172" fill="#6272a4" font-size="18" text-anchor="middle">2</text>
+								<text x="850" y="172" fill="#6272a4" font-size="18">'Monitores'</text>
+							</g>
 						</svg>
 					</div>
 
@@ -211,26 +248,26 @@ INNER JOIN categorias AS c ON p.categoria_id = c.id;</code></pre>
 						
 						<!-- Diagrama de Venn: INNER JOIN -->
 						<div class="fragment fade-up">
-							<svg class="venn-svg" viewBox="0 0 340 220" style="width: 100%; max-width: 320px;">
+							<svg class="venn-svg" viewBox="0 0 360 230" style="width: 100%; max-width: 380px;">
 								<defs>
 									<!-- Máscara de interseção -->
 									<clipPath id="clip-intersecao">
-										<circle cx="120" cy="110" r="75" />
+										<circle cx="130" cy="115" r="80" />
 									</clipPath>
 								</defs>
 								<!-- Círculo Esquerda (Produtos) -->
-								<circle cx="120" cy="110" r="75" fill="#282a36" stroke="#8be9fd" stroke-width="3" opacity="0.8"/>
+								<circle cx="130" cy="115" r="80" fill="#282a36" stroke="#8be9fd" stroke-width="3" opacity="0.8"/>
 								<!-- Círculo Direita (Categorias) -->
-								<circle cx="220" cy="110" r="75" fill="#282a36" stroke="#bd93f9" stroke-width="3" opacity="0.8"/>
+								<circle cx="230" cy="115" r="80" fill="#282a36" stroke="#bd93f9" stroke-width="3" opacity="0.8"/>
 								<!-- Área Central de Interseção (Destaque Verde) -->
-								<circle cx="220" cy="110" r="75" fill="#50fa7b" clip-path="url(#clip-intersecao)" opacity="0.95"/>
+								<circle cx="230" cy="115" r="80" fill="#50fa7b" clip-path="url(#clip-intersecao)" opacity="0.95"/>
 								<!-- Legendas -->
-								<text x="80" y="115" fill="#8be9fd" font-size="14" font-weight="bold" text-anchor="middle">Produtos</text>
-								<text x="260" y="115" fill="#bd93f9" font-size="14" font-weight="bold" text-anchor="middle">Categorias</text>
-								<text x="170" y="115" fill="#282a36" font-size="13" font-weight="900" text-anchor="middle">MATCH</text>
+								<text x="85" y="120" fill="#8be9fd" font-size="16" font-weight="bold" text-anchor="middle">Produtos</text>
+								<text x="275" y="120" fill="#bd93f9" font-size="16" font-weight="bold" text-anchor="middle">Categorias</text>
+								<text x="180" y="120" fill="#282a36" font-size="15" font-weight="900" text-anchor="middle">MATCH</text>
 								<!-- Rótulo Inferior -->
-								<rect x="70" y="195" width="200" height="25" rx="6" fill="#50fa7b"/>
-								<text x="170" y="212" fill="#282a36" font-size="13" font-weight="bold" text-anchor="middle">INNER JOIN: Só Pares Válidos</text>
+								<rect x="70" y="202" width="220" height="26" rx="6" fill="#50fa7b"/>
+								<text x="180" y="220" fill="#282a36" font-size="14" font-weight="bold" text-anchor="middle">INNER JOIN: Só Pares Válidos</text>
 							</svg>
 						</div>
 					</div>
@@ -294,17 +331,17 @@ WHERE c.setor = 'Tecnologia' AND p.preco > 150.00;</code></pre>
 							<p><span class="destaque-vermelho">Resultado:</span> O 'Cabo Adaptador USB' (sem categoria) <strong>some</strong> do relatório!</p>
 							
 							<!-- Mini Venn INNER -->
-							<svg viewBox="0 0 260 130" style="width: 100%; max-width: 220px; display: block; margin: 10px auto;">
+							<svg viewBox="0 0 260 135" style="width: 100%; max-width: 260px; display: block; margin: 12px auto;">
 								<defs>
 									<clipPath id="clip-in-mini">
-										<circle cx="95" cy="65" r="50"/>
+										<circle cx="95" cy="65" r="52"/>
 									</clipPath>
 								</defs>
-								<circle cx="95" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2"/>
-								<circle cx="165" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2"/>
-								<circle cx="165" cy="65" r="50" fill="#ffb86c" clip-path="url(#clip-in-mini)"/>
-								<text x="65" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">A</text>
-								<text x="195" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">B</text>
+								<circle cx="95" cy="65" r="52" fill="#282a36" stroke="#6272a4" stroke-width="2.5"/>
+								<circle cx="165" cy="65" r="52" fill="#282a36" stroke="#6272a4" stroke-width="2.5"/>
+								<circle cx="165" cy="65" r="52" fill="#ffb86c" clip-path="url(#clip-in-mini)"/>
+								<text x="65" y="70" fill="#f8f8f2" font-size="14" font-weight="bold">A</text>
+								<text x="195" y="70" fill="#f8f8f2" font-size="14" font-weight="bold">B</text>
 							</svg>
 						</div>
 
@@ -315,12 +352,12 @@ WHERE c.setor = 'Tecnologia' AND p.preco > 150.00;</code></pre>
 							<p><span class="destaque-verde">Resultado:</span> O 'Cabo Adaptador USB' aparece com categoria <code>NULL</code>.</p>
 							
 							<!-- Mini Venn LEFT -->
-							<svg viewBox="0 0 260 130" style="width: 100%; max-width: 220px; display: block; margin: 10px auto;">
+							<svg viewBox="0 0 260 135" style="width: 100%; max-width: 260px; display: block; margin: 12px auto;">
 								<!-- Círculo A Inteiro Preenchido -->
-								<circle cx="95" cy="65" r="50" fill="#50fa7b" opacity="0.9"/>
-								<circle cx="165" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2" opacity="0.8"/>
-								<text x="65" y="70" fill="#282a36" font-size="11" font-weight="bold">A (Tudo)</text>
-								<text x="195" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">B</text>
+								<circle cx="95" cy="65" r="52" fill="#50fa7b" opacity="0.95"/>
+								<circle cx="165" cy="65" r="52" fill="#282a36" stroke="#6272a4" stroke-width="2.5" opacity="0.8"/>
+								<text x="65" y="71" fill="#282a36" font-size="14" font-weight="900">A (Tudo)</text>
+								<text x="195" y="71" fill="#f8f8f2" font-size="14" font-weight="bold">B</text>
 							</svg>
 						</div>
 					</div>
