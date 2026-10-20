@@ -39,15 +39,23 @@ data: 2026-10-20
 
 ---
 
-## 🧼 Passo 3: Limpeza dos Contatos Dourados
+## 🧼 Passo 3: Limpeza dos Contatos Dourados e do Slot
 
 1. Apoie o pente de memória sobre a bancada limpa ou sobre a própria tampa do gabinete.
-2. Passe a **borracha branca escolar macia** sobre os contatos dourados:
+2. **Limpeza Mecânica (Borracha Branca):**
+   * Passe a **borracha branca escolar macia** sobre os contatos dourados.
    * Movimento suave, sempre em **sentido único** (de dentro para fora).
    * ⚠️ **Atenção:** Não esfregue com força excessiva para não arrancar componentes minúsculos soldados acima dos contatos.
    * Faça o mesmo procedimento no outro lado dos contatos.
-3. Com o **pincel seco e macio**, varra completamente todas as fagulhas e farelos de borracha do pente.
-4. Use o pincel para varrer levemente o interior do **slot da placa-mãe**, removendo qualquer poeira acumulada.
+3. **Remoção de Resíduos:**
+   * Com o **pincel seco e macio**, varra completamente todas as fagulhas e farelos de borracha do pente.
+4. **Limpeza Química dos Contatos (Álcool Isopropílico):**
+   * Umedeça levemente a ponta do pincel ou uma haste flexível com **álcool isopropílico** e passe suavemente nos contatos dourados para desengordurar e remover qualquer película restante.
+5. **Limpeza do Slot da Placa-Mãe (Spray Limpa Contato):**
+   * Passe o pincel seco no interior do slot para remover poeira solta.
+   * Encaixe o canudo extensor na lata do **spray limpa contato**.
+   * Aplique um jato rápido e direto (1 segundo) ao longo da ranhura do **slot de memória**.
+   * ⏱️ **Regra de Secagem:** Aguarde **1 a 2 minutos** para a evaporação total do produto químico antes de reencaixar o pente e ligar a máquina na tomada.
 
 ---
 
