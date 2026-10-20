@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Consultas com Múltiplas Tabelas: JOINs no VS Code — Banco de Dados | EEEP-AFS</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+		<style>
+			.reveal { font-size: 1.8rem; }
+			.reveal h1, .reveal h2, .reveal h3 { color: #f1fa8c; font-weight: bold; }
+			.reveal p, .reveal li { line-height: 1.45; font-size: 1.4rem; }
+			.reveal pre {
+				font-size: 1.35rem !important;
+				width: 100% !important;
+				margin: 14px auto !important;
+				box-shadow: 0 4px 18px rgba(0,0,0,0.6) !important;
+				border: 1px solid rgba(255,255,255,0.18) !important;
+				border-radius: 8px !important;
+			}
+			.reveal pre code {
+				font-family: 'Consolas', 'Fira Code', 'Courier New', monospace !important;
+				font-size: 1.35rem !important;
+				line-height: 1.45 !important;
+				padding: 16px 22px !important;
+				max-height: 520px !important;
+			}
+			.destaque-verde { color: #50fa7b; font-weight: bold; }
+			.destaque-amarelo { color: #f1fa8c; font-weight: bold; }
+			.destaque-vermelho { color: #ff5555; font-weight: bold; }
+			.destaque-azul { color: #8be9fd; font-weight: bold; }
+			.card-box {
+				background: rgba(255, 255, 255, 0.07);
+				border-left: 6px solid #50fa7b;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 16px 0;
+				text-align: left;
+			}
+			.card-alerta {
+				background: rgba(255, 85, 85, 0.18);
+				border-left: 6px solid #ff5555;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 16px 0;
+				text-align: left;
+			}
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 20px;
+				text-align: left;
+			}
+			.tag-aula {
+				display: inline-block;
+				background: #bd93f9;
+				color: #282a36;
+				padding: 4px 14px;
+				border-radius: 12px;
+				font-size: 1.1rem;
+				font-weight: bold;
+				margin-bottom: 12px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- SLIDE 1: CAPA -->
+				<section style="text-align: center;">
+					<span class="tag-aula">EEEP-AFS · 2º Ano DS · Banco de Dados</span>
+					<h1 style="font-size: 2.5rem; margin-top: 10px;">Consultas com JOINs</h1>
+					<h2 style="font-size: 1.9rem; color: #50fa7b;">INNER JOIN, LEFT JOIN & O Novo Ambiente VS Code</h2>
+					<p style="margin-top: 25px; font-size: 1.3rem;">Prof. Olegário Neto</p>
+					<div class="card-box" style="display: inline-block; margin-top: 15px;">
+						💻 <strong>Prática de Laboratório:</strong> 100 minutos no VS Code com extensão MySQL
+					</div>
+					<aside class="notes">
+						ACOLHIMENTO:<br>
+						Parabenize a turma pela conclusão das queries de uma tabela só. Hoje damos o maior salto conceitual do semestre: conectar tabelas através de Chaves Estrangeiras (JOINs), e estreamos o VS Code como ambiente oficial de desenvolvimento de banco de dados.
+					</aside>
+				</section>
+
+				<!-- SLIDE 2: NOVO AMBIENTE - VS CODE -->
+				<section>
+					<h2>🚀 Novo Ambiente: VS Code + Extensão MySQL</h2>
+					<div class="grid-2">
+						<div class="card-box">
+							<h3 style="color: #8be9fd; margin-top:0;">1. Conexão</h3>
+							<p>Abra o VS Code ➔ Ícone de Banco na barra lateral esquerda.</p>
+							<ul>
+								<li><strong>Host:</strong> <code>localhost</code></li>
+								<li><strong>Port:</strong> <code>3306</code></li>
+								<li><strong>User:</strong> <code>root</code> (sem senha)</li>
+							</ul>
+						</div>
+						<div class="card-box">
+							<h3 style="color: #50fa7b; margin-top:0;">2. Atalho de Ouro</h3>
+							<p>Crie o arquivo <code>joins_aula10.sql</code>.</p>
+							<p>Para rodar qualquer comando SQL:</p>
+							<p style="font-size: 1.8rem; text-align: center; color: #f1fa8c; font-weight: bold; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;">
+								Ctrl + Enter
+							</p>
+						</div>
+					</div>
+					<aside class="notes">
+						ORIENTAÇÃO DE BANCADA:<br>
+						Passe nas bancadas garantindo que todos abriram a conexão e estão no arquivo .sql. Chega de phpMyAdmin; agora estamos usando fluxo profissional de código.
+					</aside>
+				</section>
+
+				<!-- SLIDE 3: O PROBLEMA RELACIONAL -->
+				<section>
+					<h2>Por que dividir em tabelas?</h2>
+					<div class="card-alerta">
+						❌ <strong>Tabela Única (Desastre de Engenharia):</strong><br>
+						Se colocarmos o nome da categoria escrito em cada produto, repetiremos 'Eletrônicos' 1.000 vezes. Se a categoria mudar para 'Tecnologia', teremos que alterar 1.000 linhas!
+					</div>
+					<div class="card-box">
+						✔️ <strong>Solução Relacional (Normalização):</strong><br>
+						Criamos a tabela <code>categorias</code> (com ID e nome) e na tabela <code>produtos</code> guardamos apenas o número da categoria (<code>categoria_id</code>).
+					</div>
+					<aside class="notes">
+						CONCEITO:<br>
+						Isso é Integridade Referencial. Evita inconsistência (ex: alguém digitar 'Eletro' e outro digitar 'Eletronicos').
+					</aside>
+				</section>
+
+				<!-- SLIDE 4: INNER JOIN -->
+				<section>
+					<h2>O Primeiro INNER JOIN</h2>
+					<p>Junta duas tabelas buscando apenas onde há correspondência mútua:</p>
+					<pre><code class="language-sql">SELECT p.nome AS produto, p.preco, c.nome AS categoria
+FROM produtos AS p
+INNER JOIN categorias AS c ON p.categoria_id = c.id;</code></pre>
+					<div class="card-box">
+						📌 <strong>Entendendo a anatomia:</strong>
+						<ul>
+							<li><code>p</code> e <code>c</code> são <strong>Aliases (Apelidos)</strong> para encurtar a escrita.</li>
+							<li><code>ON p.categoria_id = c.id</code> é a <strong>ponte</strong>: compara a Chave Estrangeira da tabela filho com a Chave Primária da tabela pai.</li>
+						</ul>
+					</div>
+					<aside class="notes">
+						DESTAQUE PEDAGÓGICO:<br>
+						Sem a cláusula ON, o banco faz um Produto Cartesiano (multiplica todas as linhas por todas as linhas). O ON é o filtro de ligação!
+					</aside>
+				</section>
+
+				<!-- SLIDE 5: DESAFIOS 1 E 2 -->
+				<section>
+					<h2>⚡ Desafios 1 & 2 no VS Code</h2>
+					<div class="card-box">
+						<p><strong>Desafio 1:</strong> Escreva o INNER JOIN entre produtos e categorias, ordenando alfabeticamente pelo nome da categoria (<code>ORDER BY c.nome ASC</code>).</p>
+					</div>
+					<div class="card-box">
+						<p><strong>Desafio 2:</strong> Adicione uma cláusula <code>WHERE</code> após o JOIN para filtrar apenas produtos do setor <code>'Tecnologia'</code> com preço maior que <code>150.00</code>.</p>
+					</div>
+					<aside class="notes">
+						TEMPO: 8 minutos de bancada. Deixe os alunos tentarem antes de passar para o slide de gabarito.
+					</aside>
+				</section>
+
+				<!-- SLIDE 6: GABARITO DESAFIOS 1 E 2 -->
+				<section>
+					<h2>✅ Gabarito: Desafios 1 & 2</h2>
+					<pre><code class="language-sql">-- Desafio 1: INNER JOIN com Ordenação
+SELECT p.nome AS produto, p.preco, c.nome AS categoria
+FROM produtos AS p
+INNER JOIN categorias AS c ON p.categoria_id = c.id
+ORDER BY c.nome ASC;
+
+-- Desafio 2: INNER JOIN com Filtro WHERE
+SELECT p.nome AS produto, p.preco, c.nome AS categoria, c.setor
+FROM produtos AS p
+INNER JOIN categorias AS c ON p.categoria_id = c.id
+WHERE c.setor = 'Tecnologia' AND p.preco > 150.00;</code></pre>
+					<aside class="notes">
+						COMENTÁRIO:<br>
+						Mostre que a ordem das cláusulas na SQL é sagrada: SELECT -> FROM -> INNER JOIN ... ON -> WHERE -> ORDER BY.
+					</aside>
+				</section>
+
+				<!-- SLIDE 7: INNER JOIN vs LEFT JOIN -->
+				<section>
+					<h2>E se um produto não tiver categoria?</h2>
+					<div class="grid-2">
+						<div class="card-box" style="border-left-color: #ffb86c;">
+							<h3 style="color: #ffb86c; margin-top:0;">INNER JOIN</h3>
+							<p>É rigoroso. Só traz registros que possuem correspondência nas <strong>duas tabelas</strong>.</p>
+							<p><span class="destaque-vermelho">Resultado:</span> O 'Cabo Adaptador USB' (sem categoria) <strong>some</strong> do relatório!</p>
+						</div>
+						<div class="card-box" style="border-left-color: #50fa7b;">
+							<h3 style="color: #50fa7b; margin-top:0;">LEFT JOIN</h3>
+							<p>Preserva <strong>todos os registros da tabela da esquerda</strong> (produtos), mesmo sem par na direita.</p>
+							<p><span class="destaque-verde">Resultado:</span> O 'Cabo Adaptador USB' aparece com categoria <code>NULL</code>.</p>
+						</div>
+					</div>
+					<aside class="notes">
+						ANALOGIA DA LISTA DE CHAMADA:<br>
+						INNER JOIN = Só entram os alunos que trouxeram autorização.<br>
+						LEFT JOIN = Lista todos os alunos da turma; quem não trouxe autorização fica com o campo em branco (NULL).
+					</aside>
+				</section>
+
+				<!-- SLIDE 8: SINTAXE DO LEFT JOIN E AUDITORIA -->
+				<section>
+					<h2>LEFT JOIN na Prática (Auditoria de Dados)</h2>
+					<pre><code class="language-sql">-- Traz TODOS os produtos, com ou sem categoria:
+SELECT p.nome AS produto, p.preco, c.nome AS categoria
+FROM produtos AS p
+LEFT JOIN categorias AS c ON p.categoria_id = c.id;
+
+-- Desafio 4: Caçando Produtos Órfãos (sem categoria):
+SELECT p.nome, p.preco
+FROM produtos AS p
+LEFT JOIN categorias AS c ON p.categoria_id = c.id
+WHERE c.id IS NULL;</code></pre>
+					<div class="card-box">
+						💡 <strong>Uso no Mundo Real:</strong> Essa query é usada por DBAs e analistas para encontrar cadastros incompletos no sistema!
+					</div>
+					<aside class="notes">
+						DICA FGV/CONCURSOS:<br>
+						A pegadinha de prova clássica é comparar nulo com igual (WHERE c.id = NULL). O correto em SQL é sempre IS NULL ou IS NOT NULL!
+					</aside>
+				</section>
+
+				<!-- SLIDE 9: JOIN + GROUP BY (RELATÓRIO EXECUTIVO) -->
+				<section>
+					<h2>Relatório Gerencial: JOIN + Agregações</h2>
+					<pre><code class="language-sql">SELECT 
+    c.nome AS categoria,
+    COUNT(p.id) AS total_produtos,
+    AVG(p.preco) AS preco_medio
+FROM categorias AS c
+INNER JOIN produtos AS p ON c.id = p.categoria_id
+GROUP BY c.nome
+ORDER BY total_produtos DESC;</code></pre>
+					<div class="card-box">
+						📊 <strong>Resultado:</strong> Junta o poder do JOIN com o que aprendemos na aula passada (COUNT, AVG e GROUP BY)!
+					</div>
+					<aside class="notes">
+						FECHAMENTO:<br>
+						Essa é a query que o gerente de uma loja pede toda semana. Uma única consulta traz o nome da categoria, a quantidade de itens no estoque e o preço médio.
+					</aside>
+				</section>
+
+				<!-- SLIDE 10: VISTO NO VS CODE -->
+				<section style="text-align: center;">
+					<h2>🏁 Fechamento do Laboratório</h2>
+					<div class="card-box" style="display: inline-block; text-align: left; max-width: 800px;">
+						✔️ <strong>Checklist para o Visto:</strong>
+						<ul>
+							<li>Conexão MySQL ativa no VS Code.</li>
+							<li>Arquivo <code>joins_aula10.sql</code> com os 5 desafios resolvidos.</li>
+							<li>Execução bem-sucedida do Desafio 5 (Relatório com JOIN e GROUP BY).</li>
+							<li>Chame o professor na bancada para validar na tela!</li>
+						</ul>
+					</div>
+					<p style="margin-top: 25px; color: #8be9fd;">Próxima Aula: <strong>Modelagem Física e Restrições de Integridade (CASCADE e RESTRICT)</strong></p>
+					<aside class="notes">
+						REGISTRO:<br>
+						Passe nas bancadas conferindo a execução com Ctrl+Enter e dê o visto nos arquivos dos alunos.
+					</aside>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+		<script>
+			hljs.highlightAll();
+
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				width: 1280,
+				height: 720,
+				margin: 0.05,
+				plugins: [RevealNotes]
+			});
+
+			// Atalho da tecla N para notas na tela
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'n' || e.key === 'N') {
+					toggleNotesOverlay();
+				}
+			});
+
+			function toggleNotesOverlay() {
+				let overlay = document.getElementById('notes-overlay');
+				if (!overlay) {
+					overlay = document.createElement('div');
+					overlay.id = 'notes-overlay';
+					overlay.style.position = 'fixed';
+					overlay.style.bottom = '20px';
+					overlay.style.right = '20px';
+					overlay.style.maxWidth = '480px';
+					overlay.style.maxHeight = '360px';
+					overlay.style.background = 'rgba(15, 17, 23, 0.96)';
+					overlay.style.color = '#f8f8f2';
+					overlay.style.border = '2px solid #50fa7b';
+					overlay.style.borderRadius = '10px';
+					overlay.style.padding = '16px 20px';
+					overlay.style.boxShadow = '0 8px 30px rgba(0,0,0,0.85)';
+					overlay.style.zIndex = '9999';
+					overlay.style.fontSize = '14px';
+					overlay.style.lineHeight = '1.5';
+					overlay.style.overflowY = 'auto';
+					document.body.appendChild(overlay);
+				}
+				
+				if (overlay.style.display === 'none' || !overlay.style.display) {
+					renderNotes(overlay);
+					overlay.style.display = 'block';
+				} else {
+					overlay.style.display = 'none';
+				}
+			}
+
+			function renderNotes(overlay) {
+				const currentSlide = Reveal.getCurrentSlide();
+				const notesEl = currentSlide ? currentSlide.querySelector('aside.notes') : null;
+				if (notesEl) {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#50fa7b;">📝 Notas do Professor (Tecla N fecha)</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px; font-weight:bold;">✕</button></div>' + notesEl.innerHTML;
+				} else {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#ffb86c;">ℹ️ Nenhuma nota neste slide</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px;">✕</button></div>';
+				}
+			}
+
+			Reveal.on('slidechanged', function() {
+				const overlay = document.getElementById('notes-overlay');
+				if (overlay && overlay.style.display === 'block') {
+					renderNotes(overlay);
+				}
+			});
+		</script>
+	</body>
+</html>

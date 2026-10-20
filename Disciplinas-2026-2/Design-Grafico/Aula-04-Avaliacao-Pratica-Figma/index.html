@@ -208,6 +208,86 @@
     color: #fecaca;
     display: block;
   }
+  .confirmation-card {
+    display: none;
+    background: linear-gradient(145deg, #064e3b, #022c22);
+    border: 2px solid #10b981;
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .conf-icon {
+    width: 64px;
+    height: 64px;
+    background-color: #10b981;
+    color: #022c22;
+    font-size: 34px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+  }
+  .conf-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ecfdf5;
+    margin: 0 0 6px 0;
+  }
+  .conf-subtitle {
+    font-size: 13.5px;
+    color: #a7f3d0;
+    margin: 0 0 20px 0;
+  }
+  .conf-details {
+    background-color: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: left;
+    font-size: 13px;
+    color: #e2e8f0;
+    margin-bottom: 20px;
+  }
+  .conf-row {
+    margin-bottom: 10px;
+    word-break: break-all;
+  }
+  .conf-row:last-child {
+    margin-bottom: 0;
+  }
+  .conf-label {
+    color: #6ee7b7;
+    font-weight: 700;
+    display: block;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .btn-new-submit {
+    background-color: transparent;
+    color: #a7f3d0;
+    border: 1px solid #34d399;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .btn-new-submit:hover {
+    background-color: #10b981;
+    color: #022c22;
+  }
   footer {
     margin-top: 28px;
     text-align: center;
@@ -268,6 +348,31 @@
 
       <div id="statusMessage" class="status-message"></div>
     </form>
+
+    <div id="confirmationCard" class="confirmation-card">
+      <div class="conf-icon">✓</div>
+      <h2 class="conf-title">Entrega Recebida com Sucesso!</h2>
+      <p class="conf-subtitle">Seu arquivo e o link do Figma já foram gravados no servidor do professor.</p>
+      <div class="conf-details">
+        <div class="conf-row">
+          <span class="conf-label">Aluno(s) / Dupla</span>
+          <span id="confNome"></span>
+        </div>
+        <div class="conf-row">
+          <span class="conf-label">Link do Figma Registrado</span>
+          <span id="confLink"></span>
+        </div>
+        <div class="conf-row">
+          <span class="conf-label">Arquivo Salvo no Servidor</span>
+          <span id="confArquivo"></span>
+        </div>
+        <div class="conf-row">
+          <span class="conf-label">Horário do Recebimento</span>
+          <span id="confHora"></span>
+        </div>
+      </div>
+      <button type="button" id="btnNewSubmit" class="btn-new-submit">🔄 Enviar outro arquivo / Corrigir envio</button>
+    </div>
   </div>
 
   <footer>
@@ -279,6 +384,14 @@
   const form = document.getElementById('formEntrega');
   const btnSubmit = document.getElementById('btnSubmit');
   const statusMsg = document.getElementById('statusMessage');
+  const confCard = document.getElementById('confirmationCard');
+  const btnNewSubmit = document.getElementById('btnNewSubmit');
+
+  btnNewSubmit.addEventListener('click', () => {
+    confCard.style.display = 'none';
+    form.style.display = 'block';
+    statusMsg.style.display = 'none';
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -316,8 +429,14 @@
       const data = await response.json();
 
       if (response.ok && data.status === 'ok') {
-        showStatus('✅ ' + data.mensagem + '<br><small style="opacity:0.9">Arquivo gravado: ' + data.arquivo + ' (' + data.tamanho_kb + ' KB)</small>', 'success');
+        document.getElementById('confNome').textContent = data.nome_aluno || nome;
+        document.getElementById('confLink').textContent = data.link_figma || link;
+        document.getElementById('confArquivo').textContent = data.arquivo + ' (' + data.tamanho_kb + ' KB)';
+        document.getElementById('confHora').textContent = data.data_hora || new Date().toLocaleString('pt-BR');
+
         form.reset();
+        form.style.display = 'none';
+        confCard.style.display = 'block';
       } else {
         showStatus('❌ ' + (data.mensagem || 'Ocorreu um erro ao enviar.'), 'error');
       }
@@ -332,6 +451,7 @@
   function showStatus(msg, type) {
     statusMsg.innerHTML = msg;
     statusMsg.className = 'status-message ' + (type === 'success' ? 'status-success' : 'status-error');
+    statusMsg.style.display = 'block';
   }
 </script>
 

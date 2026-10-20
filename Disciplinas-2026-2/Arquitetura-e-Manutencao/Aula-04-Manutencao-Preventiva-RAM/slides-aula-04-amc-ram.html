@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Manutenção Preventiva: Memória RAM — AMC | EEEP-AFS</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+		<style>
+			.reveal { font-size: 1.8rem; }
+			.reveal h1, .reveal h2, .reveal h3 { color: #f1fa8c; font-weight: bold; }
+			.reveal p, .reveal li { line-height: 1.45; font-size: 1.45rem; }
+			.destaque-verde { color: #50fa7b; font-weight: bold; }
+			.destaque-amarelo { color: #f1fa8c; font-weight: bold; }
+			.destaque-vermelho { color: #ff5555; font-weight: bold; }
+			.destaque-azul { color: #8be9fd; font-weight: bold; }
+			.card-box {
+				background: rgba(255, 255, 255, 0.07);
+				border-left: 6px solid #50fa7b;
+				padding: 20px 28px;
+				border-radius: 10px;
+				margin: 20px 0;
+				text-align: left;
+			}
+			.card-alerta {
+				background: rgba(255, 85, 85, 0.18);
+				border-left: 6px solid #ff5555;
+				padding: 20px 28px;
+				border-radius: 10px;
+				margin: 20px 0;
+				text-align: left;
+			}
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 24px;
+				text-align: left;
+			}
+			.tag-aula {
+				display: inline-block;
+				background: #bd93f9;
+				color: #282a36;
+				padding: 4px 14px;
+				border-radius: 12px;
+				font-size: 1.1rem;
+				font-weight: bold;
+				margin-bottom: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- SLIDE 1: CAPA -->
+				<section style="text-align: center;">
+					<span class="tag-aula">EEEP-AFS · 1º Ano DS · Arquitetura e Manutenção</span>
+					<h1 style="font-size: 2.6rem; margin-top: 10px;">Manutenção Preventiva</h1>
+					<h2 style="font-size: 1.9rem; color: #50fa7b;">Subsistema de Memória RAM e Contatos</h2>
+					<p style="margin-top: 30px; font-size: 1.3rem;">Prof. Olegário Neto · 20/10/2026</p>
+					<div class="card-box" style="display: inline-block; margin-top: 20px;">
+						⏱️ <strong>Metodologia:</strong> Rotação por Estações (2 Grupos de 40 minutos)
+					</div>
+					<aside class="notes">
+						ACOLHIMENTO:<br>
+						Explique para a turma que hoje não vamos desmontar o gabinete todo. Desmontar a placa-mãe inteira deixaria computadores abertos no intervalo. Nosso foco é cirúrgico: a memória RAM é responsável por mais de 70% dos computadores que "ligam, giram cooler mas não dão vídeo".
+					</aside>
+				</section>
+
+				<!-- SLIDE 2: O SINTOMA CLÁSSICO -->
+				<section>
+					<h2>O Sintoma nº 1 do Suporte Técnico</h2>
+					<div class="card-alerta">
+						🚨 <strong>O Cenário:</strong> O cliente aperta o botão Power. Os coolers giram forte, os LEDs acendem, mas o monitor fica em tela preta (<em>Sem Sinal</em>).
+					</div>
+					<div class="card-box">
+						🔍 <strong>Por que a RAM é a principal suspeita?</strong>
+						<ul>
+							<li>Oxidação natural do cobre/ouro dos contatos devido à umidade e calor.</li>
+							<li>Poeira acumulada nos contatos finos do slot da placa-mãe.</li>
+							<li>Microvibração de transporte ou choques físicos que desalinham o pente.</li>
+						</ul>
+					</div>
+					<aside class="notes">
+						PONTO CHAVE:<br>
+						Se a placa-mãe não conseguir inicializar a memória RAM no autoteste (POST), ela nem chega a carregar a BIOS na tela. Por isso o monitor permanece preto.
+					</aside>
+				</section>
+
+				<!-- SLIDE 3: PROTOCOLO DE SEGURANÇA -->
+				<section>
+					<h2>⚠️ Protocolo de Bancada (Segurança ESD)</h2>
+					<div class="grid-2">
+						<div class="card-alerta">
+							<h3 style="color: #ff5555; margin-top:0;">1. Desenergização</h3>
+							<p><strong>Cabo de força FORA da tomada.</strong></p>
+							<p>Aperte o botão Power por <strong>5 segundos</strong> para drenar a energia residual armazenada nos capacitores da fonte e placa-mãe.</p>
+						</div>
+						<div class="card-box">
+							<h3 style="color: #50fa7b; margin-top:0;">2. Estática (ESD)</h3>
+							<p>Encoste as duas mãos no <strong>chassi metálico não pintado</strong> do gabinete por 5 segundos.</p>
+							<p>Isso equilibra o potencial elétrico do seu corpo e evita queimar os chips SMD.</p>
+						</div>
+					</div>
+					<aside class="notes">
+						DICA PRÁTICA:<br>
+						Enfatize que um choque de estática invisível de 100V (imperceptível para o ser humano) é suficiente para perfurar a camada dielétrica de um transistor de memória RAM.
+					</aside>
+				</section>
+
+				<!-- SLIDE 4: ANATOMIA E O CHANFRO (NOTCH) -->
+				<section>
+					<h2>Anatomia da Memória RAM</h2>
+					<div class="card-box">
+						<ul>
+							<li><span class="destaque-verde">Bordas do PCB:</span> Onde você DEVE segurar. Nunca encoste os dedos nos contatos dourados (o suor contém ácidos que oxidam o metal).</li>
+							<li><span class="destaque-amarelo">Chips pretos (SMD):</span> Circuitos integrados que armazenam os dados voláteis.</li>
+							<li><span class="destaque-vermelho">O Chanfro (Notch):</span> O rasgo central entre os pinos. Ele <strong>NÃO fica no meio exato</strong>. Ele impede que você insira uma memória invertida ou de geração errada (DDR3 em DDR4).</li>
+						</ul>
+					</div>
+					<aside class="notes">
+						PERGUNTA PARA A SALA:<br>
+						"Se uma memória não estiver encaixando, devemos forçar com força?" NUNCA! O notch existe exatamente para ser uma trava mecânica (Poka-Yoke).
+					</aside>
+				</section>
+
+				<!-- SLIDE 5: PROCEDIMENTO DE LIMPEZA -->
+				<section>
+					<h2>Procedimento Correto de Limpeza</h2>
+					<div class="grid-2">
+						<div class="card-box">
+							<h3 style="color: #50fa7b; margin-top:0;">1. Borracha Branca</h3>
+							<ul>
+								<li>Use borracha escolar branca e macia.</li>
+								<li>Esfregue nos contatos dourados em <strong>sentido único</strong> (de dentro para fora).</li>
+								<li>Não use força excessiva para não quebrar componentes SMD soldados acima dos contatos.</li>
+							</ul>
+						</div>
+						<div class="card-box">
+							<h3 style="color: #8be9fd; margin-top:0;">2. Pincel Macio</h3>
+							<ul>
+								<li>Varra todo e qualquer resíduo/farelo de borracha do pente.</li>
+								<li>Passe o pincel seco no <strong>slot da placa-mãe</strong> para tirar poeira acumulada.</li>
+								<li>Nunca sopre com a boca (gotículas de saliva oxidam os pinos).</li>
+							</ul>
+						</div>
+					</div>
+					<aside class="notes">
+						ALERTA TÉCNICO:<br>
+						Por que não usar álcool 70%? Porque 30% é água! Em eletrônica só usamos álcool isopropílico (99.8%) e borracha sem areia.
+					</aside>
+				</section>
+
+				<!-- SLIDE 6: O DUPLO CLIQUE DO REENCAIXE -->
+				<section>
+					<h2>Reinstalação: O "Duplo Clique"</h2>
+					<div class="card-box">
+						<ol style="line-height: 1.8;">
+							<li>Abra as travas plásticas laterais do slot.</li>
+							<li>Alinhe o <strong>chanfro (notch)</strong> da memória com o relevo do slot.</li>
+							<li>Posicione o pente em ângulo de 90° em relação à placa-mãe.</li>
+							<li>Com os dois polegares nas pontas superiores, aplique uma <strong>pressão firme e para baixo</strong>.</li>
+							<li><span class="destaque-verde">Sinal de Sucesso:</span> As travas plásticas se fecham sozinhas emitindo <strong>dois cliques secos</strong>.</li>
+						</ol>
+					</div>
+					<aside class="notes">
+						DICA DE BANCADA:<br>
+						Se a trava não fechar completamente, a memória está mal encaixada. A placa-mãe vai ligar e não vai dar vídeo.
+					</aside>
+				</section>
+
+				<!-- SLIDE 7: ROTAÇÃO POR ESTAÇÕES -->
+				<section>
+					<h2>🔄 Rotação das Estações (40 min cada)</h2>
+					<div class="grid-2">
+						<div class="card-box" style="border-left-color: #50fa7b;">
+							<h3 style="color: #50fa7b; margin-top:0;">Grupo A ➔ Laboratório</h3>
+							<p><strong>Prática de Bancada:</strong></p>
+							<ul>
+								<li>Abertura do gabinete.</li>
+								<li>Extração segura da memória.</li>
+								<li>Limpeza com borracha e pincel.</li>
+								<li>Reencaixe com duplo clique.</li>
+								<li><strong>Teste de POST (Vídeo) e Visto.</strong></li>
+							</ul>
+						</div>
+						<div class="card-box" style="border-left-color: #ffb86c;">
+							<h3 style="color: #ffb86c; margin-top:0;">Grupo B ➔ Sala de Aula</h3>
+							<p><strong>Estudo Dirigido de Diagnóstico:</strong></p>
+							<ul>
+								<li>Tabela comparativa DDR3, DDR4 e DDR5.</li>
+								<li>Decodificação dos bips da BIOS.</li>
+								<li>Resolução dos 3 casos reais de suporte.</li>
+								<li><strong>Entrega da folha ao final.</strong></li>
+							</ul>
+						</div>
+					</div>
+					<p style="font-size: 1.2rem; color: #f1fa8c; margin-top: 15px;">⏱️ Na metade da aula (aos 40 min), os grupos invertem os ambientes!</p>
+					<aside class="notes">
+						DINÂMICA:<br>
+						Avise o Grupo A para se dirigir imediatamente às bancadas e o Grupo B para retirar a folha de atividade na mesa do professor.
+					</aside>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				width: 1280,
+				height: 720,
+				margin: 0.05,
+				plugins: [RevealNotes]
+			});
+
+			// Atalho da tecla N para notas na tela
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'n' || e.key === 'N') {
+					toggleNotesOverlay();
+				}
+			});
+
+			function toggleNotesOverlay() {
+				let overlay = document.getElementById('notes-overlay');
+				if (!overlay) {
+					overlay = document.createElement('div');
+					overlay.id = 'notes-overlay';
+					overlay.style.position = 'fixed';
+					overlay.style.bottom = '20px';
+					overlay.style.right = '20px';
+					overlay.style.maxWidth = '480px';
+					overlay.style.maxHeight = '360px';
+					overlay.style.background = 'rgba(15, 17, 23, 0.96)';
+					overlay.style.color = '#f8f8f2';
+					overlay.style.border = '2px solid #50fa7b';
+					overlay.style.borderRadius = '10px';
+					overlay.style.padding = '16px 20px';
+					overlay.style.boxShadow = '0 8px 30px rgba(0,0,0,0.85)';
+					overlay.style.zIndex = '9999';
+					overlay.style.fontSize = '14px';
+					overlay.style.lineHeight = '1.5';
+					overlay.style.overflowY = 'auto';
+					document.body.appendChild(overlay);
+				}
+				
+				if (overlay.style.display === 'none' || !overlay.style.display) {
+					renderNotes(overlay);
+					overlay.style.display = 'block';
+				} else {
+					overlay.style.display = 'none';
+				}
+			}
+
+			function renderNotes(overlay) {
+				const currentSlide = Reveal.getCurrentSlide();
+				const notesEl = currentSlide ? currentSlide.querySelector('aside.notes') : null;
+				if (notesEl) {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#50fa7b;">📝 Notas do Professor (Tecla N fecha)</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px; font-weight:bold;">✕</button></div>' + notesEl.innerHTML;
+				} else {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#ffb86c;">ℹ️ Nenhuma nota neste slide</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px;">✕</button></div>';
+				}
+			}
+
+			Reveal.on('slidechanged', function() {
+				const overlay = document.getElementById('notes-overlay');
+				if (overlay && overlay.style.display === 'block') {
+					renderNotes(overlay);
+				}
+			});
+		</script>
+	</body>
+</html>
