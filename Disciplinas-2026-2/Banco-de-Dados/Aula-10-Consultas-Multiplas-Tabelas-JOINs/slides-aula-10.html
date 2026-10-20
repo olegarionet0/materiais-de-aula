@@ -37,6 +37,7 @@
 			.destaque-amarelo { color: #f1fa8c; font-weight: bold; }
 			.destaque-vermelho { color: #ff5555; font-weight: bold; }
 			.destaque-azul { color: #8be9fd; font-weight: bold; }
+			.destaque-laranja { color: #ffb86c; font-weight: bold; }
 			.card-box {
 				background: rgba(255, 255, 255, 0.07);
 				border-left: 6px solid #50fa7b;
@@ -44,6 +45,11 @@
 				border-radius: 10px;
 				margin: 16px 0;
 				text-align: left;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+			.card-box:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 			}
 			.card-alerta {
 				background: rgba(255, 85, 85, 0.18);
@@ -69,6 +75,30 @@
 				font-weight: bold;
 				margin-bottom: 12px;
 			}
+			.venn-svg {
+				max-width: 100%;
+				height: auto;
+				display: block;
+				margin: 10px auto;
+				filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+			}
+			/* Destaque suave em fragmentos */
+			.fragment.fade-up {
+				transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+			}
+			/* Badge de tecla */
+			.kbd-shortcut {
+				display: inline-block;
+				font-family: monospace;
+				background: #1e1f29;
+				color: #50fa7b;
+				border: 1px solid #6272a4;
+				border-bottom: 3px solid #6272a4;
+				padding: 4px 12px;
+				border-radius: 6px;
+				font-size: 1.5rem;
+				font-weight: bold;
+			}
 		</style>
 	</head>
 	<body>
@@ -81,9 +111,11 @@
 					<h1 style="font-size: 2.5rem; margin-top: 10px;">Consultas com JOINs</h1>
 					<h2 style="font-size: 1.9rem; color: #50fa7b;">INNER JOIN, LEFT JOIN & O Novo Ambiente VS Code</h2>
 					<p style="margin-top: 25px; font-size: 1.3rem;">Prof. Olegário Neto</p>
-					<div class="card-box" style="display: inline-block; margin-top: 15px;">
+					
+					<div class="card-box" style="display: inline-block; margin-top: 15px; border-left-color: #8be9fd;">
 						💻 <strong>Prática de Laboratório:</strong> 100 minutos no VS Code com extensão MySQL
 					</div>
+
 					<aside class="notes">
 						ACOLHIMENTO:<br>
 						Parabenize a turma pela conclusão das queries de uma tabela só. Hoje damos o maior salto conceitual do semestre: conectar tabelas através de Chaves Estrangeiras (JOINs), e estreamos o VS Code como ambiente oficial de desenvolvimento de banco de dados.
@@ -94,7 +126,7 @@
 				<section>
 					<h2>🚀 Novo Ambiente: VS Code + Extensão MySQL</h2>
 					<div class="grid-2">
-						<div class="card-box">
+						<div class="card-box fragment fade-up">
 							<h3 style="color: #8be9fd; margin-top:0;">1. Conexão</h3>
 							<p>Abra o VS Code ➔ Ícone de Banco na barra lateral esquerda.</p>
 							<ul>
@@ -103,12 +135,12 @@
 								<li><strong>User:</strong> <code>root</code> (sem senha)</li>
 							</ul>
 						</div>
-						<div class="card-box">
-							<h3 style="color: #50fa7b; margin-top:0;">2. Atalho de Ouro</h3>
+						<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c;">
+							<h3 style="color: #f1fa8c; margin-top:0;">2. Atalho de Ouro</h3>
 							<p>Crie o arquivo <code>joins_aula10.sql</code>.</p>
-							<p>Para rodar qualquer comando SQL:</p>
-							<p style="font-size: 1.8rem; text-align: center; color: #f1fa8c; font-weight: bold; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;">
-								Ctrl + Enter
+							<p>Para rodar qualquer comando SQL selecionado:</p>
+							<p style="text-align: center; margin-top: 15px;">
+								<span class="kbd-shortcut">Ctrl + Enter</span>
 							</p>
 						</div>
 					</div>
@@ -121,34 +153,88 @@
 				<!-- SLIDE 3: O PROBLEMA RELACIONAL -->
 				<section>
 					<h2>Por que dividir em tabelas?</h2>
-					<div class="card-alerta">
+					
+					<div class="card-alerta fragment fade-up">
 						❌ <strong>Tabela Única (Desastre de Engenharia):</strong><br>
-						Se colocarmos o nome da categoria escrito em cada produto, repetiremos 'Eletrônicos' 1.000 vezes. Se a categoria mudar para 'Tecnologia', teremos que alterar 1.000 linhas!
+						Se colocarmos o nome da categoria escrito em cada produto, repetiremos 'Eletrônicos' 1.000 vezes. Se a categoria mudar para 'Tecnologia', teremos que alterar 1.000 linhas no banco!
 					</div>
-					<div class="card-box">
+
+					<div class="card-box fragment fade-up" style="border-left-color: #50fa7b;">
 						✔️ <strong>Solução Relacional (Normalização):</strong><br>
-						Criamos a tabela <code>categorias</code> (com ID e nome) e na tabela <code>produtos</code> guardamos apenas o número da categoria (<code>categoria_id</code>).
+						Criamos a tabela <code>categorias</code> (com <code>id</code> e <code>nome</code>) e na tabela <code>produtos</code> guardamos apenas a Chave Estrangeira (<code>categoria_id</code>).
 					</div>
+
+					<!-- Diagrama Ilustrativo Vetorial da Ponte PK -> FK -->
+					<div class="fragment fade-up" style="margin-top: 20px;">
+						<svg class="venn-svg" viewBox="0 0 760 140" style="max-width: 720px; height: 120px;">
+							<!-- Tabela Produtos -->
+							<rect x="20" y="20" width="280" height="95" rx="10" fill="#282a36" stroke="#8be9fd" stroke-width="2.5"/>
+							<rect x="20" y="20" width="280" height="30" rx="10" fill="#44475a"/>
+							<text x="160" y="41" fill="#8be9fd" font-size="16" font-weight="bold" text-anchor="middle">TABELA produtos</text>
+							<text x="35" y="75" fill="#f8f8f2" font-size="14">id: 101 | nome: 'Mouse'</text>
+							<text x="35" y="98" fill="#50fa7b" font-weight="bold" font-size="14">categoria_id: 1 (FK)</text>
+
+							<!-- Seta de Ligação (Ponte) -->
+							<path d="M 305 95 L 435 95" stroke="#f1fa8c" stroke-width="3.5" stroke-dasharray="6,4" fill="none"/>
+							<polygon points="445,95 432,88 432,102" fill="#f1fa8c"/>
+							<text x="370" y="82" fill="#f1fa8c" font-size="13" font-weight="bold" text-anchor="middle">ON FK = PK</text>
+
+							<!-- Tabela Categorias -->
+							<rect x="450" y="20" width="280" height="95" rx="10" fill="#282a36" stroke="#50fa7b" stroke-width="2.5"/>
+							<rect x="450" y="20" width="280" height="30" rx="10" fill="#44475a"/>
+							<text x="590" y="41" fill="#50fa7b" font-size="16" font-weight="bold" text-anchor="middle">TABELA categorias</text>
+							<text x="465" y="75" fill="#50fa7b" font-weight="bold" font-size="14">id: 1 (PK)</text>
+							<text x="465" y="98" fill="#f8f8f2" font-size="14">nome: 'Periféricos'</text>
+						</svg>
+					</div>
+
 					<aside class="notes">
 						CONCEITO:<br>
 						Isso é Integridade Referencial. Evita inconsistência (ex: alguém digitar 'Eletro' e outro digitar 'Eletronicos').
 					</aside>
 				</section>
 
-				<!-- SLIDE 4: INNER JOIN -->
+				<!-- SLIDE 4: INNER JOIN + DIAGRAMA DE VENN -->
 				<section>
 					<h2>O Primeiro INNER JOIN</h2>
-					<p>Junta duas tabelas buscando apenas onde há correspondência mútua:</p>
-					<pre><code class="language-sql">SELECT p.nome AS produto, p.preco, c.nome AS categoria
+					
+					<div class="grid-2" style="align-items: center; grid-template-columns: 1.2fr 0.8fr;">
+						<div>
+							<p>Busca apenas onde há <strong>interseção mútua</strong> entre as duas tabelas:</p>
+							<pre><code class="language-sql">SELECT p.nome AS produto, p.preco, c.nome AS categoria
 FROM produtos AS p
 INNER JOIN categorias AS c ON p.categoria_id = c.id;</code></pre>
-					<div class="card-box">
-						📌 <strong>Entendendo a anatomia:</strong>
-						<ul>
-							<li><code>p</code> e <code>c</code> são <strong>Aliases (Apelidos)</strong> para encurtar a escrita.</li>
-							<li><code>ON p.categoria_id = c.id</code> é a <strong>ponte</strong>: compara a Chave Estrangeira da tabela filho com a Chave Primária da tabela pai.</li>
-						</ul>
+							<div class="card-box" style="margin-top: 10px;">
+								📌 <code>ON p.categoria_id = c.id</code> é a <strong>ponte</strong>: compara a Chave Estrangeira (FK) com a Primária (PK).
+							</div>
+						</div>
+						
+						<!-- Diagrama de Venn: INNER JOIN -->
+						<div class="fragment fade-up">
+							<svg class="venn-svg" viewBox="0 0 340 220" style="width: 100%; max-width: 320px;">
+								<defs>
+									<!-- Máscara de interseção -->
+									<clipPath id="clip-intersecao">
+										<circle cx="120" cy="110" r="75" />
+									</clipPath>
+								</defs>
+								<!-- Círculo Esquerda (Produtos) -->
+								<circle cx="120" cy="110" r="75" fill="#282a36" stroke="#8be9fd" stroke-width="3" opacity="0.8"/>
+								<!-- Círculo Direita (Categorias) -->
+								<circle cx="220" cy="110" r="75" fill="#282a36" stroke="#bd93f9" stroke-width="3" opacity="0.8"/>
+								<!-- Área Central de Interseção (Destaque Verde) -->
+								<circle cx="220" cy="110" r="75" fill="#50fa7b" clip-path="url(#clip-intersecao)" opacity="0.95"/>
+								<!-- Legendas -->
+								<text x="80" y="115" fill="#8be9fd" font-size="14" font-weight="bold" text-anchor="middle">Produtos</text>
+								<text x="260" y="115" fill="#bd93f9" font-size="14" font-weight="bold" text-anchor="middle">Categorias</text>
+								<text x="170" y="115" fill="#282a36" font-size="13" font-weight="900" text-anchor="middle">MATCH</text>
+								<!-- Rótulo Inferior -->
+								<rect x="70" y="195" width="200" height="25" rx="6" fill="#50fa7b"/>
+								<text x="170" y="212" fill="#282a36" font-size="13" font-weight="bold" text-anchor="middle">INNER JOIN: Só Pares Válidos</text>
+							</svg>
+						</div>
 					</div>
+
 					<aside class="notes">
 						DESTAQUE PEDAGÓGICO:<br>
 						Sem a cláusula ON, o banco faz um Produto Cartesiano (multiplica todas as linhas por todas as linhas). O ON é o filtro de ligação!
@@ -158,11 +244,16 @@ INNER JOIN categorias AS c ON p.categoria_id = c.id;</code></pre>
 				<!-- SLIDE 5: DESAFIOS 1 E 2 -->
 				<section>
 					<h2>⚡ Desafios 1 & 2 no VS Code</h2>
-					<div class="card-box">
+					<div class="card-box fragment fade-up">
 						<p><strong>Desafio 1:</strong> Escreva o INNER JOIN entre produtos e categorias, ordenando alfabeticamente pelo nome da categoria (<code>ORDER BY c.nome ASC</code>).</p>
 					</div>
-					<div class="card-box">
+					<div class="card-box fragment fade-up" style="border-left-color: #ffb86c;">
 						<p><strong>Desafio 2:</strong> Adicione uma cláusula <code>WHERE</code> após o JOIN para filtrar apenas produtos do setor <code>'Tecnologia'</code> com preço maior que <code>150.00</code>.</p>
+					</div>
+					<div class="fragment fade-up" style="text-align: center; margin-top: 15px;">
+						<span style="background: rgba(255,184,108,0.2); color: #ffb86c; padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 1.3rem;">
+							⏱️ Tempo de Bancada: 8 minutos
+						</span>
 					</div>
 					<aside class="notes">
 						TEMPO: 8 minutos de bancada. Deixe os alunos tentarem antes de passar para o slide de gabarito.
@@ -183,25 +274,54 @@ SELECT p.nome AS produto, p.preco, c.nome AS categoria, c.setor
 FROM produtos AS p
 INNER JOIN categorias AS c ON p.categoria_id = c.id
 WHERE c.setor = 'Tecnologia' AND p.preco > 150.00;</code></pre>
+					<div class="card-box fragment fade-up" style="border-left-color: #8be9fd;">
+						📌 <strong>Ordem Sagrada das Cláusulas:</strong> <code>SELECT</code> ➔ <code>FROM</code> ➔ <code>INNER JOIN ... ON</code> ➔ <code>WHERE</code> ➔ <code>ORDER BY</code>.
+					</div>
 					<aside class="notes">
 						COMENTÁRIO:<br>
 						Mostre que a ordem das cláusulas na SQL é sagrada: SELECT -> FROM -> INNER JOIN ... ON -> WHERE -> ORDER BY.
 					</aside>
 				</section>
 
-				<!-- SLIDE 7: INNER JOIN vs LEFT JOIN -->
+				<!-- SLIDE 7: INNER JOIN vs LEFT JOIN + DIAGRAMAS DE VENN COMPARATIVOS -->
 				<section>
 					<h2>E se um produto não tiver categoria?</h2>
 					<div class="grid-2">
-						<div class="card-box" style="border-left-color: #ffb86c;">
+						<!-- Coluna INNER JOIN -->
+						<div class="card-box fragment fade-up" style="border-left-color: #ffb86c;">
 							<h3 style="color: #ffb86c; margin-top:0;">INNER JOIN</h3>
-							<p>É rigoroso. Só traz registros que possuem correspondência nas <strong>duas tabelas</strong>.</p>
+							<p>Rigoroso: só traz correspondência nas <strong>duas tabelas</strong>.</p>
 							<p><span class="destaque-vermelho">Resultado:</span> O 'Cabo Adaptador USB' (sem categoria) <strong>some</strong> do relatório!</p>
+							
+							<!-- Mini Venn INNER -->
+							<svg viewBox="0 0 260 130" style="width: 100%; max-width: 220px; display: block; margin: 10px auto;">
+								<defs>
+									<clipPath id="clip-in-mini">
+										<circle cx="95" cy="65" r="50"/>
+									</clipPath>
+								</defs>
+								<circle cx="95" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2"/>
+								<circle cx="165" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2"/>
+								<circle cx="165" cy="65" r="50" fill="#ffb86c" clip-path="url(#clip-in-mini)"/>
+								<text x="65" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">A</text>
+								<text x="195" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">B</text>
+							</svg>
 						</div>
-						<div class="card-box" style="border-left-color: #50fa7b;">
+
+						<!-- Coluna LEFT JOIN -->
+						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b;">
 							<h3 style="color: #50fa7b; margin-top:0;">LEFT JOIN</h3>
-							<p>Preserva <strong>todos os registros da tabela da esquerda</strong> (produtos), mesmo sem par na direita.</p>
+							<p>Inclusivo: preserva <strong>todos da esquerda</strong> (produtos), mesmo sem par na direita.</p>
 							<p><span class="destaque-verde">Resultado:</span> O 'Cabo Adaptador USB' aparece com categoria <code>NULL</code>.</p>
+							
+							<!-- Mini Venn LEFT -->
+							<svg viewBox="0 0 260 130" style="width: 100%; max-width: 220px; display: block; margin: 10px auto;">
+								<!-- Círculo A Inteiro Preenchido -->
+								<circle cx="95" cy="65" r="50" fill="#50fa7b" opacity="0.9"/>
+								<circle cx="165" cy="65" r="50" fill="#282a36" stroke="#6272a4" stroke-width="2" opacity="0.8"/>
+								<text x="65" y="70" fill="#282a36" font-size="11" font-weight="bold">A (Tudo)</text>
+								<text x="195" y="70" fill="#f8f8f2" font-size="11" font-weight="bold">B</text>
+							</svg>
 						</div>
 					</div>
 					<aside class="notes">
@@ -224,7 +344,7 @@ SELECT p.nome, p.preco
 FROM produtos AS p
 LEFT JOIN categorias AS c ON p.categoria_id = c.id
 WHERE c.id IS NULL;</code></pre>
-					<div class="card-box">
+					<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c;">
 						💡 <strong>Uso no Mundo Real:</strong> Essa query é usada por DBAs e analistas para encontrar cadastros incompletos no sistema!
 					</div>
 					<aside class="notes">
@@ -244,7 +364,7 @@ FROM categorias AS c
 INNER JOIN produtos AS p ON c.id = p.categoria_id
 GROUP BY c.nome
 ORDER BY total_produtos DESC;</code></pre>
-					<div class="card-box">
+					<div class="card-box fragment fade-up" style="border-left-color: #8be9fd;">
 						📊 <strong>Resultado:</strong> Junta o poder do JOIN com o que aprendemos na aula passada (COUNT, AVG e GROUP BY)!
 					</div>
 					<aside class="notes">
@@ -256,7 +376,7 @@ ORDER BY total_produtos DESC;</code></pre>
 				<!-- SLIDE 10: VISTO NO VS CODE -->
 				<section style="text-align: center;">
 					<h2>🏁 Fechamento do Laboratório</h2>
-					<div class="card-box" style="display: inline-block; text-align: left; max-width: 800px;">
+					<div class="card-box fragment fade-up" style="display: inline-block; text-align: left; max-width: 800px;">
 						✔️ <strong>Checklist para o Visto:</strong>
 						<ul>
 							<li>Conexão MySQL ativa no VS Code.</li>
@@ -265,7 +385,7 @@ ORDER BY total_produtos DESC;</code></pre>
 							<li>Chame o professor na bancada para validar na tela!</li>
 						</ul>
 					</div>
-					<p style="margin-top: 25px; color: #8be9fd;">Próxima Aula: <strong>Modelagem Física e Restrições de Integridade (CASCADE e RESTRICT)</strong></p>
+					<p class="fragment fade-up" style="margin-top: 25px; color: #8be9fd;">Próxima Aula: <strong>Modelagem Física e Restrições de Integridade (CASCADE e RESTRICT)</strong></p>
 					<aside class="notes">
 						REGISTRO:<br>
 						Passe nas bancadas conferindo a execução com Ctrl+Enter e dê o visto nos arquivos dos alunos.
@@ -284,6 +404,9 @@ ORDER BY total_produtos DESC;</code></pre>
 			Reveal.initialize({
 				hash: true,
 				slideNumber: true,
+				transition: 'slide',
+				transitionSpeed: 'fast',
+				backgroundTransition: 'fade',
 				width: 1280,
 				height: 720,
 				margin: 0.05,
