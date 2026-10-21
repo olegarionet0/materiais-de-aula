@@ -282,33 +282,26 @@
 					</aside>
 				</section>
 
-				<!-- SLIDE 11: GABARITO DOS DESAFIOS 1 E 2 -->
+				<!-- SLIDE 11: GABARITO DOS DESAFIOS 1 E 2 (PROTEGIDO POR PALAVRA-CHAVE) -->
 				<section>
 					<h2 style="font-size: 2.0rem; color: #50fa7b;">✅ Gabarito Comentado (Desafios 1 e 2)</h2>
-					<div class="grid-2">
-						<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c; font-size: 1.2rem;">
-							<h3 style="color: #f1fa8c; font-size: 1.4rem; margin-top: 0;">Gabarito Desafio 1 (netstat)</h3>
-							<ul>
-								<li><strong>[A] Porta 443:</strong> HTTPS (Web Segura)</li>
-								<li><strong>[B] Porta 22:</strong> SSH (Terminal Remoto Linux)</li>
-								<li><strong>[C] Porta 53:</strong> DNS (Resolução de Nomes)</li>
-								<li><strong>[D] Porta 80:</strong> HTTP (Iniciando Handshake: <code>SYN_SENT</code>)</li>
-								<li><strong>[E] Porta 21:</strong> FTP (Controle de Arquivos)</li>
-								<li><strong>2)</strong> Porque o <strong>UDP não é orientado à conexão</strong> (não faz Handshake!).</li>
-								<li><strong>3)</strong> <code>51420</code> é a <strong>Porta Efêmera (Aleatória)</strong> da aba do navegador no cliente; <code>443</code> é a porta fixa do servidor web.</li>
-							</ul>
+
+					<div id="lock-rc" style="text-align: center; padding: 25px; background: rgba(0,0,0,0.5); border: 2px dashed #f1fa8c; border-radius: 12px; max-width: 620px; margin: 25px auto;">
+						<div style="font-size: 2.6rem; margin-bottom: 8px;">🔒</div>
+						<h3 style="color: #f1fa8c; margin-top: 0; font-size: 1.5rem;">Gabarito Bloqueado</h3>
+						<p style="font-size: 1.2rem; color: #f8f8f2; margin-bottom: 16px;">
+							Resolva os desafios do netstat e cenários no caderno primeiro!<br>
+							O professor liberará a <strong>palavra-chave</strong> no final da aula.
+						</p>
+						<div style="display: flex; justify-content: center; gap: 10px;">
+							<input type="text" id="pin-rc" placeholder="Palavra-chave..." onkeydown="if(event.key==='Enter') desbloquear('rc')" style="padding: 10px 16px; font-size: 1.2rem; border-radius: 8px; border: 2px solid #6272a4; background: #1e1f29; color: #50fa7b; font-family: monospace; outline: none; width: 230px; text-align: center;">
+							<button onclick="desbloquear('rc')" style="padding: 10px 20px; font-size: 1.15rem; font-weight: bold; background: #50fa7b; color: #1e1f29; border: none; border-radius: 8px; cursor: pointer;">Desbloquear</button>
 						</div>
-						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b; font-size: 1.2rem;">
-							<h3 style="color: #50fa7b; font-size: 1.4rem; margin-top: 0;">Gabarito Desafio 2 (Cenários)</h3>
-							<ul>
-								<li><strong>Cenário 1:</strong> <code>DHCP</code> | Portas 67/68 | <strong>UDP</strong></li>
-								<li><strong>Cenário 2:</strong> <code>HTTPS</code> | Porta 443 | <strong>TCP</strong></li>
-								<li><strong>Cenário 3:</strong> Streaming/VoIP/Game | Portas dinâmicas | <strong>UDP</strong></li>
-								<li><strong>Cenário 4:</strong> <code>DNS</code> | Porta 53 | <strong>UDP</strong></li>
-								<li><strong>Cenário 5:</strong> <code>SSH</code> | Porta 22 | <strong>TCP</strong></li>
-							</ul>
-						</div>
+						<div id="erro-rc" style="color: #ff5555; margin-top: 10px; font-size: 1.05rem; display: none;">❌ Palavra-chave incorreta! Tente novamente.</div>
 					</div>
+
+					<div id="content-rc" style="display: none;"></div>
+					<div id="payload-rc" style="display: none;">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</div>
 					<aside class="notes">
 						FECHAMENTO:<br>
 						Corrija item por item com a turma. Destaque o detalhe do estado SYN_SENT na linha [D]: significa que o PC enviou o primeiro passo do 3-Way Handshake (SYN) e está aguardando o SYN-ACK!
@@ -384,6 +377,66 @@
 				const overlay = document.getElementById('notes-overlay');
 				if (overlay && overlay.style.display === 'block') {
 					renderNotes(overlay);
+				}
+			});
+
+			// Desbloqueio criptografado do gabarito
+			function decryptPayload(b64, key) {
+				try {
+					const binStr = atob(b64.trim());
+					const encBytes = new Uint8Array(binStr.length);
+					for (let i = 0; i < binStr.length; i++) {
+						encBytes[i] = binStr.charCodeAt(i);
+					}
+					const encKey = new TextEncoder().encode(key.trim().toLowerCase());
+					const decBytes = new Uint8Array(encBytes.length);
+					for (let i = 0; i < encBytes.length; i++) {
+						decBytes[i] = encBytes[i] ^ encKey[i % encKey.length];
+					}
+					const decoded = new TextDecoder('utf-8').decode(decBytes);
+					if (decoded.startsWith('MAGIC_OK:')) {
+						return decoded.substring(9);
+					}
+					return null;
+				} catch(e) {
+					return null;
+				}
+			}
+
+			function desbloquear(id) {
+				const inputEl = document.getElementById('pin-' + id);
+				const erroEl = document.getElementById('erro-' + id);
+				const lockEl = document.getElementById('lock-' + id);
+				const contentEl = document.getElementById('content-' + id);
+				const payloadEl = document.getElementById('payload-' + id);
+				
+				if (!inputEl || !payloadEl || !contentEl || !lockEl) return;
+				
+				const key = inputEl.value;
+				const html = decryptPayload(payloadEl.textContent, key);
+				if (html !== null) {
+					contentEl.innerHTML = html;
+					contentEl.style.display = 'block';
+					lockEl.style.display = 'none';
+					sessionStorage.setItem('unlocked_' + id, key);
+					if (window.Reveal) Reveal.layout();
+				} else {
+					if (erroEl) {
+						erroEl.style.display = 'block';
+						setTimeout(() => { erroEl.style.display = 'none'; }, 3000);
+					}
+				}
+			}
+
+			// Restaurar desbloqueio na sessão
+			window.addEventListener('load', function() {
+				const saved = sessionStorage.getItem('unlocked_rc');
+				if (saved) {
+					const inputEl = document.getElementById('pin-rc');
+					if (inputEl) {
+						inputEl.value = saved;
+						desbloquear('rc');
+					}
 				}
 			});
 		</script>

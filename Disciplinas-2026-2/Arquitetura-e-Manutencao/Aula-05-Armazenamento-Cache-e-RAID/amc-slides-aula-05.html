@@ -322,25 +322,26 @@
 					</aside>
 				</section>
 
-				<!-- SLIDE 8: GABARITO COMENTADO -->
+				<!-- SLIDE 8: GABARITO COMENTADO (PROTEGIDO POR PALAVRA-CHAVE) -->
 				<section>
 					<h2 style="font-size: 2.0rem; color: #50fa7b;">✅ Gabarito de Correção (Questões 1 a 6)</h2>
-					<div class="grid-2" style="font-size: 1.15rem;">
-						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #8be9fd;">
-							<ul>
-								<li><strong>Q1 (HD vs SATA vs NVMe):</strong> HD usa discos magnéticos móveis (~150 MB/s); SSD SATA usa chips Flash no cabo SATA (~550 MB/s); <strong>NVMe M.2</strong> usa o barramento <strong>PCI-Express</strong> direto com a CPU (3.500 a 7.400 MB/s).</li>
-								<li><strong>Q2 (RAM vs ROM):</strong> RAM apaga sem energia (programas abertos); ROM não apaga e guarda a <strong>BIOS/UEFI</strong>. Sem bateria CR2032, o PC perde a hora e reseta a BIOS.</li>
-								<li><strong>Q3 (Dual Channel):</strong> Dobra a comunicação de 64 bits para <strong>128 bits</strong>. Instalar nos slots intercalados <strong>A2 e B2 (Slots 2 e 4)</strong>.</li>
-							</ul>
+					
+					<div id="lock-amc" style="text-align: center; padding: 25px; background: rgba(0,0,0,0.5); border: 2px dashed #f1fa8c; border-radius: 12px; max-width: 620px; margin: 25px auto;">
+						<div style="font-size: 2.6rem; margin-bottom: 8px;">🔒</div>
+						<h3 style="color: #f1fa8c; margin-top: 0; font-size: 1.5rem;">Gabarito Bloqueado</h3>
+						<p style="font-size: 1.2rem; color: #f8f8f2; margin-bottom: 16px;">
+							Resolva as 6 questões no caderno primeiro!<br>
+							O professor liberará a <strong>palavra-chave</strong> no final da aula.
+						</p>
+						<div style="display: flex; justify-content: center; gap: 10px;">
+							<input type="text" id="pin-amc" placeholder="Palavra-chave..." onkeydown="if(event.key==='Enter') desbloquear('amc')" style="padding: 10px 16px; font-size: 1.2rem; border-radius: 8px; border: 2px solid #6272a4; background: #1e1f29; color: #50fa7b; font-family: monospace; outline: none; width: 230px; text-align: center;">
+							<button onclick="desbloquear('amc')" style="padding: 10px 20px; font-size: 1.15rem; font-weight: bold; background: #50fa7b; color: #1e1f29; border: none; border-radius: 8px; cursor: pointer;">Desbloquear</button>
 						</div>
-						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #50fa7b;">
-							<ul>
-								<li><strong>Q4 (Cache L1/L2/L3):</strong> Memória SRAM ultra-rápida dentro do processador para guardar instruções imediatas e não deixar a CPU ociosa esperando a RAM.</li>
-								<li><strong>Q5 (RAID 0):</strong> Soma o espaço (<strong>1 TB total</strong>) e dobra a velocidade, mas se 1 disco queimar, <strong>perde 100% dos arquivos</strong>.</li>
-								<li><strong>Q6 (RAID 1):</strong> Obrigatório em <strong>Servidores críticos</strong> (bancos/hospitais). Com 2 HDs de 2 TB, o espaço útil é de <strong>2 TB</strong> (o segundo disco é espelho).</li>
-							</ul>
-						</div>
+						<div id="erro-amc" style="color: #ff5555; margin-top: 10px; font-size: 1.05rem; display: none;">❌ Palavra-chave incorreta! Tente novamente.</div>
 					</div>
+
+					<div id="content-amc" style="display: none;"></div>
+					<div id="payload-amc" style="display: none;">KTQmJSA3LiVUWQgNA0EPDwkSHVNHCxYcBUFRSkEdGhwAAUhDCgwGFUMdDBYBT0FdTVlUHAsIV0ZLa2VfDAgYTgYABQYSUUELABwKSA4LDUNMEBwYAgtYTgkUEwsKBltOXl5MBhoTCAYaTAILAxhJFg4ADBpbTk1dDgFMBwhYSl9kZ2xQERlfZmphaFICDFJYBhUeDAYGUD9UTEw9JUwVG0E9LzEtRAMSTC0+LAtHX1BLBhUeDAYGUE4tKEQAEg1DDAgdDQofRBgACw2ryBoHBgMXVQyv0B4EBx1FRBpEVFxDJSNBHUxXRCYyKEM7IDovRRkXFEEPCwERHU4jAAUGCUwNB0ENDwcDRCYgOCJISRBbUFxEOCNDEEFaTlIWGBYaDwtdJjcjC0UhSkddQxAcEwEAAlJEABINQwdBDA8XHgUYBAIXB0FSHREeCxsGUjMrKEMrHRwWEBIfX0cSGhwKAgNLQQgKGgQaAUUPCxhBDUMrMTtOTV9KQFFcQwlBWUBRXFRVLC5MG0hAUkoADUtrZWphXQIHW1AXARMDDQ9fP1xFRDY0LEwVG0E8IShFXklOHxcaDgAJW0w2NCxMAhgACQ9FHwEYQQkNDRMJBwRMTAUTAwQaAAMPFkwFFwQeFwcSR1VFPis4QQKgyw5ODxUNAxRBCUMPFA8cAQ1EFEFQEBwTAQACUiY8Lj9MPSQoJ1lDFwETAw0PX0BONgkJVQMNFw0TBw9FLzZHUV9RREEBTjUvRAUEHgcNQQ9ODQMWFEEJQxoEHQsRDUQUQS4qJzJAUkoADUtrZWphXQIHW1AXARMDDQ9fP11FRCAAAABDKwkPAAsJCFxbUEwbFRwBCwtaVSUDARoATg9FDwsYFAIKCwCtyabPC1UFCUNeVU4MDBgXVRENEQlBUh0RHgsbBlJSWllODAwYF0lOHxcaDgAJW0JEPA8fFwkNDxxFAgsGQR8PBxUdTgwCEBATDwIEAAoBFkxYBhUeDAYGUC9XTAFVI15DQDICAREfREdBCUNcSFJBFhgWGg8LXUZdQQIMUm58aFBMHQ1QZGxQSxEIGl1iaFIKDBpEFg0NEBtcTA0EHgBYAwMbSkEdGhwAAUhDAQIaBgcAX0xUTkEODBoFCxxIAAETFUEABw0BHF9MR0BRCgJfA1VMW2ZtfF0ZD1ZrZ2dsUAgcX1AQHBMBAAJSNUFBRCAJAgYLRSBVWi1eTCRSR1RZQxcBEwMND19OIwABp8YTBQJIMjwvKEwRGRUeAkUTrc8VBQAUQQgGBhUcAUUIC1URHgwLBB0dBAgLB0EcAhoATgkQDRYRAB5DAQ8dGhcZp9Ki2QYbQQcDAAgNFBUNEEgETgCmzwtVBQkKEAAcTgRMJyU0TAwLCAEdBEwBBhEJEQkPCgFFDUQnICFNVE4CB1tmbXxoUA8BX1IdER4LGwZSMl1BRjwkJSBVUUVZVE4dGhcDChJfTDAHDA9OCkwBBhENoM8OTkZZHxAHDgIEVlBOOidMEBoVDQ9UTh0aFwMKEl9FQw1BCgEHHgVVAEwVDQ0BDQwIBREEQEMFAB1OFglEREEIChsCAU4UGQEcDA0RREFSHREeCxsGUhMNEwoLRV1URURMBwcSTg8XHREcFwMQVE4dGhcDChJfQl9HDQdQb2VtfF0AClZdHRoXAwoSXz1VSEk8LywoRERIVl9HEhocCgIDS0EjARoICQ8Rr9cHCANDDQxOUhYYFhoPC107BBwYDAgLBwQfQwsTrcMRBQcaElBMGxUcAQsLWlVJDgIGAgEdSgQLBhEFFwkIHUdLTCcaDExRSCkqHUUIAVVTTDcqTU4BRQkXBQCvxAdBrdQRBQhVosVDDAROUhYYFhoPC11aQTosWUMXARMDDQ9fTkYKTBcQBhkNDA5OCgwfBxpBr8pIBB0eAAAMGkhCX0cNB1BvZW1JThkPVmtnUkoIDQNfZl9HBQcYWw==</div>
 				</section>
 
 			</div>
@@ -413,6 +414,66 @@
 				const overlay = document.getElementById('notes-overlay');
 				if (overlay && overlay.style.display === 'block') {
 					renderNotes(overlay);
+				}
+			});
+
+			// Desbloqueio criptografado do gabarito
+			function decryptPayload(b64, key) {
+				try {
+					const binStr = atob(b64.trim());
+					const encBytes = new Uint8Array(binStr.length);
+					for (let i = 0; i < binStr.length; i++) {
+						encBytes[i] = binStr.charCodeAt(i);
+					}
+					const encKey = new TextEncoder().encode(key.trim().toLowerCase());
+					const decBytes = new Uint8Array(encBytes.length);
+					for (let i = 0; i < encBytes.length; i++) {
+						decBytes[i] = encBytes[i] ^ encKey[i % encKey.length];
+					}
+					const decoded = new TextDecoder('utf-8').decode(decBytes);
+					if (decoded.startsWith('MAGIC_OK:')) {
+						return decoded.substring(9);
+					}
+					return null;
+				} catch(e) {
+					return null;
+				}
+			}
+
+			function desbloquear(id) {
+				const inputEl = document.getElementById('pin-' + id);
+				const erroEl = document.getElementById('erro-' + id);
+				const lockEl = document.getElementById('lock-' + id);
+				const contentEl = document.getElementById('content-' + id);
+				const payloadEl = document.getElementById('payload-' + id);
+				
+				if (!inputEl || !payloadEl || !contentEl || !lockEl) return;
+				
+				const key = inputEl.value;
+				const html = decryptPayload(payloadEl.textContent, key);
+				if (html !== null) {
+					contentEl.innerHTML = html;
+					contentEl.style.display = 'block';
+					lockEl.style.display = 'none';
+					sessionStorage.setItem('unlocked_' + id, key);
+					if (window.Reveal) Reveal.layout();
+				} else {
+					if (erroEl) {
+						erroEl.style.display = 'block';
+						setTimeout(() => { erroEl.style.display = 'none'; }, 3000);
+					}
+				}
+			}
+
+			// Restaurar desbloqueio na sessão
+			window.addEventListener('load', function() {
+				const saved = sessionStorage.getItem('unlocked_amc');
+				if (saved) {
+					const inputEl = document.getElementById('pin-amc');
+					if (inputEl) {
+						inputEl.value = saved;
+						desbloquear('amc');
+					}
 				}
 			});
 		</script>
