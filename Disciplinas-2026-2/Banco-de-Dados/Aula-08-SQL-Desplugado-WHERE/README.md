@@ -2,5 +2,5 @@
 
 ### 📂 Materiais Disponíveis nesta Pasta:
 
-- 📝 **Atividade / Desafio:** [lista-exercicios-08.md](./lista-exercicios-08.md)
-- 📄 **Documento:** [slides-aula-08.md](./slides-aula-08.md)
+- 📝 **Atividade / Desafio:** [bd-lista-exercicios-aula-08.md](./bd-lista-exercicios-aula-08.md)
+- 📄 **Documento:** [bd-slides-aula-08.md](./bd-slides-aula-08.md)

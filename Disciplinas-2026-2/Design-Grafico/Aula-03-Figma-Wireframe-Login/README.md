@@ -2,6 +2,6 @@
 
 ### 📂 Materiais Disponíveis nesta Pasta:
 
-- 🛠️ **Runbook / Roteiro Prático:** [runbook-aluno-03-figma.md](./runbook-aluno-03-figma.md)
-- 📄 **Documento:** [slides-aula-03-figma.md](./slides-aula-03-figma.md)
-- 📕 **Material em PDF:** [runbook-aluno-03-figma.pdf](./runbook-aluno-03-figma.pdf)
+- 🛠️ **Runbook / Roteiro Prático:** [dg-runbook-aula-03-figma.md](./dg-runbook-aula-03-figma.md)
+- 📄 **Documento:** [dg-slides-aula-03-figma.md](./dg-slides-aula-03-figma.md)
+- 📕 **Material em PDF:** [dg-runbook-aula-03-figma.pdf](./dg-runbook-aula-03-figma.pdf)

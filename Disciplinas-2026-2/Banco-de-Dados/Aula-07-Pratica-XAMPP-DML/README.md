@@ -2,5 +2,5 @@
 
 ### 📂 Materiais Disponíveis nesta Pasta:
 
-- 🛠️ **Runbook / Roteiro Prático:** [runbook-aluno-07.md](./runbook-aluno-07.md)
-- 📄 **Documento:** [slides-aula-07.md](./slides-aula-07.md)
+- 🛠️ **Runbook / Roteiro Prático:** [bd-runbook-aula-07.md](./bd-runbook-aula-07.md)
+- 📄 **Documento:** [bd-slides-aula-07.md](./bd-slides-aula-07.md)

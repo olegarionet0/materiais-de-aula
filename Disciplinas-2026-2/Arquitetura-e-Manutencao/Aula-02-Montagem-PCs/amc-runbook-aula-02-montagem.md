@@ -106,6 +106,6 @@ A equipe deve montar uma apresentação executiva para o "cliente", contendo:
 ---
 
 ## 📊 Critérios de Avaliação e Registro
-* Consulte a matriz de notas detalhada em: [[rubrica-avaliacao-montagem-pcs|Rubrica Analítica de Avaliação (10,0 pontos)]].
-* Acompanhamento e notas das apresentações em: [[folha-de-avaliacao-equipes|Folha de Avaliação de Campo das Equipes]].
-* Planilha de notas consolidada: `planilha-avaliacao-turma-1i.csv`.
+* Consulte a matriz de notas detalhada em: [[amc-rubrica-avaliacao-montagem-pcs|Rubrica Analítica de Avaliação (10,0 pontos)]].
+* Acompanhamento e notas das apresentações em: [[amc-folha-de-avaliacao-equipes|Folha de Avaliação de Campo das Equipes]].
+* Planilha de notas consolidada: `amc-planilha-avaliacao-turma-1i.csv`.

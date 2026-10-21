@@ -118,13 +118,43 @@
 				<!-- SLIDE 4: ANATOMIA E O CHANFRO (NOTCH) -->
 				<section>
 					<h2>Anatomia da Memória RAM</h2>
-					<div class="card-box">
-						<ul>
-							<li><span class="destaque-verde">Bordas do PCB:</span> Onde você DEVE segurar. Nunca encoste os dedos nos contatos dourados (o suor contém ácidos que oxidam o metal).</li>
+					<div class="card-box" style="margin-bottom: 12px;">
+						<ul style="font-size: 1.35rem;">
+							<li><span class="destaque-verde">Bordas do PCB:</span> Onde você DEVE segurar. Nunca encoste os dedos nos contatos dourados (o suor oxida o metal).</li>
 							<li><span class="destaque-amarelo">Chips pretos (SMD):</span> Circuitos integrados que armazenam os dados voláteis.</li>
-							<li><span class="destaque-vermelho">O Chanfro (Notch):</span> O rasgo central entre os pinos. Ele <strong>NÃO fica no meio exato</strong>. Ele impede que você insira uma memória invertida ou de geração errada (DDR3 em DDR4).</li>
+							<li><span class="destaque-vermelho">O Chanfro (Notch):</span> O rasgo entre os pinos. Ele <strong>NÃO fica no meio exato</strong> (impede encaixe invertido ou DDR3 em DDR4).</li>
 						</ul>
 					</div>
+
+					<!-- Diagrama Vetorial do Módulo de Memória RAM -->
+					<div style="text-align: center; margin-top: 10px;">
+						<svg viewBox="0 0 880 185" style="width: 100%; max-width: 860px; height: 175px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));">
+							<!-- PCB Verde Escuro -->
+							<rect x="40" y="15" width="800" height="115" rx="6" fill="#1b4332" stroke="#50fa7b" stroke-width="3"/>
+							<!-- Entalhes Laterais das Travas -->
+							<circle cx="40" cy="65" r="14" fill="#282a36"/>
+							<circle cx="840" cy="65" r="14" fill="#282a36"/>
+							<!-- Chips SMD Pretos -->
+							<rect x="85" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="175" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="265" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="355" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="465" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="555" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="645" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<rect x="735" y="35" width="70" height="60" rx="4" fill="#111" stroke="#444" stroke-width="2"/>
+							<text x="440" y="70" fill="#f1fa8c" font-size="15" font-weight="bold" text-anchor="middle">Chips SMD</text>
+							<!-- Contatos Dourados (Gold Fingers) Esquerda -->
+							<rect x="60" y="126" width="390" height="20" rx="2" fill="#f59e0b" stroke="#fbbf24" stroke-width="1.5"/>
+							<!-- Contatos Dourados (Gold Fingers) Direita -->
+							<rect x="475" y="126" width="345" height="20" rx="2" fill="#f59e0b" stroke="#fbbf24" stroke-width="1.5"/>
+							<!-- Chanfro (Notch) Descentralizado -->
+							<rect x="448" y="120" width="29" height="30" rx="6" fill="#282a36" stroke="#ff5555" stroke-width="2.5"/>
+							<text x="462" y="172" fill="#ff5555" font-size="16" font-weight="bold" text-anchor="middle">▲ Chanfro (Notch) Descentralizado</text>
+							<text x="230" y="170" fill="#fbbf24" font-size="15" font-weight="bold" text-anchor="middle">Contatos Dourados (Não tocar!)</text>
+						</svg>
+					</div>
+
 					<aside class="notes">
 						PERGUNTA PARA A SALA:<br>
 						"Se uma memória não estiver encaixando, devemos forçar com força?" NUNCA! O notch existe exatamente para ser uma trava mecânica (Poka-Yoke).
@@ -209,6 +239,87 @@
 					</aside>
 				</section>
 
+				<!-- SLIDE 8: ATIVIDADE DE SALA NO CADERNO (PARTE 1 E 2) -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #f1fa8c;">📝 Atividade no Caderno (Partes 1 e 2)</h2>
+					<div class="grid-2">
+						<div class="card-box" style="margin: 0; border-left-color: #8be9fd; font-size: 1.2rem;">
+							<h3 style="color: #8be9fd; font-size: 1.4rem; margin-top: 0;">1. Gerações DDR (Desktop)</h3>
+							<table style="width: 100%; font-size: 1.1rem; border-collapse: collapse; margin-bottom: 10px;">
+								<thead>
+									<tr style="background: #282a36; color: #f1fa8c;">
+										<th style="padding: 4px 8px; border: 1px solid #44475a;">Geração</th>
+										<th style="padding: 4px 8px; border: 1px solid #44475a;">Tensão</th>
+										<th style="padding: 4px 8px; border: 1px solid #44475a;">Pinos</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr><td style="padding: 4px 8px; border: 1px solid #44475a;"><strong>DDR3</strong></td><td style="padding: 4px 8px; border: 1px solid #44475a; color:#ffb86c;">? (Complete)</td><td style="padding: 4px 8px; border: 1px solid #44475a;">240</td></tr>
+									<tr><td style="padding: 4px 8px; border: 1px solid #44475a;"><strong>DDR4</strong></td><td style="padding: 4px 8px; border: 1px solid #44475a;">1.2 V</td><td style="padding: 4px 8px; border: 1px solid #44475a;">288</td></tr>
+									<tr><td style="padding: 4px 8px; border: 1px solid #44475a;"><strong>DDR5</strong></td><td style="padding: 4px 8px; border: 1px solid #44475a;">1.1 V</td><td style="padding: 4px 8px; border: 1px solid #44475a;">288 (c/ PMIC)</td></tr>
+								</tbody>
+							</table>
+							<p><strong>Q1:</strong> É possível encaixar um pente DDR3 em um slot DDR4? Justifique tecnicamente.</p>
+						</div>
+
+						<div class="card-box" style="margin: 0; border-left-color: #50fa7b; font-size: 1.2rem;">
+							<h3 style="color: #50fa7b; font-size: 1.4rem; margin-top: 0;">2. Código de Bips (POST da BIOS)</h3>
+							<p>Relacione no caderno o som com o diagnóstico:</p>
+							<ol>
+								<li><strong>Bips curtos contínuos sem parar</strong></li>
+								<li><strong>1 bip longo e 2 ou 3 bips curtos</strong></li>
+								<li><strong>1 bip curto único</strong></li>
+							</ol>
+							<p style="margin-top: 10px; color: #f1fa8c;">
+								( &nbsp; ) Sucesso do POST (Sistema OK)<br>
+								( &nbsp; ) Falha na Placa de Vídeo (GPU)<br>
+								( &nbsp; ) Falha ou Mau Contato na Memória RAM
+							</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 9: ATIVIDADE DE SALA NO CADERNO (PARTE 3 E 4) -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #ffb86c;">📝 Atividade no Caderno: Casos de Suporte</h2>
+					<div class="card-box" style="margin: 10px 0; border-left-color: #ff5555; font-size: 1.2rem;">
+						<strong>Caso 1 (O PC da Secretaria):</strong> O computador ligou hoje de manhã, os coolers giram forte, o LED do gabinete acendeu, mas o monitor fica em <em>"Sem Sinal"</em> (tela preta) e sem bip. Qual a primeira hipótese física a ser investigada antes de condenar a placa-mãe e qual procedimento você faria?
+					</div>
+					<div class="card-box" style="margin: 10px 0; border-left-color: #ffb86c; font-size: 1.2rem;">
+						<strong>Caso 2 (O Upgrade em Loop):</strong> Um estudante comprou um pente novo de 8 GB para juntar ao seu pente de 4 GB. Ao instalar no segundo slot, o PC reinicia em loop a cada 5s. Ao tirar o pente novo, volta ao normal. Cite <strong>duas causas possíveis</strong> para esse problema.
+					</div>
+					<div class="card-box" style="margin: 10px 0; border-left-color: #8be9fd; font-size: 1.2rem;">
+						<strong>Pergunta 4 (Química de Bancada):</strong> Por que técnicos qualificados usam <strong>Álcool Isopropílico (99.8%)</strong> e <strong>jamais</strong> utilizam álcool doméstico (70%) na limpeza de placas eletrônicas?
+					</div>
+				</section>
+
+				<!-- SLIDE 10: GABARITO DA ATIVIDADE DE SALA -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #50fa7b;">✅ Gabarito Comentado (Diagnóstico de RAM)</h2>
+					<div class="grid-2" style="font-size: 1.18rem;">
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #8be9fd;">
+							<h3 style="color: #8be9fd; font-size: 1.35rem; margin-top: 0;">Partes 1 e 2</h3>
+							<ul>
+								<li><strong>Tensão DDR3:</strong> <code>1.5 V</code> (ou 1.35V em DDR3L).</li>
+								<li><strong>Q1 (Encaixe):</strong> <strong>Não!</strong> A posição do chanfro (<em>notch</em>), o número de pinos (240 vs 288) e a tensão elétrica são incompatíveis.</li>
+								<li><strong>Ordem dos Bips:</strong><br>
+									<code>( 3 )</code> Sucesso do POST (1 bip curto)<br>
+									<code>( 2 )</code> Falha na Placa de Vídeo (1 longo + 2/3 curtos)<br>
+									<code>( 1 )</code> Falha na Memória RAM (bips curtos contínuos)
+								</li>
+							</ul>
+						</div>
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #50fa7b;">
+							<h3 style="color: #50fa7b; font-size: 1.35rem; margin-top: 0;">Partes 3 e 4 (Casos e Química)</h3>
+							<ul>
+								<li><strong>Caso 1:</strong> Oxidação/mau contato na RAM. Desenergizar, extrair o pente, limpar contatos com borracha branca + álcool isopropílico e limpa contato no slot.</li>
+								<li><strong>Caso 2:</strong> 1) Pente mal encaixado (sem duplo clique) ou sujeira no 2º slot; 2) Incompatibilidade de frequência/tensão ou módulo novo com defeito.</li>
+								<li><strong>Álcool 70% vs Isopropílico:</strong> O álcool 70% possui <strong>30% de água</strong>, que causa oxidação e curto-circuito! O Isopropílico tem 99.8% de pureza e evapora quase instantaneamente.</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
 			</div>
 		</div>
 
@@ -218,6 +329,9 @@
 			Reveal.initialize({
 				hash: true,
 				slideNumber: true,
+				transition: 'slide',
+				transitionSpeed: 'fast',
+				backgroundTransition: 'fade',
 				width: 1280,
 				height: 720,
 				margin: 0.05,

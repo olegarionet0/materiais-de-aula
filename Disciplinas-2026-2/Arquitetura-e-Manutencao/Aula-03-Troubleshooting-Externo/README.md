@@ -2,4 +2,4 @@
 
 ### 📂 Materiais Disponíveis nesta Pasta:
 
-- 🛠️ **Runbook / Roteiro Prático:** [runbook-pesquisa-troubleshooting.md](./runbook-pesquisa-troubleshooting.md)
+- 🛠️ **Runbook / Roteiro Prático:** [amc-runbook-aula-03-troubleshooting.md](./amc-runbook-aula-03-troubleshooting.md)

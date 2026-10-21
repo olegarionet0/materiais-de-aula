@@ -1,0 +1,391 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Camada de Transporte: TCP x UDP</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+		<style>
+			/* Tipografia limpa, moderna e legível para projetor */
+			.reveal, .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+				text-transform: none !important;
+				letter-spacing: normal !important;
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+				font-weight: 700 !important;
+			}
+			.card-box {
+				background: rgba(255, 255, 255, 0.07);
+				border-left: 6px solid #50fa7b;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 14px 0;
+				text-align: left;
+				font-size: 1.35rem;
+			}
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 20px;
+				text-align: left;
+			}
+			.terminal-box {
+				background: #0d1117;
+				border: 2px solid #44475a;
+				border-radius: 10px;
+				padding: 16px 22px;
+				font-family: 'Consolas', 'Courier New', monospace;
+				font-size: 1.25rem;
+				text-align: left;
+				color: #f8f8f2;
+				box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<section>
+					<h2>Camada de Transporte</h2>
+					<h3>O Correio da Internet</h3>
+					<p>TCP, UDP e Portas Lógicas</p>
+					<p><small>Prof. Olegário | EEEP Adolfo Ferreira de Sousa</small></p>
+				</section>
+
+				<!-- SLIDE DE CONTEXTUALIZAÇÃO: OSI vs TCP/IP -->
+				<section>
+					<h2 style="font-size: 2.2rem; color: #f8f8f2;">🗺️ Onde Estamos no Mapa?</h2>
+					<p style="font-size: 1.4rem; color: #90e0ef; margin-bottom: 25px;">Da Camada de Aplicação para a Camada de Transporte</p>
+					
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; font-size: 1.4rem; text-align: left; max-width: 1050px; margin: 0 auto;">
+						<div style="background: rgba(255, 255, 255, 0.06); padding: 20px 24px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);">
+							<h3 style="color: #ffb86c; font-size: 1.55rem; margin-top: 0; text-align: center; border-bottom: 2px solid #ffb86c; padding-bottom: 8px;">Modelo OSI (7 Camadas)</h3>
+							<p style="margin: 6px 0; color: #6272a4;">7. Aplicação <small style="color: #50fa7b; font-weight: bold;">(Aula anterior)</small></p>
+							<p style="margin: 6px 0; color: #6272a4;">6. Apresentação</p>
+							<p style="margin: 6px 0; color: #6272a4;">5. Sessão</p>
+							<p style="margin: 8px 0; color: #50fa7b; font-weight: bold; background: rgba(80, 250, 123, 0.22); padding: 6px 12px; border-radius: 6px; font-size: 1.45rem;">4. Transporte ➔ HOJE</p>
+							<p style="margin: 6px 0; color: #bd93f9;">3. Rede (IP)</p>
+							<p style="margin: 6px 0; color: #bd93f9;">2. Enlace (MAC)</p>
+							<p style="margin: 6px 0; color: #bd93f9;">1. Física (Cabos/Sinais)</p>
+						</div>
+						<div style="background: rgba(255, 255, 255, 0.06); padding: 20px 24px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);">
+							<h3 style="color: #8be9fd; font-size: 1.55rem; margin-top: 0; text-align: center; border-bottom: 2px solid #8be9fd; padding-bottom: 8px;">Modelo TCP/IP (4 Camadas)</h3>
+							<p style="margin: 16px 0; color: #6272a4;"><strong>Aplicação</strong> <small style="color: #50fa7b; font-weight: bold;">(HTTP, DNS, DHCP)</small></p>
+							<p style="margin: 18px 0; color: #50fa7b; font-weight: bold; background: rgba(80, 250, 123, 0.22); padding: 8px 12px; border-radius: 6px; font-size: 1.45rem;"><strong>Transporte</strong> ➔ HOJE (TCP / UDP)</p>
+							<p style="margin: 18px 0; color: #bd93f9;"><strong>Internet</strong> (IPv4, IPv6, Roteamento)</p>
+							<p style="margin: 18px 0; color: #bd93f9;"><strong>Acesso à Rede</strong> (Ethernet, Wi-Fi)</p>
+						</div>
+					</div>
+					<aside class="notes">
+						REVISÃO RÁPIDA (2 min):<br>
+						- Relembre: "Na aula passada vimos o topo da pilha (Aplicação: HTTP abrindo página, DNS resolvendo nomes).<br>
+						- Agora, o dado precisa ser preparado para viajar. Descemos para a Camada de Transporte, onde decidimos: enviamos com garantia (TCP) ou com velocidade pura (UDP)?"
+					</aside>
+				</section>
+
+				<section>
+					<h3>A Camada de Transporte</h3>
+					<p>A Camada de Rede (IP) encontra o caminho da origem até a máquina de destino.</p>
+					<p>Mas, dentro da máquina, qual aplicativo deve receber a mensagem? O Navegador? O Jogo? O Spotify?</p>
+					<p><strong>A resposta:</strong> Portas Lógicas.</p>
+					<aside class="notes">
+						ANALOGIA DO CONDOMÍNIO (Fale isso para a turma):<br>
+						- Endereço MAC (Enlace): É o chassi do carro do carteiro.<br>
+						- IP (Rede): É o CEP e o número do prédio. Faz o pacote chegar na portaria correta.<br>
+						- Porta Lógica (Transporte): É o número do apartamento. Não adianta entregar no prédio se não souber se o pacote é pro navegador (80) ou pro jogo (aleatória).
+					</aside>
+				</section>
+
+				<section>
+					<h3>TCP: Transmission Control Protocol</h3>
+					<ul>
+						<li><strong>Confiável:</strong> Garante que o pacote chegou. Se perder, retransmite.</li>
+						<li><strong>Orientado à Conexão:</strong> Faz um "acordo" antes de enviar dados.</li>
+						<li><strong>Ordenado:</strong> Monta as peças na ordem correta.</li>
+						<li><strong>Analogia:</strong> Correio com Aviso de Recebimento (AR).</li>
+						<li><strong>Uso:</strong> E-mail, Navegação Web, Transferência de Arquivos.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>O "Aperto de Mão" (3-Way Handshake)</h2>
+					<p style="color: #90e0ef; font-size: 1.2rem; margin-bottom: 25px;">Antes de enviar qualquer dado real, o TCP negocia a conexão em 3 etapas:</p>
+					<div style="text-align: left; background: rgba(255, 255, 255, 0.08); padding: 25px 35px; border-radius: 12px; border-left: 6px solid #50fa7b; max-width: 850px; margin: 0 auto; font-size: 1.35rem; line-height: 1.8;">
+						<p style="margin: 14px 0;"><span style="background: #ff5555; color: #fff; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-family: monospace;">SYN</span> ➔ <em>"Posso falar com você?"</em></p>
+						<p style="margin: 14px 0;"><span style="background: #ffb86c; color: #282a36; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-family: monospace;">SYN-ACK</span> ➔ <em>"Pode sim, estou ouvindo. E você me ouve?"</em></p>
+						<p style="margin: 14px 0;"><span style="background: #50fa7b; color: #282a36; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-family: monospace;">ACK</span> ➔ <em>"Ouço perfeitamente. Vamos começar!"</em></p>
+					</div>
+					<aside class="notes">
+						DICA FGV: As bancas amam cobrar a ordem exata das flags: SYN -> SYN-ACK -> ACK. Pense num telefonema: "Alô?" -> "Tô ouvindo, quem é?" -> "Sou eu, vou começar a falar".<br><br>
+						PORTAS EFÊMERAS: Lembre os alunos que a porta de destino é a 80 ou 443, mas a porta de origem do cliente (PC do aluno) NUNCA é a 443! O SO escolhe uma porta alta e aleatória (ex: 51324) para saber para qual aba do navegador ele deve devolver a resposta quando o servidor responder.
+					</aside>
+				</section>
+
+				<section>
+					<h3>UDP: User Datagram Protocol</h3>
+					<ul>
+						<li><strong>Rápido:</strong> Não confere se chegou.</li>
+						<li><strong>Sem Conexão:</strong> Apenas dispara os dados.</li>
+						<li><strong>Sem retransmissão:</strong> Se perder, perdeu. A vida segue.</li>
+						<li><strong>Analogia:</strong> Transmissão de rádio FM.</li>
+						<li><strong>Uso:</strong> Streaming de Vídeo, Jogos Online, VoIP (Ligação).</li>
+					</ul>
+					<aside class="notes">
+						O MITO DO UDP SER RUIM:<br>
+						Alunos acham que UDP é ruim porque perde pacote. Diga a eles: "Imagine jogar CS:GO via TCP. Se perder um pacote indicando a posição do inimigo, o jogo trava esperando retransmitir o dado antigo. No UDP, você dá uma travadinha de 1ms, perde o passado, e já recebe a nova posição atualizada no próximo quadro. Para vídeo e jogos em tempo real, o atraso é infinitamente pior que a perda de 1 pixel!"
+					</aside>
+				</section>
+
+				<section>
+					<h3>Portas Lógicas Mais Utilizadas (Padrão)</h3>
+					<table>
+						<thead>
+							<tr><th>Porta</th><th>Serviço</th><th>Protocolo</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>80</td><td>HTTP (Web Aberta)</td><td>TCP</td></tr>
+							<tr><td>443</td><td>HTTPS (Web Segura)</td><td>TCP</td></tr>
+							<tr><td>53</td><td>DNS (Nomes p/ IP)</td><td>UDP</td></tr>
+							<tr><td>22</td><td>SSH (Acesso Remoto)</td><td>TCP</td></tr>
+							<tr><td>20/21</td><td>FTP (Arquivos)</td><td>TCP</td></tr>
+						</tbody>
+					</table>
+					<aside class="notes">
+						DICA FGV: O DNS opera em ambos! UDP para consultas normais de clientes (rápido e pequeno), e TCP para "Transferência de Zonas" entre servidores DNS (exige confiabilidade). Na dúvida genérica, a banca dá gabarito como UDP (Porta 53).<br><br>
+						Diga à turma: "Memorizar essas 5 portas resolve 90% das questões de provas técnicas de nível médio."
+					</aside>
+				</section>
+
+				<!-- SLIDE 7: REVISÃO DA PESQUISA DE CASA (PROTOCOLOS DE APLICAÇÃO) -->
+				<section>
+					<h2 style="font-size: 2.1rem; color: #f1fa8c;">🔎 Revisão da Pesquisa: Protocolos de Aplicação</h2>
+					<div class="grid-2">
+						<div class="card-box fragment fade-up" style="border-left-color: #ff5555;">
+							<h3 style="color: #ff5555; font-size: 1.45rem; margin-top: 0;">🌐 HTTP (80) vs HTTPS (443)</h3>
+							<p><strong>Função:</strong> Transferência de páginas Web (HTML).</p>
+							<p><strong>Diferença:</strong> O HTTP envia dados em <em>texto claro</em> (qualquer um na rede lê sua senha). O <strong>HTTPS</strong> aplica criptografia <strong>TLS/SSL</strong> (cadeado). Ambos usam <strong>TCP</strong>.</p>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #8be9fd;">
+							<h3 style="color: #8be9fd; font-size: 1.45rem; margin-top: 0;">📖 DNS (Porta 53 — UDP/TCP)</h3>
+							<p><strong>Função:</strong> A "Agenda Telefônica" da Internet.</p>
+							<p>Traduz nomes humanos (<code>www.google.com</code>) para endereços IP (<code>142.250.79.4</code>). Usa <strong>UDP</strong> para consultas rápidas do dia a dia.</p>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b;">
+							<h3 style="color: #50fa7b; font-size: 1.45rem; margin-top: 0;">🎟️ DHCP (Portas 67/68 — UDP)</h3>
+							<p><strong>Função:</strong> Entrega automática de configuração IP.</p>
+							<p>Quando você conecta no Wi-Fi, o DHCP entrega <strong>IP, Máscara, Gateway e DNS</strong> via processo <strong>DORA</strong> (<em>Discover, Offer, Request, Ack</em>).</p>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #bd93f9;">
+							<h3 style="color: #bd93f9; font-size: 1.45rem; margin-top: 0;">🔐 SSH (22) & 📁 FTP (20/21)</h3>
+							<p><strong>SSH (Porta 22 - TCP):</strong> Terminal remoto seguro e criptografado para administrar servidores Linux.</p>
+							<p><strong>FTP (Portas 20/21 - TCP):</strong> Transferência de arquivos (21 p/ Controle, 20 p/ Dados).</p>
+						</div>
+					</div>
+					<aside class="notes">
+						CONFERÊNCIA DA PESQUISA:<br>
+						Peça para 3 ou 4 alunos lerem o que anotaram no caderno sobre HTTP/HTTPS, DNS e DHCP antes de revelar cada card com a seta! Destaque o acrônimo DORA do DHCP (muito cobrado em provas).
+					</aside>
+				</section>
+
+				<!-- SLIDE 8: REVISÃO DA PESQUISA (CAMADA DE REDE E DIAGNÓSTICO) -->
+				<section>
+					<h2 style="font-size: 2.1rem; color: #f1fa8c;">🔎 Protocolos de Rede e Diagnóstico (Camada 3)</h2>
+					<div class="card-box fragment fade-up" style="border-left-color: #ffb86c;">
+						<h3 style="color: #ffb86c; font-size: 1.45rem; margin: 0 0 6px 0;">📍 IP (Internet Protocol) — O "CEP" da Máquina</h3>
+						<p style="margin: 0;">Responsável pelo endereçamento lógico (IPv4 / IPv6) e pelo <strong>roteamento</strong> de pacotes entre redes diferentes. Opera sem garantia de entrega (quem garante a entrega é o TCP na camada de cima!).</p>
+					</div>
+					<div class="grid-2">
+						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b;">
+							<h3 style="color: #50fa7b; font-size: 1.45rem; margin-top: 0;">📡 ICMP (Ping e Tracert)</h3>
+							<p>Protocolo de mensagens de controle e diagnóstico. Não transporta dados de usuário nem usa portas! É o motor por trás do comando <code>ping</code> (Echo Request / Echo Reply).</p>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #8be9fd;">
+							<h3 style="color: #8be9fd; font-size: 1.45rem; margin-top: 0;">🔗 ARP (IP ➔ Endereço MAC)</h3>
+							<p>Traduz um endereço lógico conhecido (<strong>IP</strong>) no endereço físico da placa de rede (<strong>MAC Address</strong>) dentro da rede local. Comando: <code>arp -a</code>.</p>
+						</div>
+					</div>
+					<aside class="notes">
+						PONTO DE CONEXÃO:<br>
+						Mostre como todos trabalham juntos: 1) DHCP dá o IP ao PC; 2) DNS descobre o IP do site; 3) ARP descobre o MAC do roteador; 4) TCP faz o 3-Way Handshake na porta 443; 5) HTTPS baixa a página segura!
+					</aside>
+				</section>
+
+				<!-- SLIDE 9: DESAFIO 1 NO CADERNO — AUDITORIA NETSTAT -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #50fa7b;">🕵️ Desafio 1 no Caderno: Detetive de Tráfego</h2>
+					<p style="font-size: 1.25rem; margin-bottom: 12px;">Um analista executou <code>netstat -ano</code> em um computador da escola e obteve a saída abaixo:</p>
+					
+					<div class="terminal-box">
+						<div style="color: #6272a4; margin-bottom: 8px;">C:\Users\Administrador&gt; netstat -ano</div>
+						<table style="width: 100%; border-collapse: collapse; font-size: 1.15rem; color: #f8f8f2;">
+							<thead>
+								<tr style="color: #f1fa8c; border-bottom: 1px solid #44475a;">
+									<th style="padding: 4px 8px;"> Linha</th>
+									<th style="padding: 4px 8px;">Proto</th>
+									<th style="padding: 4px 8px;">Endereço Local</th>
+									<th style="padding: 4px 8px;">Endereço Externo</th>
+									<th style="padding: 4px 8px;">Estado</th>
+									<th style="padding: 4px 8px;">PID</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr><td style="color:#8be9fd;">[A]</td><td>TCP</td><td>192.168.1.15:51420</td><td>142.250.79.4:<strong>443</strong></td><td style="color:#50fa7b;">ESTABLISHED</td><td>4120</td></tr>
+								<tr><td style="color:#8be9fd;">[B]</td><td>TCP</td><td>192.168.1.15:51488</td><td>10.0.0.254:<strong>22</strong></td><td style="color:#50fa7b;">ESTABLISHED</td><td>7892</td></tr>
+								<tr><td style="color:#8be9fd;">[C]</td><td>UDP</td><td>192.168.1.15:60112</td><td>8.8.8.8:<strong>53</strong></td><td>*:*</td><td>1104</td></tr>
+								<tr><td style="color:#8be9fd;">[D]</td><td>TCP</td><td>192.168.1.15:51501</td><td>200.18.45.10:<strong>80</strong></td><td style="color:#ffb86c;">SYN_SENT</td><td>4120</td></tr>
+								<tr><td style="color:#8be9fd;">[E]</td><td>TCP</td><td>192.168.1.15:51600</td><td>172.16.0.5:<strong>21</strong></td><td style="color:#50fa7b;">ESTABLISHED</td><td>3310</td></tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="card-box" style="margin-top: 14px; font-size: 1.2rem; border-left-color: #f1fa8c;">
+						<strong>Responda no caderno:</strong><br>
+						<strong>1)</strong> Qual serviço/protocolo de aplicação está sendo acessado em cada linha de <strong>[A]</strong> até <strong>[E]</strong>?<br>
+						<strong>2)</strong> Por que a linha <strong>[C]</strong> não possui o estado <code>ESTABLISHED</code>?<br>
+						<strong>3)</strong> Na linha <strong>[A]</strong>, por que a porta do PC é <code>51420</code> e a do servidor é <code>443</code>?
+					</div>
+					<aside class="notes">
+						TEMPO NO CADERNO: 12 a 15 minutos.<br>
+						Se quiser, abra o CMD real do seu notebook projetado na lousa depois para mostrar um netstat ao vivo!
+					</aside>
+				</section>
+
+				<!-- SLIDE 10: DESAFIO 2 NO CADERNO — CENÁRIOS DE ARQUITETURA -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #8be9fd;">⚡ Desafio 2 no Caderno: Qual Protocolo Usar?</h2>
+					<p style="font-size: 1.25rem; margin-bottom: 12px;">Para cada cenário abaixo, anote no caderno: <strong>Protocolo de Aplicação + Porta + Transporte (TCP ou UDP)</strong>:</p>
+					
+					<div style="display: grid; grid-template-columns: 1fr; gap: 10px; font-size: 1.2rem;">
+						<div class="card-box" style="margin: 0; padding: 10px 18px; border-left-color: #50fa7b;">
+							<strong>Cenário 1:</strong> Um aluno liga o notebook na sala e recebe automaticamente um endereço IP sem precisar digitar nada.
+						</div>
+						<div class="card-box" style="margin: 0; padding: 10px 18px; border-left-color: #ffb86c;">
+							<strong>Cenário 2:</strong> Você faz um PIX pelo site do banco no navegador e precisa de criptografia e garantia total de que nenhum centavo se perca.
+						</div>
+						<div class="card-box" style="margin: 0; padding: 10px 18px; border-left-color: #8be9fd;">
+							<strong>Cenário 3:</strong> Partida competitiva de <em>Valorant / CS2</em> ou chamada de voz ao vivo, onde baixa latência importa mais que recuperar pacotes antigos.
+						</div>
+						<div class="card-box" style="margin: 0; padding: 10px 18px; border-left-color: #bd93f9;">
+							<strong>Cenário 4:</strong> O navegador precisa descobrir qual é o endereço IP correspondente ao domínio <code>sice.seduc.ce.gov.br</code>.
+						</div>
+						<div class="card-box" style="margin: 0; padding: 10px 18px; border-left-color: #ff5555;">
+							<strong>Cenário 5:</strong> O Prof. Olegário acessa remotamente o terminal do servidor Linux do laboratório de forma criptografada para reiniciar um container.
+						</div>
+					</div>
+					<aside class="notes">
+						DINÂMICA:<br>
+						Esses 5 cenários cobrem toda a tarefa de casa + a aula de Transporte! Passe nas carteiras dando visto nos cadernos.
+					</aside>
+				</section>
+
+				<!-- SLIDE 11: GABARITO DOS DESAFIOS 1 E 2 -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #50fa7b;">✅ Gabarito Comentado (Desafios 1 e 2)</h2>
+					<div class="grid-2">
+						<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c; font-size: 1.2rem;">
+							<h3 style="color: #f1fa8c; font-size: 1.4rem; margin-top: 0;">Gabarito Desafio 1 (netstat)</h3>
+							<ul>
+								<li><strong>[A] Porta 443:</strong> HTTPS (Web Segura)</li>
+								<li><strong>[B] Porta 22:</strong> SSH (Terminal Remoto Linux)</li>
+								<li><strong>[C] Porta 53:</strong> DNS (Resolução de Nomes)</li>
+								<li><strong>[D] Porta 80:</strong> HTTP (Iniciando Handshake: <code>SYN_SENT</code>)</li>
+								<li><strong>[E] Porta 21:</strong> FTP (Controle de Arquivos)</li>
+								<li><strong>2)</strong> Porque o <strong>UDP não é orientado à conexão</strong> (não faz Handshake!).</li>
+								<li><strong>3)</strong> <code>51420</code> é a <strong>Porta Efêmera (Aleatória)</strong> da aba do navegador no cliente; <code>443</code> é a porta fixa do servidor web.</li>
+							</ul>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b; font-size: 1.2rem;">
+							<h3 style="color: #50fa7b; font-size: 1.4rem; margin-top: 0;">Gabarito Desafio 2 (Cenários)</h3>
+							<ul>
+								<li><strong>Cenário 1:</strong> <code>DHCP</code> | Portas 67/68 | <strong>UDP</strong></li>
+								<li><strong>Cenário 2:</strong> <code>HTTPS</code> | Porta 443 | <strong>TCP</strong></li>
+								<li><strong>Cenário 3:</strong> Streaming/VoIP/Game | Portas dinâmicas | <strong>UDP</strong></li>
+								<li><strong>Cenário 4:</strong> <code>DNS</code> | Porta 53 | <strong>UDP</strong></li>
+								<li><strong>Cenário 5:</strong> <code>SSH</code> | Porta 22 | <strong>TCP</strong></li>
+							</ul>
+						</div>
+					</div>
+					<aside class="notes">
+						FECHAMENTO:<br>
+						Corrija item por item com a turma. Destaque o detalhe do estado SYN_SENT na linha [D]: significa que o PC enviou o primeiro passo do 3-Way Handshake (SYN) e está aguardando o SYN-ACK!
+					</aside>
+				</section>
+
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				transition: 'slide',
+				transitionSpeed: 'fast',
+				backgroundTransition: 'fade',
+				width: 1280,
+				height: 720,
+				margin: 0.05,
+				plugins: [RevealNotes]
+			});
+
+			// Atalho alternativo: Tecla 'N' para ver as notas diretamente na tela
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'n' || e.key === 'N') {
+					toggleNotesOverlay();
+				}
+			});
+
+			function toggleNotesOverlay() {
+				let overlay = document.getElementById('notes-overlay');
+				if (!overlay) {
+					overlay = document.createElement('div');
+					overlay.id = 'notes-overlay';
+					overlay.style.position = 'fixed';
+					overlay.style.bottom = '20px';
+					overlay.style.right = '20px';
+					overlay.style.maxWidth = '480px';
+					overlay.style.maxHeight = '360px';
+					overlay.style.background = 'rgba(15, 17, 23, 0.96)';
+					overlay.style.color = '#f8f8f2';
+					overlay.style.border = '2px solid #50fa7b';
+					overlay.style.borderRadius = '10px';
+					overlay.style.padding = '16px 20px';
+					overlay.style.boxShadow = '0 8px 30px rgba(0,0,0,0.85)';
+					overlay.style.zIndex = '9999';
+					overlay.style.fontSize = '14px';
+					overlay.style.lineHeight = '1.5';
+					overlay.style.overflowY = 'auto';
+					document.body.appendChild(overlay);
+				}
+				
+				if (overlay.style.display === 'none' || !overlay.style.display) {
+					renderNotes(overlay);
+					overlay.style.display = 'block';
+				} else {
+					overlay.style.display = 'none';
+				}
+			}
+
+			function renderNotes(overlay) {
+				const currentSlide = Reveal.getCurrentSlide();
+				const notesEl = currentSlide ? currentSlide.querySelector('aside.notes') : null;
+				if (notesEl) {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#50fa7b;">📝 Notas do Professor (Tecla N fecha)</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px; font-weight:bold;">✕</button></div>' + notesEl.innerHTML;
+				} else {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#ffb86c;">ℹ️ Nenhuma nota neste slide</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px;">✕</button></div>';
+				}
+			}
+
+			Reveal.on('slidechanged', function() {
+				const overlay = document.getElementById('notes-overlay');
+				if (overlay && overlay.style.display === 'block') {
+					renderNotes(overlay);
+				}
+			});
+		</script>
+	</body>
+</html>

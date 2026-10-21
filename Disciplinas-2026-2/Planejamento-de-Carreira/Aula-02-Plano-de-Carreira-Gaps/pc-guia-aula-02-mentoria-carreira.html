@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Mentoria — Plano de Carreira em TI | EEEP-AFS</title>
+  <style>
+    :root {
+      --bg-main: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #1a253e;
+      --border-color: #233354;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-green: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-purple: #c084fc;
+      --accent-rose: #f43f5e;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 1rem 1.5rem 3rem 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* HEADER FIXO DE PROJEÇÃO */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-title h1 {
+      font-size: 1.35rem;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .header-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* BARRA DE TEMPO E CRONÔMETRO */
+    .timer-control-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #0b1120;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .timer-display {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-amber);
+      letter-spacing: 2px;
+      min-width: 110px;
+      text-align: center;
+    }
+
+    .timer-buttons {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-start {
+      background: var(--accent-green);
+      color: #052e16;
+    }
+    .btn-start:hover { filter: brightness(1.15); }
+
+    .btn-pause {
+      background: var(--accent-amber);
+      color: #451a03;
+    }
+    .btn-pause:hover { filter: brightness(1.15); }
+
+    .btn-reset {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-reset:hover { background: #475569; }
+
+    .btn-fullscreen {
+      background: #1e293b;
+      color: var(--accent-cyan);
+      border: 1px solid var(--border-color);
+    }
+    .btn-fullscreen:hover { background: #334155; }
+
+    /* RÉGUA DE TEMPO DOS BLOCOS */
+    .timeline-ruler {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .ruler-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+      transition: width 1s linear;
+    }
+
+    .ruler-stages {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+
+    .stage-card {
+      background: #0d1527;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .stage-card.active {
+      border-color: var(--accent-amber);
+      background: #1e2030;
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+    }
+
+    .stage-time {
+      font-weight: 700;
+      color: var(--accent-amber);
+      display: block;
+      font-size: 0.75rem;
+    }
+
+    .stage-title {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    /* SISTEMA DE ABAS */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent-cyan);
+      border-color: var(--border-color);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-main);
+      background: #111a2e;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* GRID DAS 9 ETAPAS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+
+    .step-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .step-box:hover {
+      border-color: #3b5280;
+    }
+
+    .step-num {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      text-align: center;
+      border-radius: 50%;
+      background: #1e293b;
+      color: var(--accent-cyan);
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-right: 0.4rem;
+    }
+
+    .step-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .step-tips {
+      background: #0a0f1d;
+      border-left: 3px solid var(--accent-cyan);
+      padding: 0.6rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+
+    .step-tips ul {
+      margin-left: 1.1rem;
+      margin-top: 0.3rem;
+    }
+
+    .step-tips li {
+      margin-bottom: 0.25rem;
+    }
+
+    .tag-target {
+      display: inline-block;
+      background: #1e293b;
+      color: var(--accent-green);
+      font-size: 0.72rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    /* CARDS DE REFERÊNCIA */
+    .reference-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 900px) {
+      .reference-layout {
+        grid-template-columns: 1fr;
+      }
+      .ruler-stages {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .ref-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.15rem;
+    }
+
+    .ref-card h2 {
+      font-size: 1.1rem;
+      color: var(--accent-amber);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.45rem;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    table.data-table th {
+      text-align: left;
+      background: #0b1324;
+      color: var(--accent-cyan);
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    table.data-table td {
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid #1a253e;
+      color: #cbd5e1;
+    }
+
+    table.data-table tr:hover td {
+      background: #16223b;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-fed { background: #064e3b; color: #6ee7b7; }
+    .badge-ead { background: #312e81; color: #a5b4fc; }
+    .badge-pres { background: #1e293b; color: #e2e8f0; }
+
+    /* COMPARAÇÃO SKILLS */
+    .skills-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .skills-col {
+      background: #0b1222;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: 1px solid #1a263f;
+    }
+
+    .skills-col h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .skills-col.hard h3 { color: var(--accent-cyan); }
+    .skills-col.soft h3 { color: var(--accent-green); }
+
+    .skills-col ul {
+      margin-left: 1.1rem;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    .skills-col li {
+      margin-bottom: 0.35rem;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid #1a253e;
+      padding-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER COM CRONÔMETRO -->
+  <header>
+    <div class="header-title">
+      <h1>🧭 Painel de Mentoria: Plano de Carreira em TI</h1>
+      <p>1º Ano Técnico em Desenvolvimento de Sistemas — EEEP Adolfo Ferreira de Sousa</p>
+    </div>
+
+    <div class="timer-control-box">
+      <div class="timer-display" id="timer">50:00</div>
+      <div class="timer-buttons">
+        <button class="btn-start" onclick="startTimer()">Iniciar</button>
+        <button class="btn-pause" onclick="pauseTimer()">Pausar</button>
+        <button class="btn-reset" onclick="resetTimer()">Resetar</button>
+        <button class="btn-fullscreen" onclick="toggleFullscreen()" title="Tela Cheia">⛶</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- RÉGUA DE TEMPO DINÂMICA (50 MINUTOS DE ATIVIDADE) -->
+  <section class="timeline-ruler">
+    <div class="ruler-header">
+      <span>Régua da Atividade Prática (Tempo Total: 50 minutos)</span>
+      <span id="stage-status-text">Fase 1 em andamento</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+    <div class="ruler-stages">
+      <div class="stage-card active" id="stage-1">
+        <span class="stage-time">Minutos 0 a 15</span>
+        <div class="stage-title">Seções 1, 2 e 3</div>
+        <div style="font-size: 0.72rem; color: #94a3b8;">Vaga Alvo + Gaps Hard e Soft Skills</div>
+      </div>
+      <div class="stage-card" id="stage-2">
+        <span class="stage-time">Minutos 15 a 30</span>
+        <div class="stage-title">Seções 4, 5 e 6</div>
+        <div style="font-size: 0.72rem; color: #94a3b8;">Ensino Superior + Caminho + Salários</div>
+      </div>
+      <div class="stage-card" id="stage-3">
+        <span class="stage-time">Minutos 30 a 45</span>
+        <div class="stage-title">Seções 7 e 8</div>
+        <div style="font-size: 0.72rem; color: #94a3b8;">Empresas + Linha do Tempo (2026–2032)</div>
+      </div>
+      <div class="stage-card" id="stage-4">
+        <span class="stage-time">Minutos 45 a 50</span>
+        <div class="stage-title">Seção 9 e Revisão</div>
+        <div style="font-size: 0.72rem; color: #94a3b8;">LinkedIn / GitHub + Validação Final</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABAS DE NAVEGAÇÃO -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('tab-etapas')">📋 Guia das 9 Etapas do Plano</button>
+    <button class="tab-btn" onclick="switchTab('tab-faculdades')">🎓 Faculdades e Cursos (Região CE)</button>
+    <button class="tab-btn" onclick="switchTab('tab-salarios')">💰 Salários e Concursos (Ceará)</button>
+    <button class="tab-btn" onclick="switchTab('tab-skills')">⚖️ Referência: Hard vs. Soft Skills</button>
+  </nav>
+
+  <!-- ABA 1: AS 9 ETAPAS DETALHADAS -->
+  <main id="tab-etapas" class="tab-content active">
+    <div class="steps-grid">
+
+      <!-- ETAPA 1 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">1</span> Minha Vaga Alvo
+          </div>
+          <p class="step-desc">Defina o destino profissional imediato com base na pesquisa da Aula 01.</p>
+          <div class="step-tips">
+            <strong>O que preencher:</strong>
+            <ul>
+              <li><strong>Cargo:</strong> Ex: Desenvolvedor Front-end Júnior, Suporte Técnico N1, Analista de Dados Trainee.</li>
+              <li><strong>Empresa e Link:</strong> Link do LinkedIn, Gupy ou GeekHunter salvo na aula anterior.</li>
+              <li><strong>Salário:</strong> Valor do anúncio ou preencha com a média da categoria no Ceará.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Destino da Rota (Ponto B)</span>
+      </article>
+
+      <!-- ETAPA 2 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">2</span> Gaps — Hard Skills
+          </div>
+          <p class="step-desc">Liste 3 requisitos técnicos da vaga que você ainda não domina e o plano de estudo.</p>
+          <div class="step-tips">
+            <strong>O que preencher:</strong>
+            <ul>
+              <li><strong>Skill que falta:</strong> Ex: Git/GitHub avançado, Docker, PostgreSQL, React, TypeScript.</li>
+              <li><strong>Onde aprender:</strong> Plataformas com cursos gratuitos: Fundação Bradesco, Cisco NetAcad, freeCodeCamp, YouTube (Curso em Vídeo).</li>
+              <li><strong>Prazo:</strong> Mês e ano definidos (ex: Junho/2027).</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Competências Técnicas</span>
+      </article>
+
+      <!-- ETAPA 3 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">3</span> Gaps — Soft Skills
+          </div>
+          <p class="step-desc">Mapeie 2 comportamentos a lapidar e como praticá-los durante o curso técnico.</p>
+          <div class="step-tips">
+            <strong>O que preencher:</strong>
+            <ul>
+              <li><strong>Soft Skill:</strong> Comunicação oral, gestão de tempo, resolução de conflitos, trabalho em equipe.</li>
+              <li><strong>Como desenvolver:</strong> Apresentar seminários nas aulas, adotar o Trello para tarefas da escola, liderar grupos.</li>
+              <li><strong>Prazo:</strong> Acompanhamento contínuo no semestre letivo.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Atitude e Relações de Trabalho</span>
+      </article>
+
+      <!-- ETAPA 4 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">4</span> Ensino Superior
+          </div>
+          <p class="step-desc">Escolha uma rota formativa após a conclusão do ensino médio integrado.</p>
+          <div class="step-tips">
+            <strong>O que preencher:</strong>
+            <ul>
+              <li><strong>Curso:</strong> Análise e Desenv. de Sistemas (ADS), Ciência da Computação, Engenharia de Software ou Redes.</li>
+              <li><strong>Instituição:</strong> UNILAB (Redenção), UFC (Quixadá), IFCE ou polo EaD local.</li>
+              <li><strong>Modalidade:</strong> Presencial, EaD ou Híbrido com a duração estimada (2,5 a 5 anos).</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Continuidade Acadêmica</span>
+      </article>
+
+      <!-- ETAPA 5 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">5</span> Caminho Profissional
+          </div>
+          <p class="step-desc">Selecione o modelo de contratação inicial desejado e justifique sua escolha.</p>
+          <div class="step-tips">
+            <strong>Opções:</strong>
+            <ul>
+              <li><strong>CLT:</strong> Carteira assinada, 13º, férias e estabilidade contratual.</li>
+              <li><strong>Concurso Público:</strong> Segurança institucional e remunerações por edital.</li>
+              <li><strong>Autônomo/PJ:</strong> Prestação direta de serviços e projetos por demanda.</li>
+              <li><strong>Remoto Internacional:</strong> Exige domínio do inglês técnico e atuação remota.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Modelo de Inserção</span>
+      </article>
+
+      <!-- ETAPA 6 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">6</span> Pretensão Salarial
+          </div>
+          <p class="step-desc">Defina números realistas baseados em dados do mercado de TI do Ceará.</p>
+          <div class="step-tips">
+            <strong>Horizontes:</strong>
+            <ul>
+              <li><strong>1 ano (2027):</strong> Estágio técnico — R$ 800 a R$ 1.500.</li>
+              <li><strong>3 anos (2029):</strong> Conclusão técnica / Júnior — R$ 2.300 a R$ 4.500.</li>
+              <li><strong>5 anos (2031):</strong> Profissional Pleno / Graduado — R$ 5.500 a R$ 9.000.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Metas Financeiras Reais</span>
+      </article>
+
+      <!-- ETAPA 7 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">7</span> Empresas dos Sonhos
+          </div>
+          <p class="step-desc">Liste 3 empresas onde você tem interesse em ingressar e o motivo objetivo.</p>
+          <div class="step-tips">
+            <strong>Exemplos de perfil:</strong>
+            <ul>
+              <li><strong>Públicas:</strong> DATAPREV, SERPRO, ETICE, Tribunais.</li>
+              <li><strong>Regionais / Nacionais:</strong> Giga+ Fibra, Brisanet, Nubank, TOTVS, Stone, PicPay.</li>
+              <li><strong>Critério:</strong> Avalie tecnologia utilizada, regime home office e plano de cargos.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Mapeamento de Empregadores</span>
+      </article>
+
+      <!-- ETAPA 8 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">8</span> Linha do Tempo (Ações)
+          </div>
+          <p class="step-desc">Estruture 2 a 3 ações práticas por período cronológico.</p>
+          <div class="step-tips">
+            <strong>O que registrar:</strong>
+            <ul>
+              <li><strong>Curto (2026–2028):</strong> Concluir 3 certificações gratuitas, fazer o estágio curricular do 3º ano da EEEP.</li>
+              <li><strong>Médio (2029–2031):</strong> Ingressar na faculdade (presencial ou EaD) e obter primeira vaga de Desenvolvedor Júnior.</li>
+              <li><strong>Longo (2032+):</strong> Transição para pleno, pós-graduação ou aprovação em concurso público.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Plano de Execução</span>
+      </article>
+
+      <!-- ETAPA 9 -->
+      <article class="step-box">
+        <div>
+          <div class="step-header">
+            <span class="step-num">9</span> Links Profissionais
+          </div>
+          <p class="step-desc">Revise e anexe os links públicos da sua identidade profissional.</p>
+          <div class="step-tips">
+            <strong>Checklist:</strong>
+            <ul>
+              <li><strong>LinkedIn:</strong> URL personalizada (ex: linkedin.com/in/seunome) com resumo e formação na EEEP preenchidos.</li>
+              <li><strong>GitHub:</strong> Perfil com foto, bio e repositórios dos trabalhos práticos da escola.</li>
+              <li><strong>Portfólio:</strong> Página web ou PDF organizado (opcional para o 1º ano).</li>
+            </ul>
+          </div>
+        </div>
+        <span class="tag-target">Foco: Vitrine Profissional</span>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ABA 2: FACULDADES E CURSOS -->
+  <section id="tab-faculdades" class="tab-content">
+    <div class="reference-layout">
+
+      <div class="ref-card">
+        <h2>🏛️ Opções Públicas Gratuitas (Região de Redenção e Proximidades)</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Instituição</th>
+              <th>Localização</th>
+              <th>Cursos de TI</th>
+              <th>Modalidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>UNILAB</strong></td>
+              <td>Redenção / Acarape</td>
+              <td>Engenharia da Computação / Cursos de Exatas</td>
+              <td><span class="badge-pill badge-fed">Federal</span> <span class="badge-pill badge-pres">Presencial</span></td>
+            </tr>
+            <tr>
+              <td><strong>UFC Campus Quixadá</strong></td>
+              <td>Quixadá (~120 km)</td>
+              <td>Engenharia de Software, Ciência da Comp., Sistemas de Informação, Redes, Design Digital</td>
+              <td><span class="badge-pill badge-fed">Federal</span> <span class="badge-pill badge-pres">Presencial</span></td>
+            </tr>
+            <tr>
+              <td><strong>IFCE Canindé</strong></td>
+              <td>Canindé (~85 km)</td>
+              <td>Análise e Desenv. de Sistemas (ADS), Redes de Computadores</td>
+              <td><span class="badge-pill badge-fed">Federal</span> <span class="badge-pill badge-pres">Presencial</span></td>
+            </tr>
+            <tr>
+              <td><strong>IFCE Baturité / Guaramiranga</strong></td>
+              <td>Maciço de Baturité</td>
+              <td>Cursos técnicos e qualificações complementares em tecnologia</td>
+              <td><span class="badge-pill badge-fed">Federal</span> <span class="badge-pill badge-pres">Presencial</span></td>
+            </tr>
+            <tr>
+              <td><strong>IFCE Maracanaú / Fortaleza</strong></td>
+              <td>Região Metropolitana</td>
+              <td>Ciência da Computação, Engenharia de Computação, Telemática</td>
+              <td><span class="badge-pill badge-fed">Federal</span> <span class="badge-pill badge-pres">Presencial</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-card">
+        <h2>🎓 Modalidades e Cursos a Distância (Polos Locais)</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Instituição</th>
+              <th>Polo Local</th>
+              <th>Cursos Ofertados</th>
+              <th>Duração</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Estácio EaD</strong></td>
+              <td>Polo Redenção</td>
+              <td>Análise e Desenvolvimento de Sistemas, Gestão de TI</td>
+              <td><span class="badge-pill badge-ead">2,5 anos</span></td>
+            </tr>
+            <tr>
+              <td><strong>Anhanguera / Unopar</strong></td>
+              <td>Polo Baturité / Redenção</td>
+              <td>Análise e Desenv. de Sistemas, Engenharia de Software EaD</td>
+              <td><span class="badge-pill badge-ead">2,5 a 4 anos</span></td>
+            </tr>
+            <tr>
+              <td><strong>UFC Virtual (UAB)</strong></td>
+              <td>Polos Regionais</td>
+              <td>Sistemas de Informação EaD, Licenciaturas em Computação</td>
+              <td><span class="badge-pill badge-fed">4 anos</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top: 1rem; background: #0c1424; padding: 0.75rem; border-radius: 6px; font-size: 0.8rem; border-left: 3px solid var(--accent-amber);">
+          <strong>Fato Técnico Relevante:</strong> Cursos superiores de tecnologia (Tecnólogos, 2 a 2,5 anos) são reconhecidos pelo MEC como nível superior pleno e são aceitos em concursos públicos (como DATAPREV e SERPRO) e em pós-graduações.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABA 3: SALÁRIOS E CONCURSOS -->
+  <section id="tab-salarios" class="tab-content">
+    <div class="reference-layout">
+
+      <div class="ref-card">
+        <h2>💼 Faixas Salariais de TI — Mercado Ceará (Regime CLT)</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nível Profissional</th>
+              <th>Tempo de Experiência</th>
+              <th>Faixa Salarial Média (CE)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🟢 <strong>Estagiário</strong></td>
+              <td>Durante a formação escolar/superior</td>
+              <td>R$ 800 a R$ 1.500 + auxílio transporte</td>
+            </tr>
+            <tr>
+              <td>🔵 <strong>Desenvolvedor Júnior</strong></td>
+              <td>0 a 2 anos</td>
+              <td>R$ 2.300 a R$ 4.500</td>
+            </tr>
+            <tr>
+              <td>🟡 <strong>Desenvolvedor Pleno</strong></td>
+              <td>2 a 5 anos</td>
+              <td>R$ 5.500 a R$ 9.000</td>
+            </tr>
+            <tr>
+              <td>🔴 <strong>Desenvolvedor Sênior / Lead</strong></td>
+              <td>5+ anos</td>
+              <td>R$ 9.000 a R$ 15.000+</td>
+            </tr>
+            <tr>
+              <td>🌐 <strong>Remoto (Empresas SP / Exterior)</strong></td>
+              <td>Varia conforme o nível de inglês</td>
+              <td>R$ 8.000 a R$ 35.000+ (conversão cambial)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+          Fonte de referência: Dados consolidados de CAGED, levantamentos salariais e plataformas de recrutamento no Ceará.
+        </p>
+      </div>
+
+      <div class="ref-card">
+        <h2>📋 Oportunidades em Concurso Público de TI</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Órgão Público</th>
+              <th>Cargo</th>
+              <th>Remuneração Inicial</th>
+              <th>Requisito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>DATAPREV</strong></td>
+              <td>Analista de TI (Dev / Infra)</td>
+              <td>R$ 8.500 a R$ 11.500</td>
+              <td>Nível Superior</td>
+            </tr>
+            <tr>
+              <td><strong>SERPRO</strong></td>
+              <td>Analista de TI</td>
+              <td>R$ 9.000 a R$ 12.500</td>
+              <td>Nível Superior</td>
+            </tr>
+            <tr>
+              <td><strong>ETICE (Ceará)</strong></td>
+              <td>Analista de Gestão de TI</td>
+              <td>R$ 6.000 a R$ 9.000</td>
+              <td>Nível Superior</td>
+            </tr>
+            <tr>
+              <td><strong>Tribunais (TJ-CE / TRE-CE)</strong></td>
+              <td>Técnico e Analista Judiciário (TI)</td>
+              <td>R$ 8.500 a R$ 14.000</td>
+              <td>Nível Superior</td>
+            </tr>
+            <tr>
+              <td><strong>Bancos Públicos (BB / Caixa)</strong></td>
+              <td>Técnico Bancário (Foco em TI)</td>
+              <td>R$ 3.800 a R$ 6.000 (+ PLR)</td>
+              <td>Nível Médio Técnico</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABA 4: HARD VS SOFT SKILLS -->
+  <section id="tab-skills" class="tab-content">
+    <div class="ref-card">
+      <h2>⚖️ Comparativo de Competências para Desenvolvedores Juniores</h2>
+      <div class="skills-split">
+
+        <div class="skills-col hard">
+          <h3>🔧 Hard Skills (Competências Técnicas)</h3>
+          <ul>
+            <li><strong>Lógica e Programação:</strong> Sintaxe limpa, estruturas de repetição, funções e modularização.</li>
+            <li><strong>Controle de Versão:</strong> Git (comandos básicos: commit, push, branch, pull request) e GitHub.</li>
+            <li><strong>Banco de Dados:</strong> Modelagem relacional e consultas SQL (SELECT, JOIN, INSERT, UPDATE).</li>
+            <li><strong>Desenvolvimento Web:</strong> HTML5 estruturado, CSS flexbox/grid e JavaScript básico.</li>
+            <li><strong>Depuração:</strong> Leitura de mensagens de erro no console e inspeção de código.</li>
+          </ul>
+          <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--accent-cyan);">
+            <strong>Onde aprender de graça:</strong> freeCodeCamp, Curso em Vídeo, Fundação Bradesco, documentação oficial MDN.
+          </div>
+        </div>
+
+        <div class="skills-col soft">
+          <h3>🧠 Soft Skills (Competências Comportamentais)</h3>
+          <ul>
+            <li><strong>Comunicação Clara:</strong> Capacidade de explicar problemas técnicos sem prolixidade.</li>
+            <li><strong>Trabalho em Equipe:</strong> Divisão justa de tarefas, respeito aos prazos e colaboração em pares.</li>
+            <li><strong>Capacidade de Aprendizado Autônomo:</strong> Ler documentações e buscar soluções antes de travar.</li>
+            <li><strong>Pontualidade e Compromisso:</strong> Cumprir prazos de entrega de projetos e acordos firmados.</li>
+            <li><strong>Recepção de Feedback:</strong> Ouvir correções de código (code reviews) sem levar para o lado pessoal.</li>
+          </ul>
+          <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--accent-green);">
+            <strong>Como exercitar na escola:</strong> Projetos em grupo da EEEP, apresentações de seminários e participação ativa nas aulas.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER INFORMATIVO -->
+  <footer>
+    EEEP Adolfo Ferreira de Sousa · Redenção-CE · Curso Técnico em Desenvolvimento de Sistemas · Disciplina: Planejamento de Carreira · 2026
+  </footer>
+
+  <script>
+    // CRONÔMETRO PROGRESSIVO E REGRESSIVO
+    let totalSeconds = 50 * 60; // 50 minutos
+    let remainingSeconds = totalSeconds;
+    let timerInterval = null;
+    let isRunning = false;
+
+    const timerElement = document.getElementById('timer');
+    const progressBar = document.getElementById('progress-bar');
+    const stageStatusText = document.getElementById('stage-status-text');
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      timerElement.textContent = 
+        String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+      // Progresso percentual (0% a 100%)
+      const elapsed = totalSeconds - remainingSeconds;
+      const percent = (elapsed / totalSeconds) * 100;
+      progressBar.style.width = percent + '%';
+
+      // Atualizar régua dos estágios
+      const elapsedMinutes = elapsed / 60;
+      updateStages(elapsedMinutes);
+    }
+
+    function updateStages(elapsedMinutes) {
+      const s1 = document.getElementById('stage-1');
+      const s2 = document.getElementById('stage-2');
+      const s3 = document.getElementById('stage-3');
+      const s4 = document.getElementById('stage-4');
+
+      [s1, s2, s3, s4].forEach(s => s.classList.remove('active'));
+
+      if (elapsedMinutes < 15) {
+        s1.classList.add('active');
+        stageStatusText.textContent = "Fase 1: Preenchendo Vaga Alvo + Hard e Soft Skills (Seções 1 a 3)";
+      } else if (elapsedMinutes < 30) {
+        s2.classList.add('active');
+        stageStatusText.textContent = "Fase 2: Preenchendo Faculdade + Caminho + Salários (Seções 4 a 6)";
+      } else if (elapsedMinutes < 45) {
+        s3.classList.add('active');
+        stageStatusText.textContent = "Fase 3: Preenchendo Empresas + Linha do Tempo (Seções 7 e 8)";
+      } else {
+        s4.classList.add('active');
+        stageStatusText.textContent = "Fase 4: Finalizando Links Profissionais e Validação (Seção 9)";
+      }
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          isRunning = false;
+          stageStatusText.textContent = "Tempo esgotado! Iniciar compartilhamento dos planos.";
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      remainingSeconds = totalSeconds;
+      updateTimerDisplay();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // NAVEGAÇÃO ENTRE ABAS
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      event.target.classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) {
+        target.classList.add('active');
+      }
+    }
+
+    // Inicialização
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
