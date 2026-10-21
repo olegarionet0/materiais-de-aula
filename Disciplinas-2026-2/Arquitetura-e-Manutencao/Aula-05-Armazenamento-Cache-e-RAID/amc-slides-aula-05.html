@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Hierarquia de Memórias, Armazenamento NVMe e RAID — AMC | EEEP-AFS</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+		<style>
+			/* Tipografia limpa, moderna e legível para projetor */
+			.reveal, .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+				text-transform: none !important;
+				letter-spacing: normal !important;
+			}
+			.reveal { font-size: 1.8rem; }
+			.reveal h1, .reveal h2, .reveal h3 { color: #f1fa8c; font-weight: 700 !important; }
+			.reveal p, .reveal li { line-height: 1.45; font-size: 1.4rem; }
+			.destaque-verde { color: #50fa7b; font-weight: bold; }
+			.destaque-amarelo { color: #f1fa8c; font-weight: bold; }
+			.destaque-vermelho { color: #ff5555; font-weight: bold; }
+			.destaque-azul { color: #8be9fd; font-weight: bold; }
+			.destaque-laranja { color: #ffb86c; font-weight: bold; }
+			.card-box {
+				background: rgba(255, 255, 255, 0.07);
+				border-left: 6px solid #50fa7b;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 14px 0;
+				text-align: left;
+			}
+			.card-alerta {
+				background: rgba(255, 85, 85, 0.18);
+				border-left: 6px solid #ff5555;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 14px 0;
+				text-align: left;
+			}
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 22px;
+				text-align: left;
+			}
+			.tag-aula {
+				display: inline-block;
+				background: #bd93f9;
+				color: #282a36;
+				padding: 4px 14px;
+				border-radius: 12px;
+				font-size: 1.1rem;
+				font-weight: bold;
+				margin-bottom: 12px;
+			}
+			.svg-diagram {
+				max-width: 100%;
+				height: auto;
+				display: block;
+				margin: 12px auto;
+				filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- SLIDE 1: CAPA -->
+				<section style="text-align: center;">
+					<span class="tag-aula">EEEP-AFS · 1º Ano DS · Arquitetura e Manutenção</span>
+					<h1 style="font-size: 2.5rem; margin-top: 10px;">Hierarquia de Memórias, NVMe e RAID</h1>
+					<h2 style="font-size: 1.85rem; color: #50fa7b;">Dual Channel, Cache L1/L2/L3, BIOS/ROM e Arranjos de Discos</h2>
+					<p style="margin-top: 25px; font-size: 1.3rem;">Prof. Olegário Neto</p>
+					<div class="card-box" style="display: inline-block; margin-top: 15px; border-left-color: #8be9fd;">
+						🧠 <strong>Da Bancada para a Arquitetura:</strong> Como os dados viajam entre o Disco, a RAM e o Processador
+					</div>
+					<aside class="notes">
+						GANCHO DE ABERTURA:<br>
+						"Pessoal, ontem nós abrimos os gabinetes, limpamos e encaixamos os pentes de memória RAM. Hoje vamos responder: em quais slots devemos encaixar 2 pentes para dobrar a velocidade da máquina? E por que um SSD NVMe é até 35 vezes mais rápido que um HD antigo?"
+					</aside>
+				</section>
+
+				<!-- SLIDE 2: DUAL CHANNEL -->
+				<section>
+					<h2>⚡ Segredo de Montagem: Dual Channel</h2>
+					<div class="grid-2" style="align-items: center;">
+						<div>
+							<div class="card-box" style="border-left-color: #50fa7b;">
+								<h3 style="color: #50fa7b; font-size: 1.45rem; margin-top: 0;">De 64 bits para 128 bits!</h3>
+								<p>Um único pente de memória conversa com o processador por uma pista de <strong>64 bits</strong>.</p>
+								<p>Com <strong>2 pentes em canais diferentes</strong> (Canal A + Canal B), o processador acessa os dois ao mesmo tempo: uma rodovia dupla de <strong>128 bits</strong>!</p>
+							</div>
+							<div class="card-alerta" style="font-size: 1.25rem;">
+								⚠️ <strong>Regra dos 4 Slots:</strong> Nunca coloque os 2 pentes colados (Slot 1 e 2)! Use sempre <strong>slots intercalados</strong> (padrão de fábrica: <strong>A2 e B2</strong> — Slots 2 e 4).
+							</div>
+						</div>
+
+						<!-- Diagrama SVG dos 4 Slots de RAM (Dual Channel) -->
+						<div class="fragment fade-up">
+							<svg class="svg-diagram" viewBox="0 0 460 280" style="max-width: 440px;">
+								<rect x="10" y="10" width="440" height="260" rx="12" fill="#1e1f29" stroke="#6272a4" stroke-width="2.5"/>
+								<!-- CPU -->
+								<rect x="25" y="75" width="95" height="110" rx="8" fill="#282a36" stroke="#8be9fd" stroke-width="3"/>
+								<text x="72" y="128" fill="#8be9fd" font-size="18" font-weight="bold" text-anchor="middle">CPU</text>
+								<text x="72" y="150" fill="#f8f8f2" font-size="12" text-anchor="middle">128 bits</text>
+
+								<!-- 4 Slots Verticais -->
+								<!-- Slot A1 (Vazio) -->
+								<rect x="165" y="35" width="32" height="185" rx="4" fill="#282a36" stroke="#44475a" stroke-width="2"/>
+								<text x="181" y="242" fill="#6272a4" font-size="14" font-weight="bold" text-anchor="middle">A1</text>
+
+								<!-- Slot A2 (OCUPADO - VERDE) -->
+								<rect x="225" y="35" width="32" height="185" rx="4" fill="#50fa7b" stroke="#f8f8f2" stroke-width="2"/>
+								<text x="241" y="135" fill="#1e1f29" font-size="14" font-weight="900" text-anchor="middle" transform="rotate(-90 241 135)">PENTE 1 (8GB)</text>
+								<text x="241" y="242" fill="#50fa7b" font-size="15" font-weight="bold" text-anchor="middle">A2 ★</text>
+
+								<!-- Slot B1 (Vazio) -->
+								<rect x="285" y="35" width="32" height="185" rx="4" fill="#282a36" stroke="#44475a" stroke-width="2"/>
+								<text x="301" y="242" fill="#6272a4" font-size="14" font-weight="bold" text-anchor="middle">B1</text>
+
+								<!-- Slot B2 (OCUPADO - VERDE) -->
+								<rect x="345" y="35" width="32" height="185" rx="4" fill="#50fa7b" stroke="#f8f8f2" stroke-width="2"/>
+								<text x="361" y="135" fill="#1e1f29" font-size="14" font-weight="900" text-anchor="middle" transform="rotate(-90 361 135)">PENTE 2 (8GB)</text>
+								<text x="361" y="242" fill="#50fa7b" font-size="15" font-weight="bold" text-anchor="middle">B2 ★</text>
+
+								<!-- Legenda Inferior -->
+								<text x="265" y="263" fill="#f1fa8c" font-size="13" font-weight="bold" text-anchor="middle">Slots 2 e 4 (A2 + B2) = Dual Channel Ativo!</text>
+							</svg>
+						</div>
+					</div>
+					<aside class="notes">
+						DICA PRÁTICA:<br>
+						Mostre que 2 pentes de 8 GB em Dual Channel entregam até 20% a 30% mais FPS em jogos com vídeo integrado (ex: Ryzen 5600G) do que 1 pente sozinho de 16 GB (Single Channel)!
+					</aside>
+				</section>
+
+				<!-- SLIDE 3: PIRÂMIDE DE HIERARQUIA DE MEMÓRIAS -->
+				<section>
+					<h2>🔺 A Pirâmide das Memórias</h2>
+					<div class="grid-2" style="align-items: center; grid-template-columns: 1.05fr 0.95fr;">
+						<div>
+							<svg class="svg-diagram" viewBox="0 0 520 300" style="width: 100%;">
+								<!-- Nível 1: Registradores e Cache -->
+								<polygon points="260,15 170,95 350,95" fill="#ff5555" stroke="#282a36" stroke-width="3"/>
+								<text x="260" y="68" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">Cache L1 / L2 / L3</text>
+								<text x="260" y="86" fill="#f1fa8c" font-size="12" font-weight="bold" text-anchor="middle">(Dentro da CPU - MBs)</text>
+
+								<!-- Nível 2: Memória RAM -->
+								<polygon points="165,102 100,185 420,185 355,102" fill="#50fa7b" stroke="#282a36" stroke-width="3"/>
+								<text x="260" y="142" fill="#1e1f29" font-size="18" font-weight="900" text-anchor="middle">Memória RAM (DDR4 / DDR5)</text>
+								<text x="260" y="165" fill="#1e1f29" font-size="13" font-weight="bold" text-anchor="middle">(Volátil - 8 GB a 64 GB)</text>
+
+								<!-- Nível 3: Armazenamento Secundário -->
+								<polygon points="95,192 25,280 495,280 425,192" fill="#8be9fd" stroke="#282a36" stroke-width="3"/>
+								<text x="260" y="235" fill="#1e1f29" font-size="19" font-weight="900" text-anchor="middle">Armazenamento: SSD NVMe / SATA / HD</text>
+								<text x="260" y="260" fill="#1e1f29" font-size="14" font-weight="bold" text-anchor="middle">(Não-Volátil / Permanente - 500 GB a 4 TB)</text>
+							</svg>
+						</div>
+						<div>
+							<div class="card-box fragment fade-up" style="border-left-color: #ff5555;">
+								<h3 style="color: #ff5555; font-size: 1.4rem; margin-top: 0;">Por que existe a Cache (L1, L2, L3)?</h3>
+								<p>O processador é rápido demais até mesmo para a memória RAM! A <strong>Cache</strong> fica soldada <em>dentro do núcleo da CPU</em> para guardar os dados mais repetidos e evitar que o processador fique esperando a RAM.</p>
+							</div>
+							<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c;">
+								📌 <strong>Regra da Pirâmide:</strong> Quanto mais no topo ➔ <strong>Mais Rápida</strong>, <strong>Mais Cara por Byte</strong> e <strong>Menor Capacidade</strong>.
+							</div>
+						</div>
+					</div>
+					<aside class="notes">
+						ANALOGIA DA COZINHA:<br>
+						- HD/SSD = O supermercado (cabe tudo, mas demora para ir buscar).<br>
+						- Memória RAM = A bancada da cozinha (onde você coloca os ingredientes da receita que está fazendo agora).<br>
+						- Memória Cache = A sua mão! É pequenininha, mas está a zero centímetro da faca (CPU).
+					</aside>
+				</section>
+
+				<!-- SLIDE 4: RAM vs ROM E A BATERIA CMOS -->
+				<section>
+					<h2>🔋 Memória RAM vs ROM (e a Bateria CR2032)</h2>
+					<div class="grid-2">
+						<div class="card-box fragment fade-up" style="border-left-color: #8be9fd;">
+							<h3 style="color: #8be9fd; font-size: 1.45rem; margin-top: 0;">Memória RAM (Volátil)</h3>
+							<ul>
+								<li><strong>Significado:</strong> <em>Random Access Memory</em>.</li>
+								<li><strong>Volátil:</strong> Precisa de energia elétrica contínua. Tirou da tomada ➔ <strong>apaga 100% em milissegundos</strong>.</li>
+								<li><strong>Função:</strong> Manter abertos o Windows, navegador, VS Code e jogos em execução.</li>
+							</ul>
+						</div>
+						<div class="card-box fragment fade-up" style="border-left-color: #ffb86c;">
+							<h3 style="color: #ffb86c; font-size: 1.45rem; margin-top: 0;">Memória ROM / Flash (Não-Volátil)</h3>
+							<ul>
+								<li><strong>Significado:</strong> <em>Read-Only Memory</em> (hoje chips EEPROM/Flash).</li>
+								<li><strong>Não-Volátil:</strong> Não apaga quando desliga o PC.</li>
+								<li><strong>Exemplo na Placa-Mãe:</strong> O chip da <strong>BIOS / UEFI</strong>! É lá que mora o autoteste (POST) que dá partida no computador.</li>
+							</ul>
+						</div>
+					</div>
+					<div class="card-box fragment fade-up" style="border-left-color: #f1fa8c; margin-top: 15px;">
+						🪙 <strong>Para que serve a Bateria Redonda CR2032 (3V) na Placa-Mãe?</strong><br>
+						Ela alimenta o relógio de tempo real (RTC) e a memória de configurações <strong>CMOS</strong>. Se a bateria descarregar, o PC <strong>perde a data/hora</strong> e reseta as configurações da BIOS para o padrão de fábrica toda vez que sai da tomada!
+					</div>
+					<aside class="notes">
+						SINTOMA CLÁSSICO DE PROVA E SUPORTE:<br>
+						"Professor, o PC da minha casa toda vez que tiro da tomada volta para o ano de 2015 e a internet para de abrir sites HTTPS (erro de certificado por causa do relógio atrasado)!" ➔ Bateria CR2032 descarregada (custa R$ 5,00 para trocar).
+					</aside>
+				</section>
+
+				<!-- SLIDE 5: ARMAZENAMENTO: HD vs SSD SATA vs NVMe M.2 -->
+				<section>
+					<h2>🚀 Evolução do Armazenamento: HD ➔ SATA ➔ NVMe</h2>
+					
+					<!-- Gráfico Comparativo em SVG -->
+					<svg class="svg-diagram" viewBox="0 0 980 215" style="width: 100%; max-width: 1020px;">
+						<!-- HD Mecânico -->
+						<text x="15" y="48" fill="#ff5555" font-size="18" font-weight="bold">1. HD Mecânico (SATA)</text>
+						<rect x="260" y="25" width="60" height="34" rx="6" fill="#ff5555"/>
+						<text x="335" y="48" fill="#f8f8f2" font-size="17" font-weight="bold">~150 MB/s (Disco giratório 7.200 RPM)</text>
+
+						<!-- SSD SATA 2.5" -->
+						<text x="15" y="115" fill="#ffb86c" font-size="18" font-weight="bold">2. SSD 2.5" (Cabo SATA)</text>
+						<rect x="260" y="92" width="180" height="34" rx="6" fill="#ffb86c"/>
+						<text x="455" y="115" fill="#f8f8f2" font-size="17" font-weight="bold">~550 MB/s (Limitado pelo cabo SATA III)</text>
+
+						<!-- SSD NVMe M.2 -->
+						<text x="15" y="182" fill="#50fa7b" font-size="18" font-weight="bold">3. SSD NVMe M.2 (PCIe)</text>
+						<rect x="260" y="158" width="680" height="36" rx="6" fill="#50fa7b"/>
+						<text x="275" y="182" fill="#1e1f29" font-size="18" font-weight="900">3.500 a 7.400 MB/s (Conectado direto no barramento PCI-Express!)</text>
+					</svg>
+
+					<div class="grid-2" style="margin-top: 10px;">
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #ff5555; font-size: 1.25rem;">
+							💿 <strong>HD Tradicional:</strong> Possui motor, pratos magnéticos e agulha física. Se cair no chão ligado, a agulha risca o prato (<em>Bad Block</em>) e perde os dados.
+						</div>
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #50fa7b; font-size: 1.25rem;">
+							⚡ <strong>Por que o NVMe é tão rápido?</strong> Ele abandona o antigo cabo SATA e se conecta direto nas vias <strong>PCI-Express (PCIe)</strong> da placa-mãe, falando direto com a CPU!
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 6: ARRANJOS DE DISCOS RAID 0 vs RAID 1 -->
+				<section>
+					<h2>🛡️ Arranjos de Discos: RAID 0 vs RAID 1</h2>
+					<div class="grid-2">
+						<!-- RAID 0 -->
+						<div class="card-box fragment fade-up" style="border-left-color: #ffb86c; margin: 0;">
+							<h3 style="color: #ffb86c; font-size: 1.5rem; margin-top: 0;">RAID 0 — Striping (Divisão)</h3>
+							<p style="font-size: 1.25rem;">Divide o arquivo em pedaços gravando metade no Disco 1 e metade no Disco 2 ao mesmo tempo.</p>
+							
+							<svg viewBox="0 0 380 110" style="width: 100%; max-width: 340px; display: block; margin: 8px auto;">
+								<rect x="20" y="10" width="140" height="90" rx="8" fill="#282a36" stroke="#ffb86c" stroke-width="2.5"/>
+								<text x="90" y="35" fill="#ffb86c" font-size="14" font-weight="bold" text-anchor="middle">DISCO 1 (500GB)</text>
+								<text x="90" y="62" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A1]</text>
+								<text x="90" y="85" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A3]</text>
+
+								<rect x="220" y="10" width="140" height="90" rx="8" fill="#282a36" stroke="#ffb86c" stroke-width="2.5"/>
+								<text x="290" y="35" fill="#ffb86c" font-size="14" font-weight="bold" text-anchor="middle">DISCO 2 (500GB)</text>
+								<text x="290" y="62" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A2]</text>
+								<text x="290" y="85" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A4]</text>
+							</svg>
+
+							<ul style="font-size: 1.2rem;">
+								<li><span class="destaque-verde">Foco:</span> <strong>Velocidade Máxima</strong> e soma espaço (500 + 500 = <strong>1 TB</strong>).</li>
+								<li><span class="destaque-vermelho">Perigo:</span> Se 1 disco queimar, <strong>perde 100% dos dados!</strong></li>
+							</ul>
+						</div>
+
+						<!-- RAID 1 -->
+						<div class="card-box fragment fade-up" style="border-left-color: #50fa7b; margin: 0;">
+							<h3 style="color: #50fa7b; font-size: 1.5rem; margin-top: 0;">RAID 1 — Mirroring (Espelhamento)</h3>
+							<p style="font-size: 1.25rem;">Grava uma <strong>cópia idêntica (clone)</strong> em tempo real nos dois discos.</p>
+							
+							<svg viewBox="0 0 380 110" style="width: 100%; max-width: 340px; display: block; margin: 8px auto;">
+								<rect x="20" y="10" width="140" height="90" rx="8" fill="#282a36" stroke="#50fa7b" stroke-width="2.5"/>
+								<text x="90" y="35" fill="#50fa7b" font-size="14" font-weight="bold" text-anchor="middle">DISCO 1 (2 TB)</text>
+								<text x="90" y="62" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A1]</text>
+								<text x="90" y="85" fill="#f8f8f2" font-size="14" text-anchor="middle">[Bloco A2]</text>
+
+								<text x="190" y="60" fill="#50fa7b" font-size="20" font-weight="bold" text-anchor="middle">＝</text>
+
+								<rect x="220" y="10" width="140" height="90" rx="8" fill="#282a36" stroke="#50fa7b" stroke-width="2.5"/>
+								<text x="290" y="35" fill="#50fa7b" font-size="14" font-weight="bold" text-anchor="middle">DISCO 2 (Espelho)</text>
+								<text x="290" y="62" fill="#50fa7b" font-size="14" text-anchor="middle">[Cópia A1]</text>
+								<text x="290" y="85" fill="#50fa7b" font-size="14" text-anchor="middle">[Cópia A2]</text>
+							</svg>
+
+							<ul style="font-size: 1.2rem;">
+								<li><span class="destaque-verde">Foco:</span> <strong>Segurança / Servidores</strong>. Se 1 queimar, nada é perdido!</li>
+								<li><span class="destaque-amarelo">Espaço Útil:</span> Metade da soma (2 TB + 2 TB = <strong>2 TB úteis</strong>).</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 7: ATIVIDADE NO CADERNO (QUESTÕES 1 A 6) -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #f1fa8c;">📝 Atividade de Sala no Caderno (6 Questões)</h2>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 1.18rem; text-align: left;">
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #8be9fd;">
+							<strong>1. Armazenamento:</strong> Qual a diferença física e de velocidade entre um <strong>HD magnético</strong>, um <strong>SSD SATA</strong> e um <strong>SSD NVMe M.2</strong>? Por que o NVMe é até 7x mais rápido que o SSD SATA?
+						</div>
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #ffb86c;">
+							<strong>2. RAM vs ROM & CMOS:</strong> Diferencie memória <strong>RAM (volátil)</strong> de <strong>ROM (não-volátil)</strong>. Onde a ROM é usada na placa-mãe e o que acontece se a bateria <strong>CR2032</strong> acabar?
+						</div>
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #50fa7b;">
+							<strong>3. Dual Channel:</strong> O que é o Dual Channel? Em uma placa de 4 slots (<code>A1, A2, B1, B2</code>), onde devemos encaixar 2 pentes de 8 GB e qual o ganho técnico?
+						</div>
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #ff5555;">
+							<strong>4. Memória Cache:</strong> O que é a memória <strong>Cache (L1, L2, L3)</strong> e por que o processador precisa dela mesmo tendo 16 GB de memória RAM?
+						</div>
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #bd93f9;">
+							<strong>5. RAID 0 (Striping):</strong> Se montarmos <strong>2 SSDs de 500 GB em RAID 0</strong>, qual será a capacidade total no sistema e o que ocorre se 1 SSD queimar?
+						</div>
+						<div class="card-box" style="margin: 0; padding: 12px 18px; border-left-color: #f1fa8c;">
+							<strong>6. RAID 1 (Espelhamento):</strong> Onde o <strong>RAID 1</strong> é obrigatório (PC Gamer ou Servidor de Hospital/Banco)? Com <strong>2 HDs de 2 TB em RAID 1</strong>, qual é o espaço útil?
+						</div>
+					</div>
+					<aside class="notes">
+						TEMPO DE RESOLUÇÃO NO CADERNO: 25 a 30 minutos.<br>
+						Deixe este slide congelado na lousa! As 6 questões estão todas visíveis na mesma tela para os alunos responderem no caderno.
+					</aside>
+				</section>
+
+				<!-- SLIDE 8: GABARITO COMENTADO -->
+				<section>
+					<h2 style="font-size: 2.0rem; color: #50fa7b;">✅ Gabarito de Correção (Questões 1 a 6)</h2>
+					<div class="grid-2" style="font-size: 1.15rem;">
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #8be9fd;">
+							<ul>
+								<li><strong>Q1 (HD vs SATA vs NVMe):</strong> HD usa discos magnéticos móveis (~150 MB/s); SSD SATA usa chips Flash no cabo SATA (~550 MB/s); <strong>NVMe M.2</strong> usa o barramento <strong>PCI-Express</strong> direto com a CPU (3.500 a 7.400 MB/s).</li>
+								<li><strong>Q2 (RAM vs ROM):</strong> RAM apaga sem energia (programas abertos); ROM não apaga e guarda a <strong>BIOS/UEFI</strong>. Sem bateria CR2032, o PC perde a hora e reseta a BIOS.</li>
+								<li><strong>Q3 (Dual Channel):</strong> Dobra a comunicação de 64 bits para <strong>128 bits</strong>. Instalar nos slots intercalados <strong>A2 e B2 (Slots 2 e 4)</strong>.</li>
+							</ul>
+						</div>
+						<div class="card-box fragment fade-up" style="margin: 0; border-left-color: #50fa7b;">
+							<ul>
+								<li><strong>Q4 (Cache L1/L2/L3):</strong> Memória SRAM ultra-rápida dentro do processador para guardar instruções imediatas e não deixar a CPU ociosa esperando a RAM.</li>
+								<li><strong>Q5 (RAID 0):</strong> Soma o espaço (<strong>1 TB total</strong>) e dobra a velocidade, mas se 1 disco queimar, <strong>perde 100% dos arquivos</strong>.</li>
+								<li><strong>Q6 (RAID 1):</strong> Obrigatório em <strong>Servidores críticos</strong> (bancos/hospitais). Com 2 HDs de 2 TB, o espaço útil é de <strong>2 TB</strong> (o segundo disco é espelho).</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: true,
+				transition: 'slide',
+				transitionSpeed: 'fast',
+				backgroundTransition: 'fade',
+				width: 1280,
+				height: 720,
+				margin: 0.05,
+				plugins: [RevealNotes]
+			});
+
+			// Atalho da tecla N para notas na tela
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'n' || e.key === 'N') {
+					toggleNotesOverlay();
+				}
+			});
+
+			function toggleNotesOverlay() {
+				let overlay = document.getElementById('notes-overlay');
+				if (!overlay) {
+					overlay = document.createElement('div');
+					overlay.id = 'notes-overlay';
+					overlay.style.position = 'fixed';
+					overlay.style.bottom = '20px';
+					overlay.style.right = '20px';
+					overlay.style.maxWidth = '480px';
+					overlay.style.maxHeight = '360px';
+					overlay.style.background = 'rgba(15, 17, 23, 0.96)';
+					overlay.style.color = '#f8f8f2';
+					overlay.style.border = '2px solid #50fa7b';
+					overlay.style.borderRadius = '10px';
+					overlay.style.padding = '16px 20px';
+					overlay.style.boxShadow = '0 8px 30px rgba(0,0,0,0.85)';
+					overlay.style.zIndex = '9999';
+					overlay.style.fontSize = '14px';
+					overlay.style.lineHeight = '1.5';
+					overlay.style.overflowY = 'auto';
+					document.body.appendChild(overlay);
+				}
+				
+				if (overlay.style.display === 'none' || !overlay.style.display) {
+					renderNotes(overlay);
+					overlay.style.display = 'block';
+				} else {
+					overlay.style.display = 'none';
+				}
+			}
+
+			function renderNotes(overlay) {
+				const currentSlide = Reveal.getCurrentSlide();
+				const notesEl = currentSlide ? currentSlide.querySelector('aside.notes') : null;
+				if (notesEl) {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#50fa7b;">📝 Notas do Professor (Tecla N fecha)</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px; font-weight:bold;">✕</button></div>' + notesEl.innerHTML;
+				} else {
+					overlay.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="color:#ffb86c;">ℹ️ Nenhuma nota neste slide</strong><button onclick="toggleNotesOverlay()" style="background:#ff5555; border:none; color:white; border-radius:4px; cursor:pointer; padding:2px 8px;">✕</button></div>';
+				}
+			}
+
+			Reveal.on('slidechanged', function() {
+				const overlay = document.getElementById('notes-overlay');
+				if (overlay && overlay.style.display === 'block') {
+					renderNotes(overlay);
+				}
+			});
+		</script>
+	</body>
+</html>
