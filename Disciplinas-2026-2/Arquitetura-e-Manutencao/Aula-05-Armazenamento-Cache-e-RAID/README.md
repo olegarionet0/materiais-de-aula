@@ -11,4 +11,5 @@
 ### 📂 Materiais Disponíveis nesta Pasta:
 
 - 📝 **Atividade / Desafio:** [amc-atividade-aula-05.md](./amc-atividade-aula-05.md)
+- 🛠️ **Runbook / Roteiro Prático:** [amc-runbook-aula-05-cooler-pasta-termica.md](./amc-runbook-aula-05-cooler-pasta-termica.md)
 - 🖥️ **Código dos Slides:** [amc-slides-aula-05.html](./amc-slides-aula-05.html)
