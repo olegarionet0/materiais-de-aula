@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Funções de Agregação e GROUP BY: Relatórios em SQL — Banco de Dados | EEEP-AFS</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+		<style>
+			.reveal, .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+				text-transform: none !important;
+				letter-spacing: normal !important;
+			}
+			.reveal { font-size: 1.8rem; }
+			.reveal h1, .reveal h2, .reveal h3 { color: #f1fa8c; font-weight: 700 !important; }
+			.reveal p, .reveal li { line-height: 1.45; font-size: 1.35rem; }
+			.reveal pre {
+				font-size: 1.3rem !important;
+				width: 100% !important;
+				margin: 14px auto !important;
+				box-shadow: 0 4px 18px rgba(0,0,0,0.6) !important;
+				border: 1px solid rgba(255,255,255,0.18) !important;
+				border-radius: 8px !important;
+			}
+			.reveal pre code {
+				font-family: 'Consolas', 'Fira Code', 'Courier New', monospace !important;
+				font-size: 1.3rem !important;
+				line-height: 1.45 !important;
+				padding: 16px 22px !important;
+				max-height: 520px !important;
+			}
+			.destaque-verde { color: #50fa7b; font-weight: bold; }
+			.destaque-amarelo { color: #f1fa8c; font-weight: bold; }
+			.destaque-vermelho { color: #ff5555; font-weight: bold; }
+			.destaque-azul { color: #8be9fd; font-weight: bold; }
+			.destaque-laranja { color: #ffb86c; font-weight: bold; }
+			.card-box {
+				background: rgba(255, 255, 255, 0.07);
+				border-left: 6px solid #50fa7b;
+				padding: 16px 24px;
+				border-radius: 10px;
+				margin: 16px 0;
+				text-align: left;
+			}
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 20px;
+				text-align: left;
+			}
+			.badge {
+				display: inline-block;
+				padding: 4px 12px;
+				border-radius: 6px;
+				background: #6272a4;
+				color: #fff;
+				font-size: 1.1rem;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<!-- SLIDE 1: Capa -->
+				<section>
+					<span class="badge">BANCO DE DADOS — 2º ANO DS</span>
+					<h2 style="margin-top: 20px;">Relatórios e Agrupamento em SQL</h2>
+					<h4 style="color: #8be9fd;">Funções Agregadas, GROUP BY e Cláusula HAVING</h4>
+					<p style="margin-top: 40px; color: #bd93f9;">
+						Professor: <strong>Olegário Neto</strong> | EEEP Adolfo Ferreira de Sousa
+					</p>
+				</section>
+
+				<!-- SLIDE 2: O Problema de Negócio -->
+				<section>
+					<h3>Da Linha Bruta ao Indicador de Negócio</h3>
+					<div class="card-box" style="border-left-color: #ffb86c;">
+						<p>Na Aula 10, aprendemos a unir dados com <span class="destaque-verde">INNER JOIN</span> e <span class="destaque-azul">LEFT JOIN</span>.</p>
+						<p>No entanto, gestores e sistemas analíticos raramente leem 10.000 linhas soltas. Eles precisam de <span class="destaque-amarelo">resumos consolidados</span>:</p>
+					</div>
+					<div class="grid-2" style="font-size: 1.25rem;">
+						<div class="card-box">
+							<strong class="destaque-verde">Perguntas Gerenciais:</strong>
+							<ul>
+								<li>Quantos produtos há em cada setor?</li>
+								<li>Qual o faturamento total acumulado?</li>
+								<li>Qual o preço médio por categoria?</li>
+							</ul>
+						</div>
+						<div class="card-box" style="border-left-color: #8be9fd;">
+							<strong class="destaque-azul">Solução em Banco de Dados:</strong>
+							<ul>
+								<li><strong>Funções de Agregação:</strong> operam sobre um conjunto de linhas e devolvem 1 único valor.</li>
+								<li><strong>GROUP BY:</strong> divide as linhas em grupos antes do cálculo.</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 3: As 5 Funções de Agregação -->
+				<section>
+					<h3>As 5 Funções de Agregação Fundamentais</h3>
+					<table style="width: 100%; font-size: 1.25rem; border-collapse: collapse; margin-top: 15px;">
+						<thead>
+							<tr style="border-bottom: 2px solid #6272a4; color: #f1fa8c;">
+								<th style="padding: 10px;">Função</th>
+								<th>O que calcula?</th>
+								<th>Exemplo de Aplicação</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="padding: 10px;"><code class="destaque-verde">COUNT()</code></td>
+								<td>Contagem de registros / ocorrências</td>
+								<td><code>SELECT COUNT(*) FROM produtos;</code></td>
+							</tr>
+							<tr>
+								<td style="padding: 10px;"><code class="destaque-amarelo">SUM()</code></td>
+								<td>Somatório aritmético de valores numéricos</td>
+								<td><code>SELECT SUM(preco) FROM produtos;</code></td>
+							</tr>
+							<tr>
+								<td style="padding: 10px;"><code class="destaque-azul">AVG()</code></td>
+								<td>Média aritmética (Average)</td>
+								<td><code>SELECT AVG(preco) FROM produtos;</code></td>
+							</tr>
+							<tr>
+								<td style="padding: 10px;"><code class="destaque-vermelho">MIN()</code></td>
+								<td>Menor valor presente na coluna</td>
+								<td><code>SELECT MIN(preco) FROM produtos;</code></td>
+							</tr>
+							<tr>
+								<td style="padding: 10px;"><code class="destaque-laranja">MAX()</code></td>
+								<td>Maior valor presente na coluna</td>
+								<td><code>SELECT MAX(preco) FROM produtos;</code></td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<!-- SLIDE 4: COUNT(*) vs COUNT(coluna) -->
+				<section>
+					<h3>A Pegadinha do COUNT: Com ou sem NULL?</h3>
+					<div class="grid-2">
+						<div class="card-box" style="border-left-color: #50fa7b;">
+							<strong class="destaque-verde">COUNT(*)</strong>
+							<p>Conta <strong>todas as linhas</strong> físicas retornadas, inclusive aquelas que contenham valores <code>NULL</code> em algumas colunas.</p>
+							<pre><code class="language-sql">-- Retorna 7 linhas
+SELECT COUNT(*) FROM produtos;</code></pre>
+						</div>
+						<div class="card-box" style="border-left-color: #ff5555;">
+							<strong class="destaque-vermelho">COUNT(coluna)</strong>
+							<p>Conta apenas as ocorrências onde a coluna informada <strong>NÃO É NULA</strong> (ignora <code>NULL</code>).</p>
+							<pre><code class="language-sql">-- Se 1 produto não tiver categoria,
+-- este SELECT retornará 6!
+SELECT COUNT(categoria_id) 
+FROM produtos;</code></pre>
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 5: Cláusula GROUP BY -->
+				<section>
+					<h3>Agrupando Dados com GROUP BY</h3>
+					<p>Quando misturamos colunas identificadoras normais com funções agregadas, o SGBD exige a instrução <code class="destaque-amarelo">GROUP BY</code>:</p>
+					<pre><code class="language-sql">SELECT c.nome AS categoria, COUNT(p.id) AS total_produtos
+FROM categorias AS c
+INNER JOIN produtos AS p ON c.id = p.categoria_id
+GROUP BY c.id, c.nome
+ORDER BY total_produtos DESC;</code></pre>
+					<div class="card-box" style="border-left-color: #ff5555;">
+						<strong class="destaque-vermelho">Regra de Ouro da Sintaxe SQL:</strong><br>
+						Toda coluna presente no <code>SELECT</code> que <strong>não</strong> esteja envelopada por uma função de agregação (como <code>COUNT</code> ou <code>AVG</code>) <strong>deve constar no GROUP BY</strong>.
+					</div>
+				</section>
+
+				<!-- SLIDE 6: O Confronto: WHERE vs HAVING -->
+				<section>
+					<h3>O Confronto Decisivo: WHERE vs HAVING</h3>
+					<div class="grid-2">
+						<div class="card-box" style="border-left-color: #8be9fd;">
+							<strong class="destaque-azul">WHERE (Filtro Prévio)</strong>
+							<ul>
+								<li>Filtra <strong>linhas individuais</strong> do banco de dados antes da agregação.</li>
+								<li><span class="destaque-vermelho">NUNCA</span> aceita funções de agregação diretamente.</li>
+								<li><em>Exemplo:</em> "Apenas produtos com preço maior que R$ 50".</li>
+							</ul>
+						</div>
+						<div class="card-box" style="border-left-color: #50fa7b;">
+							<strong class="destaque-verde">HAVING (Filtro do Grupo)</strong>
+							<ul>
+								<li>Filtra os <strong>grupos consolidados</strong> após a função de agregação rodar.</li>
+								<li>Trabalha com resultados de <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>.</li>
+								<li><em>Exemplo:</em> "Apenas categorias com mais de 2 produtos".</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- SLIDE 7: Exemplo com HAVING -->
+				<section>
+					<h3>HAVING na Prática</h3>
+					<p>Filtrando grupos consolidados:</p>
+					<pre><code class="language-sql">SELECT c.nome AS categoria, 
+       COUNT(p.id) AS total_produtos,
+       AVG(p.preco) AS media_preco
+FROM categorias AS c
+INNER JOIN produtos AS p ON c.id = p.categoria_id
+WHERE p.preco > 10.00          -- 1º: filtra os produtos baratos
+GROUP BY c.id, c.nome          -- 2º: agrupa por categoria
+HAVING COUNT(p.id) >= 2        -- 3º: mantém só categorias com 2+ itens
+ORDER BY media_preco DESC;     -- 4º: ordena o resultado</code></pre>
+				</section>
+
+				<!-- SLIDE 8: Ordem de Execução SQL -->
+				<section>
+					<h3>Ordem Mental de Processamento de uma Query</h3>
+					<div class="card-box" style="font-size: 1.25rem;">
+						<ol style="margin-left: 20px;">
+							<li><code class="destaque-verde">FROM / JOIN</code>: localiza e une as tabelas físicas.</li>
+							<li><code class="destaque-azul">WHERE</code>: filtra linhas brutas individuais.</li>
+							<li><code class="destaque-amarelo">GROUP BY</code>: consolida os registros em blocos.</li>
+							<li><code class="destaque-laranja">HAVING</code>: filtra os blocos/grupos consolidados.</li>
+							<li><code class="destaque-verde">SELECT</code>: projeta as colunas e executa aliases.</li>
+							<li><code class="destaque-vermelho">ORDER BY / LIMIT</code>: ordena e fatia a exibição.</li>
+						</ol>
+					</div>
+				</section>
+
+				<!-- SLIDE 9: Desafio de Laboratório -->
+				<section>
+					<h3>Desafio Prático no Laboratório</h3>
+					<div class="card-box" style="border-left-color: #50fa7b;">
+						<p>Abra seu <strong>VS Code</strong> com a extensão MySQL conectada:</p>
+						<ul>
+							<li>Abra o arquivo <code>agrupamentos_aula11.sql</code></li>
+							<li>Execute o script de carga complementar da tabela <code>vendas_produtos</code></li>
+							<li>Resolva os <strong>5 Desafios</strong> guiados pelo roteiro prático</li>
+							<li>Chame o professor na bancada para validação e visto</li>
+						</ul>
+					</div>
+					<p style="margin-top: 20px; color: #50fa7b;"><strong>Mãos à obra!</strong></p>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				slideNumber: 'c/t',
+				plugins: [ RevealHighlight ]
+			});
+		</script>
+	</body>
+</html>

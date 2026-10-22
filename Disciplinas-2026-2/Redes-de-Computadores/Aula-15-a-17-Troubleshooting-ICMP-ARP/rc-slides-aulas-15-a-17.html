@@ -73,11 +73,12 @@
 				<section>
 					<h3>A Caixa de Ferramentas do Técnico</h3>
 					<ul>
-						<li><code>ipconfig /all</code> (ou <code>ifconfig</code>): Mostra suas configurações locais.</li>
-						<li><code>ping</code>: Testa se você consegue falar com outro IP.</li>
-						<li><code>tracert</code>: Mostra onde o cabo "partiu" no meio da internet.</li>
-						<li><code>nslookup</code>: Testa se o seu Servidor DNS está traduzindo nomes corretamente.</li>
-						<li><code>arp -a</code>: Mostra quem está na sua rede local física.</li>
+						<li><code>ipconfig /all</code>: Mapeia IP, Máscara, Gateway e MAC local.</li>
+						<li><code>ping</code>: Testa conectividade direta via pacotes ICMP Echo.</li>
+						<li><code>tracert</code>: Rastreia a rota e identifica saltos em roteadores.</li>
+						<li><code>nslookup</code>: Consulta servidores DNS e resolução de nomes.</li>
+						<li><code>arp -a</code>: Mapeia tabela de correspondência IP e MAC.</li>
+						<li><code>netstat -ano</code>: Exibe conexões ativas, portas e PIDs de processos.</li>
 					</ul>
 					<aside class="notes">
 						METODOLOGIA DE SUPORTE REAL (BOTTOM-UP):<br>
@@ -85,9 +86,42 @@
 						1. O cabo tá conectado? (Física)<br>
 						2. A placa tem IP e MAC? (Enlace/Rede)<br>
 						3. O ping pro Gateway responde? (Rede Interna)<br>
-						4. O DNS traduz o nome uol.com.br? (Aplicação)<br>
+						4. O DNS traduz o nome?<br>
 						Isso faz eles pararem de chutar erros aleatórios e começarem a agir como analistas de fato.
 					</aside>
+				</section>
+
+				<section>
+					<h3>netstat: A Radiografia das Conexões</h3>
+					<p>Exibe o estado de todos os sockets TCP/UDP do computador:</p>
+					<ul>
+						<li><strong style="color: #50fa7b;">LISTENING:</strong> O serviço está aberto e aguardando clientes (ex: porta 80, 3306).</li>
+						<li><strong style="color: #8be9fd;">ESTABLISHED:</strong> Comunicação ativa e confirmada após o 3-Way Handshake.</li>
+						<li><strong style="color: #ffb86c;">TIME_WAIT:</strong> Conexão encerrada pelo cliente, liberando o socket de forma ordenada.</li>
+						<li><strong style="color: #f1fa8c;">PID (Process ID):</strong> O identificador numérico do programa responsável no Windows.</li>
+					</ul>
+					<pre><code class="language-cmd">netstat -ano | findstr :443</code></pre>
+					<p><small style="color: #bd93f9;">Demonstração: Cruzar o PID do netstat com a aba 'Detalhes' do Gerenciador de Tarefas!</small></p>
+					<aside class="notes">
+						PEGADINHA DE CONCURSO:<br>
+						O parâmetro -n faz com que o comando não perca tempo tentando resolver nomes de servidores via DNS na internet, exibindo os endereços e portas em formato puramente numérico (muito mais rápido!).
+					</aside>
+				</section>
+
+				<section>
+					<h3>Laboratório Packet Tracer: Montagem do Zero</h3>
+					<p>Nesta prática, cada bancada monta sua própria rede de teste:</p>
+					<ol style="font-size: 1.2rem;">
+						<li><strong>Equipamentos:</strong> 1x PC (<code>PC-Recepcao</code>), 1x Switch 2960 (<code>SW-Central</code>) e 1x Roteador 1941 (<code>R-Borda</code>).</li>
+						<li><strong>Cabeamento:</strong> Cabos de par trançado direto (Copper Straight-Through).</li>
+						<li><strong>Configuração do Roteador (CLI):</strong>
+							<pre><code class="language-bash">interface gigabitEthernet 0/0
+ip address 192.168.10.1 255.255.255.0
+no shutdown</code></pre>
+						</li>
+						<li><strong>Incidente Proposital no PC:</strong> Gateway configurado errado (<code>192.168.10.254</code>).</li>
+						<li><strong>Troubleshooting Metódico:</strong> Testar Loopback &rarr; Testar IP próprio &rarr; Diagnosticar Gateway &rarr; Corrigir e Validar!</li>
+					</ol>
 				</section>
 
 			</div>
