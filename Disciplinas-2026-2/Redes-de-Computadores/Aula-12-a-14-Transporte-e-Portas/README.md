@@ -12,3 +12,4 @@
 
 - 🛠️ **Runbook / Roteiro Prático:** [rc-runbook-aulas-12-a-14.md](./rc-runbook-aulas-12-a-14.md)
 - 🖥️ **Código dos Slides:** [rc-slides-aulas-12-a-14.html](./rc-slides-aulas-12-a-14.html)
+- 📦 **Laboratório / Topologia Packet Tracer:** [pratica-DHCP-DNS-HTTP.pkt](./pratica-DHCP-DNS-HTTP.pkt)

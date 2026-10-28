@@ -14,3 +14,4 @@
 - 🛠️ **Runbook / Roteiro Prático:** [rc-runbook-aulas-09-a-11.md](./rc-runbook-aulas-09-a-11.md)
 - 🖥️ **Código dos Slides:** [rc-slides-aulas-09-a-11-lab-packet-tracer.html](./rc-slides-aulas-09-a-11-lab-packet-tracer.html)
 - 🖥️ **Código dos Slides:** [rc-slides-aulas-09-a-11.html](./rc-slides-aulas-09-a-11.html)
+- 📦 **Laboratório / Topologia Packet Tracer:** [rede01-pratica.pkt](./rede01-pratica.pkt)
