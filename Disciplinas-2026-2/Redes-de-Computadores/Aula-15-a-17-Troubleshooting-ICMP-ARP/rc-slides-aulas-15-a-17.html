@@ -109,18 +109,18 @@
 				</section>
 
 				<section>
-					<h3>Laboratório Packet Tracer: Montagem do Zero</h3>
-					<p>Nesta prática, cada bancada monta sua própria rede de teste:</p>
-					<ol style="font-size: 1.2rem;">
-						<li><strong>Equipamentos:</strong> 1x PC (<code>PC-Recepcao</code>), 1x Switch 2960 (<code>SW-Central</code>) e 1x Roteador 1941 (<code>R-Borda</code>).</li>
-						<li><strong>Cabeamento:</strong> Cabos de par trançado direto (Copper Straight-Through).</li>
-						<li><strong>Configuração do Roteador (CLI):</strong>
+					<h3>Laboratório Integrado no Packet Tracer</h3>
+					<p><small style="color: #8be9fd;">Topologia Base: <code>pratica-DHCP-DNS-HTTP.pkt</code> + Roteador Gateway</small></p>
+					<ol style="font-size: 1.15rem; line-height: 1.4;">
+						<li><strong>Infraestrutura:</strong> PCs (DHCP) + Switch 2960 + <code>Server-AFS</code> (192.168.1.100).</li>
+						<li><strong>Conectar Roteador:</strong> Adicionar <code>R-Borda</code> (1941) na porta <code>Gig0/1</code> do switch.</li>
+						<li><strong>Configurar Gateway (CLI do R-Borda):</strong>
 							<pre><code class="language-bash">interface gigabitEthernet 0/0
-ip address 192.168.10.1 255.255.255.0
+ip address 192.168.1.1 255.255.255.0
 no shutdown</code></pre>
 						</li>
-						<li><strong>Incidente Proposital no PC:</strong> Gateway configurado errado (<code>192.168.10.254</code>).</li>
-						<li><strong>Troubleshooting Metódico:</strong> Testar Loopback &rarr; Testar IP próprio &rarr; Diagnosticar Gateway &rarr; Corrigir e Validar!</li>
+						<li><strong>Simulação de Protocolos:</strong> Inspecionar DHCP (UDP 67/68), DNS (UDP 53) e TCP Handshake (80).</li>
+						<li><strong>Diagnóstico e Break-Fix:</strong> Testar ICMP (<code>ping 192.168.1.1</code>), verificar tabela <code>arp -a</code> e solucionar incidente de gateway errado no PC1 (<code>192.168.1.254</code>).</li>
 					</ol>
 				</section>
 

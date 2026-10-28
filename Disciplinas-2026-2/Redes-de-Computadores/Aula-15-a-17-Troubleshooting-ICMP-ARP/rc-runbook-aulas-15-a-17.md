@@ -2,203 +2,226 @@
 tipo: runbook-aluno
 disciplina: Redes de Computadores
 turma: 2º Ano DS — EEEP-AFS
+tema: "Laboratório Integrado: Serviços de Rede (DHCP, DNS, HTTP), Roteador Gateway e Diagnóstico (ICMP, ARP, netstat)"
+professor: Olegário Neto
 tags:
   - runbook
-  - troubleshooting
-  - ping
-  - tracert
-  - arp
-  - netstat
   - packet-tracer
-data: 2026-10-26
+  - dhcp-dns-http
+  - gateway-roteador
+  - troubleshooting
+  - icmp-arp
+  - netstat
+data: 2026-11-03
 ---
 
-# 🚀 Laboratório Prático: Diagnóstico de Redes e Troubleshooting
+# 🚀 Laboratório Integrado de Redes: Da Aplicação ao Roteamento e Diagnóstico
 
-> **Turma:** 2º Ano — Técnico em Desenvolvimento de Sistemas (EEEP-AFS)  
-> **Professor:** Olegário Neto  
-> **Objetivo:** Dominar a metodologia de diagnóstico de conectividade utilizando ferramentas nativas do sistema operacional (`ipconfig`, `ping`, `tracert`, `arp`, `netstat`) e reproduzir a montagem e correção de problemas no Cisco Packet Tracer.
-
----
-
-## 🛠️ Parte 1: Investigação no Sistema Operacional Real (CMD do Windows)
-
-Nesta fase, você atuará como Analista de Suporte Nível 1 investigando a estação de trabalho do laboratório.
-
-### Passo 1: Mapeando a Configuração da Placa de Rede
-1. Abra o **Prompt de Comando** (`cmd` ou `Terminal`).
-2. Digite o comando abaixo e tecle Enter:
-   ```cmd
-   ipconfig /all
-   ```
-3. Localize o adaptador de rede ativo (Ethernet ou Wi-Fi) e registre:
-   * **Seu Endereço IPv4:** `____________________________`
-   * **Máscara de Sub-rede:** `____________________________`
-   * **Gateway Padrão (Roteador de Saída):** `____________________________`
-   * **Endereço Físico (MAC Address):** `____________________________`
-   * **Servidor DNS:** `____________________________`
+> [!IMPORTANT] **Missão Integrada do Técnico em Redes**
+> Neste laboratório completo, unificamos duas pontas da infraestrutura:
+> 1. **Serviços de Rede e Transporte:** Configuração de servidor com **DHCP**, **DNS** e **HTTP**, inspecionando o aperto de mão de 3 vias (**TCP 3-Way Handshake**) e portas UDP/TCP.
+> 2. **Roteador e Gateway da Rede:** Inclusão de um roteador corporativo como gateway padrão (`192.168.1.1`).
+> 3. **Troubleshooting Profissional:** Testes de conectividade com **ICMP** (`ping`), resolução de endereços físicos com **ARP** (`arp -a`), simulação de falha de gateway (**Break-Fix**) e auditoria de processos no sistema operacional com **`netstat -ano`**.
+>
+> 📁 **Arquivo Base do Packet Tracer:** Utilize o arquivo [`pratica-DHCP-DNS-HTTP.pkt`](./pratica-DHCP-DNS-HTTP.pkt) disponível na pasta da aula ou monte a topologia do zero.
 
 ---
 
-### Passo 2: O Teste de Conectividade Local (ICMP Echo)
-1. Execute um teste de conectividade para o seu Gateway Padrão:
-   ```cmd
-   ping <IP_DO_SEU_GATEWAY>
-   ```
-2. Analise o retorno:
-   * Houve `Resposta de ...` com tempo em milissegundos (`ms`) e `TTL`?
-   * *Diagnóstico:* Se o Gateway respondeu, a camada física (cabo/switch) e a camada de rede local estão operacionais.
-
----
-
-### Passo 3: Rastreando Saltos até a Internet (`tracert`)
-1. Vamos verificar por quantos roteadores seu pacote passa até alcançar a nuvem pública:
-   ```cmd
-   tracert 8.8.8.8
-   ```
-2. Observe as linhas numeradas (cada linha representa um *salto* ou *hop* por um roteador intermediário).
-   * **Quantos saltos foram necessários para chegar ao Google?** `________` saltos.
-   * **Qual foi o primeiro IP retornado?** `____________________________` *(Note que coincide com o seu Gateway Padrão!)*
-
----
-
-### Passo 4: Consultando a Tabela ARP (`arp -a`)
-1. O protocolo ARP descobre e armazena o endereço físico (MAC) correspondente a um IP na rede local.
-2. Digite:
-   ```cmd
-   arp -a
-   ```
-3. Localize na lista a linha correspondente ao IP do seu Gateway Padrão:
-   * **Endereço Físico (MAC) vinculado ao Gateway:** `____________________________`
-   * **Tipo de alocação:** `(dinâmico / estático)`
-
----
-
-### Passo 5: Radiografia de Conexões e Portas Ativas (`netstat`)
-O comando `netstat` (Network Statistics) exibe o estado de todos os sockets de rede do computador: conexões ativas, portas em escuta (*LISTENING*) e o identificador do processo (*PID*).
-
-1. Execute no terminal:
-   ```cmd
-   netstat -ano
-   ```
-2. Entendendo as 5 colunas da saída:
-   * **Proto:** Protocolo de transporte (`TCP` ou `UDP`).
-   * **Endereço Local:** O seu IP e a porta local aberta (`IP:Porta`).
-   * **Endereço Externo:** O IP e a porta do servidor remoto de destino.
-   * **Estado:**
-     * `LISTENING`: O computador está aguardando conexões nesta porta (comportamento de servidor).
-     * `ESTABLISHED`: A conexão está ativa, transmitindo dados após o aperto de mão de 3 vias (*3-Way Handshake*).
-     * `TIME_WAIT` / `CLOSE_WAIT`: Conexão em processo ordenado de fechamento.
-   * **PID (Process ID):** O número único do programa responsável por aquela conexão no Windows.
-
-3. **Demonstração Prática — Caçando o Programa Dono da Conexão:**
-   * Abra o navegador (Edge ou Chrome) e acesse qualquer site seguro (ex: `https://www.google.com`).
-   * Volte ao CMD e filtre apenas as conexões seguras na porta 443:
-     ```cmd
-     netstat -ano | findstr :443
-     ```
-   * Escolha uma linha com estado `ESTABLISHED`. Anote o número da última coluna (**PID**): `________`.
-   * Agora abra o **Gerenciador de Tarefas do Windows** (`Ctrl + Shift + Esc`).
-   * Vá na aba **Detalhes**, clique na coluna **PID** para ordenar e localize o número que você anotou.
-   * **Qual é o nome do executável (.exe) proprietário dessa conexão?** `____________________________`
-
----
-
-## 🖥️ Parte 2: Desafio Cisco Packet Tracer — Montagem e Resolução Break-Fix
-
-Em vez de receber uma topologia pré-configurada, você montará a infraestrutura do zero para fixar o papel de cada dispositivo e cabo.
+## 🗺️ 1. Topologia Integrada da Rede
 
 ```
-┌─────────────────┐           ┌─────────────────┐           ┌─────────────────┐
-│   PC-Recepção   │ ◄───────► │   SW-Central    │ ◄───────► │     R-Borda     │
-│ 192.168.10.50   │  Cabo     │   Switch 2960   │  Cabo     │  Roteador 1941  │
-│  FastEth 0      │  Direto   │   Portas Fa0/1  │  Direto   │    GigEth 0/0   │
-└─────────────────┘           └─────────────────┘           └─────────────────┘
+[ PC0 ] ────── (Fa0/1) ┐
+                       ├── [ Switch 2960 ] ──── (Fa0/24) ──── [ Server-AFS ] (192.168.1.100)
+[ PC1 ] ────── (Fa0/2) ┘       │ (Gig0/1)                      (DHCP + DNS + HTTP)
+                               │
+                               └─────── (Gig0/0) ──── [ R-Borda ] (192.168.1.1)
+                                                       (Roteador / Gateway Padrão)
 ```
 
-### Etapa 1: Seleção e Posicionamento dos Dispositivos
-1. Abra o **Cisco Packet Tracer**.
-2. Na barra inferior esquerda, selecione e arraste para a área de trabalho:
-   * **1 Computador:** `End Devices` $\rightarrow$ `PC`. Dê dois cliques no nome do rótulo e renomeie para **`PC-Recepcao`**.
-   * **1 Switch:** `Network Devices` $\rightarrow$ `Switches` $\rightarrow$ modelo **`2960`**. Renomeie para **`SW-Central`**.
-   * **1 Roteador:** `Network Devices` $\rightarrow$ `Routers` $\rightarrow$ modelo **`1941`** (ou `2911`). Renomeie para **`R-Borda`**.
+### 📋 Tabela de Endereçamento e Conexões
+
+| Dispositivo | Interface | Conectado a | Endereço IP / Máscara | Gateway Padrão | Função / Serviços |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Server-AFS** | FastEthernet0 | Switch (Fa0/24) | `192.168.1.100 / 255.255.255.0` | `192.168.1.1` | DHCP, DNS (`53`) e Web HTTP (`80`) |
+| **R-Borda** | GigabitEthernet0/0 | Switch (Gig0/1) | `192.168.1.1 / 255.255.255.0` | — | Roteador / Gateway de Saída |
+| **PC0** | FastEthernet0 | Switch (Fa0/1) | Obter via **DHCP** | `192.168.1.1` | Cliente Web / Inspeção de Tráfego |
+| **PC1** | FastEthernet0 | Switch (Fa0/2) | Obter via **DHCP** | `192.168.1.1` | Estação de Teste / Simulação Break-Fix |
+| **Switch 2960** | 24 Portas | — | — | — | Comutação de Camada 2 (VLAN 1) |
+
+*Nota: Utilize cabos de par trançado direto (**Copper Straight-Through** — cabo preto contínuo).*
 
 ---
 
-### Etapa 2: Cabeamento Físico
-1. Clique no ícone de conexões (o raio laranja).
-2. Escolha o cabo **Copper Straight-Through** (Cabo Direto de Par Trançado — ícone da linha preta contínua).
-3. Conecte:
-   * Da porta **`FastEthernet0`** do `PC-Recepcao` para a porta **`FastEthernet0/1`** do `SW-Central`.
-   * Da porta **`GigabitEthernet0/1`** do `SW-Central` para a porta **`GigabitEthernet0/0`** do `R-Borda`.
-4. *Pergunta de observação:* As luzes do lado do roteador ficaram verdes ou vermelhas?  
-   *Explicação:* As interfaces de roteadores Cisco vêm desativadas de fábrica por segurança (*administratively down*) e precisam ser ligadas manualmente.
+## ⚙️ 2. Configuração do Servidor Multi-serviços (`Server-AFS`)
+
+Se você estiver abrindo o arquivo `pratica-DHCP-DNS-HTTP.pkt`, confira os parâmetros. Caso esteja montando do zero, configure:
+
+### Passo A: IP Estático do Servidor
+1. Abra o **Server-AFS** ➔ **Desktop** ➔ **IP Configuration**.
+2. Configure:
+   * **IPv4 Address:** `192.168.1.100`
+   * **Subnet Mask:** `255.255.255.0`
+   * **Default Gateway:** `192.168.1.1` *(O IP do roteador que iremos ligar!)*
+   * **DNS Server:** `192.168.1.100`
+
+### Passo B: Ativação do Serviço DHCP (Portas UDP 67/68)
+1. Vá na aba **Services** ➔ **DHCP**.
+2. Marque o serviço como **ON**.
+3. Defina os parâmetros da pool:
+   * **Pool Name:** `serverPool`
+   * **Default Gateway:** `192.168.1.1`
+   * **DNS Server:** `192.168.1.100`
+   * **Start IP Address:** `192.168.1.10`
+   * **Subnet Mask:** `255.255.255.0`
+   * **Maximum number of Users:** `50`
+4. Clique em **Save**.
+
+### Passo C: Ativação do Serviço DNS (Porta UDP 53)
+1. Na aba **Services** ➔ **DNS**.
+2. Marque o serviço como **ON**.
+3. Adicione o registro do site da escola:
+   * **Name:** `www.eeep.afs`
+   * **Type:** `A Record`
+   * **Address:** `192.168.1.100`
+4. Clique em **Add**.
+
+### Passo D: Serviço Web HTTP (Porta TCP 80)
+1. Na aba **Services** ➔ **HTTP**.
+2. Certifique-se de que **HTTP** está **ON**.
+3. Edite o arquivo `index.html` com o texto da escola:
+   ```html
+   <html>
+     <center>
+       <h1 style="color: green;">EEEP Adolfo Ferreira de Sousa</h1>
+       <h3>Laboratório de Redes: Servidor Web em Funcionamento!</h3>
+       <p>TCP 3-Way Handshake concluído com sucesso na Porta 80.</p>
+     </center>
+   </html>
+   ```
+4. Clique em **Save**.
 
 ---
 
-### Etapa 3: Configuração do Roteador (Gateway da Rede)
-1. Clique sobre o roteador **`R-Borda`** e acesse a aba **`CLI`** (Linha de Comando).
-2. Se aparecer a pergunta `Would you like to enter the initial configuration dialog? [yes/no]:`, digite **`no`** e tecle Enter.
-3. Digite a sequência de comandos abaixo para ligar a porta e atribuir o IP do Gateway:
+## 🔌 3. Inclusão e Configuração do Roteador (`R-Borda` — Gateway Real)
+
+O servidor DHCP entrega para os computadores o Gateway `192.168.1.1`. Vamos agora conectar e configurar o dispositivo físico correspondente:
+
+1. Na barra de dispositivos do Packet Tracer, vá em **Network Devices** ➔ **Routers** e arraste um modelo **1941** (ou `2911`).
+2. Renomeie o rótulo para **`R-Borda`**.
+3. Com o cabo direto (**Copper Straight-Through**), conecte:
+   * Da porta **`GigabitEthernet0/1`** do Switch para a porta **`GigabitEthernet0/0`** do `R-Borda`.
+4. Clique no roteador **`R-Borda`** e acerte a aba **`CLI`**:
+   * Se perguntar `Would you like to enter the initial configuration dialog?`, digite **`no`** e tecle Enter.
+   * Digite a sequência de comandos para configurar o Gateway:
    ```text
    enable
    configure terminal
+   hostname R-Borda
    interface gigabitEthernet 0/0
-   ip address 192.168.10.1 255.255.255.0
+   description Gateway da Rede Local AFS
+   ip address 192.168.1.1 255.255.255.0
    no shutdown
    exit
    exit
    ```
-4. Observe na tela: os triângulos de link da porta `Gig0/0` mudarão para **verde**!
+5. Observe que as luzes da interface `Gig0/0` mudarão de vermelho para **verde**. O Gateway da rede agora está vivo!
 
 ---
 
-### Etapa 4: Configuração do PC com Erro Proposital (Simulação de Incidente)
-1. Clique no **`PC-Recepcao`** $\rightarrow$ aba **`Desktop`** $\rightarrow$ **`IP Configuration`**.
-2. Preencha os campos exatamente como abaixo:
-   * **IPv4 Address:** `192.168.10.50`
+## 🕵️ 4. Inspeção de Protocolos no Modo Simulação
+
+Alterne do modo **Realtime** para **Simulation** (canto inferior direito). Em **Edit Filters**, filtre apenas:
+`DHCP`, `DNS`, `TCP`, `HTTP`, `ICMP` e `ARP`.
+
+### 🧪 Teste 1: Obtenção de IP via DHCP
+1. No **PC0**, vá em **Desktop** ➔ **IP Configuration** e marque **DHCP**.
+2. Avance os passos no botão **Play/Forward (►|)**.
+3. Observe as 4 mensagens do protocolo (**DORA**): *Discover* (Broadcast) ➔ *Offer* ➔ *Request* ➔ *ACK*.
+4. Clique no envelope e veja as portas UDP: Origem `68` e Destino `67`.
+5. Confirme que o PC0 recebeu o IP `192.168.1.10`, Máscara `255.255.255.0` e Gateway `192.168.1.1`.
+
+### 🧪 Teste 2: Resolução de Nomes com DNS e 3-Way Handshake do TCP
+1. No **PC0**, abra o **Web Browser**, digite `www.eeep.afs` e clique em **Go**.
+2. **Envelope Azul (DNS):** Veja o pacote indo primeiro na porta UDP `53` para buscar o IP `192.168.1.100`.
+3. **Envelope Verde (TCP):** Observe os 3 pacotes trocados antes da página carregar:
+   * **1. SYN:** PC0 envia solicitação de sincronização.
+   * **2. SYN-ACK:** Servidor confirma e solicita sincronização mútua.
+   * **3. ACK:** PC0 confirma o canal aberto.
+4. **Envelope Roxo (HTTP):** Requisição `GET /` e carregamento da página HTML no navegador.
+
+---
+
+## 🛠️ 5. Diagnóstico de Infraestrutura, ICMP, Tabela ARP e Cenário Break-Fix
+
+Volte para o modo **Realtime**.
+
+### Teste de Conectividade com o Roteador (ICMP):
+1. No **PC0**, abra o **Command Prompt**.
+2. Execute o ping para o Gateway recém-configurado:
+   ```cmd
+   ping 192.168.1.1
+   ```
+3. *Resultado:* Resposta de `192.168.1.1` com sucesso (`0% loss`). O pacote ICMP Echo Request / Reply alcançou o roteador com êxito.
+
+### Inspeção da Tabela ARP:
+1. No mesmo Command Prompt do PC0, digite:
+   ```cmd
+   arp -a
+   ```
+2. Analise a tabela:
+   * O PC0 aprendeu dinamicamente o endereço físico (MAC) do Servidor (`192.168.1.100`).
+   * O PC0 também aprendeu o endereço físico (MAC) da interface do Roteador (`192.168.1.1`).
+
+---
+
+### 🚨 Desafio Break-Fix no PC1 (Simulação de Incidente de Suporte)
+
+1. No **PC1**, abra **Desktop ➔ IP Configuration**.
+2. Mude para **Static** e insira de propósito:
+   * **IP Address:** `192.168.1.50`
    * **Subnet Mask:** `255.255.255.0`
-   * **Default Gateway:** Digite propositalmente **`192.168.10.254`** *(Simulando um erro de digitação do técnico anterior)*.
-3. Feche a janela de configuração de IP.
+   * **Default Gateway:** Digite propositalmente **`192.168.1.254`** *(Simulando erro de cadastro ou gateway inexistente)*.
+   * **DNS Server:** `192.168.1.100`
+3. Abra o **Command Prompt** do PC1 e aplique a metodologia de suporte:
+   * **Passo 1 (Loopback):** `ping 127.0.0.1` ➔ *Sucesso* (Pilha TCP/IP funcional).
+   * **Passo 2 (Local Server):** `ping 192.168.1.100` ➔ *Sucesso* (O switch comuta pacotes locais da mesma sub-rede normalmente!).
+   * **Passo 3 (Gateway Inexistente):** `ping 192.168.1.254` ➔ **`Request timed out`** (Falha!).
+4. **Resolução do Chamado:**
+   * Corrija o Default Gateway do PC1 para **`192.168.1.1`** (ou volte a selecionar **DHCP**).
+   * Repita o comando `ping 192.168.1.1` e confirme a restauração da conectividade.
 
 ---
 
-### Etapa 5: Metodologia Profissional de Troubleshooting (Identificando a Falha)
-1. No `PC-Recepcao`, abra a opção **`Command Prompt`**.
-2. **Teste 1 — A placa de rede e a pilha TCP/IP local respondem?**
+## 💻 6. Investigação no Sistema Operacional Real (CMD do Windows)
+
+Agora aplique os mesmos princípios no computador físico do laboratório da escola:
+
+1. Abra o `cmd` do Windows e execute:
    ```cmd
-   ping 127.0.0.1
+   ipconfig /all
    ```
-   *Resultado:* Sucesso (Pilha de protocolos do SO instalada e funcional).
-3. **Teste 2 — O próprio endereço IP configurado responde?**
+   Anote o seu IPv4, Gateway Padrão e Servidor DNS.
+
+2. Teste o caminho de rede até o Google:
    ```cmd
-   ping 192.168.10.50
+   tracert 8.8.8.8
    ```
-   *Resultado:* Sucesso (A placa de rede reconhece sua própria identidade IPv4).
-4. **Teste 3 — O PC consegue falar com o Gateway configurado?**
-   ```cmd
-   ping 192.168.10.254
-   ```
-   *Resultado:* **`Request timed out` (Esgotado o tempo limite do pedido)**.
+   Verifique que o **primeiro salto** corresponde exatamente ao IP do Gateway Padrão da escola.
+
+3. **Radiografia de Conexões com `netstat -ano`:**
+   * Abra o navegador e acesse um site seguro (`https://...`).
+   * No terminal, execute:
+     ```cmd
+     netstat -ano | findstr :443
+     ```
+   * Identifique uma conexão com estado **`ESTABLISHED`** e anote o número da última coluna (**PID**): `________`.
+   * Abra o **Gerenciador de Tarefas** (`Ctrl + Shift + Esc`), vá na aba **Detalhes**, ordene por **PID** e encontre o programa (.exe) proprietário dessa conexão.
 
 ---
 
-### Etapa 6: Resolução do Chamado
-1. Por que o ping para `192.168.10.254` falhou se os cabos estão todos conectados e verdes?
-   * *Diagnóstico:* O IP `192.168.10.254` não existe na rede. O roteador real foi configurado com o IP `192.168.10.1`.
-2. Volte em **`Desktop > IP Configuration`** do `PC-Recepcao`.
-3. Altere o campo **Default Gateway** para **`192.168.10.1`**.
-4. Volte ao `Command Prompt` e execute:
-   ```cmd
-   ping 192.168.10.1
-   ```
-5. *Resultado:* **Sucesso com 100% de pacotes recebidos!**
-6. Digite `arp -a` no Command Prompt do Packet Tracer e verifique que o PC agora aprendeu dinamicamente o MAC do roteador.
+## 📝 7. Questões de Fixação para o Caderno
 
----
-
-## 🧠 Parte 3: Questões de Fixação e Concurso
-
-1. Qual é a diferença fundamental entre uma porta TCP em estado **`LISTENING`** e uma porta em estado **`ESTABLISHED`** no resultado do comando `netstat`?
-2. Em um ambiente corporativo com centenas de máquinas, por que o comando `netstat -an` é mais rápido na exibição dos resultados do que o comando `netstat -a` sem parâmetros?
-3. Se um computador consegue pingar com sucesso o IP `127.0.0.1`, mas não consegue pingar o Gateway da rede nem acessar a internet, qual camada do modelo OSI podemos afirmar com certeza que NÃO é a causa do defeito?
+1. Na topologia montada, por que o PC1 conseguiu pingar com sucesso o servidor `192.168.1.100` mesmo estando com o Gateway configurado errado (`192.168.1.254`)?
+2. Em que situação específica um computador precisa consultar o Default Gateway para enviar um pacote?
+3. Qual a diferença de função entre o protocolo **ARP** (Camada 2/3) e o protocolo **DNS** (Camada 7)?
+4. No comando `netstat`, qual a diferença entre uma porta em estado **`LISTENING`** e uma em estado **`ESTABLISHED`**?

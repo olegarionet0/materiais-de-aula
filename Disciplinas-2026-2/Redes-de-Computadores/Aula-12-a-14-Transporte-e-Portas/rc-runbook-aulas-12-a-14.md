@@ -155,3 +155,13 @@ Responda no caderno com base no que você viu na tela:
 1. Por que o **DHCP** e o **DNS** utilizam o protocolo de transporte **UDP**, enquanto a navegação web **HTTP** utiliza obrigatoriamente o **TCP**?
 2. Qual a função exata da porta efêmera (ex: porta `1026`) gerada pelo computador do aluno na requisição web? Por que ela não pode ser fixa na porta 80 também?
 3. O que aconteceria se o servidor web estivesse desligado quando o PC0 tentasse fazer o 3-Way Handshake? O navegador conseguiria exibir a página?
+
+
+---
+
+## 🔌 5. Próxima Etapa: Integrando o Roteador Gateway e Troubleshooting
+
+> [!TIP] **Evolução da Topologia**
+> Como o servidor DHCP distribui o Gateway `192.168.1.1`, a continuação deste laboratório conecta o **Roteador 1941 (`R-Borda`)** na porta `Gig0/1` do switch para dar saída à rede, ativando os testes de diagnóstico com **ICMP** (`ping`), **ARP** (`arp -a`) e resolução de problemas no roteiro completo:
+> 
+> 📄 Acesse o roteiro integrado da próxima etapa: [`rc-runbook-aulas-15-a-17.md`](file:///c:/Users/olega/Documents/EEEPAFS/DEV/Segundo-Cerebro/01_Projetos/01_EEEP-AFS/2026-2-Aulas/Redes%20de%20Computadores/Aula-15-a-17-Troubleshooting-ICMP-ARP/rc-runbook-aulas-15-a-17.md).
