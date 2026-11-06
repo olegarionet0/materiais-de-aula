@@ -1,6 +1,6 @@
 # 📖 Materiais de Aula - EEEP Adolfo Ferreira de Sousa
 
-Bem-vindo ao repositório público de compartilhamento de materiais de aula, slides interativos, runbooks e práticas das disciplinas técnicas ministradas pelo **Professor Olegário** no curso de **Desenvolvimento de Sistemas** da **EEEP-AFS** (Redenção-CE).
+Bem-vindo ao repositório público de compartilhamento de materiais de aula, slides interativos, runbooks e práticas das disciplinas técnicas ministradas pelo **Professor Olegário** no **Curso Técnico em Informática (1º e 2º Ano)** da **EEEP-AFS** (Redenção-CE). *(Nota: As turmas do 3º Ano de Desenvolvimento de Sistemas encontram-se em período de estágio curricular supervisionado)*.
 
 Aqui você encontrará roteiros de laboratório, slides de apoio com execução direta no navegador, códigos de exemplo e projetos de infraestrutura.
 
