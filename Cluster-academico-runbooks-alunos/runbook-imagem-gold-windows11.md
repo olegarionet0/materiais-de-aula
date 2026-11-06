@@ -83,9 +83,10 @@ C:\Windows\System32\Sysprep\sysprep.exe /generalize /oobe /shutdown
 
 ## 🚀 5. Captura PXE no Servidor FOG
 
-1. No servidor FOG (`http://10.30.0.11/fog` ou `http://20.20.0.208/fog`):
-   - Verifique se a imagem `Win11-LabTI` (Image ID `1`) está definida como `Single Disk - Resizable`;
-   - Crie a tarefa de **Capture** associada ao computador de bancada.
-2. Conecte a estação via cabo de rede na porta do laboratório;
-3. Ligue o computador pressionando a tecla de boot de rede (**F12**);
-4. O FOG iniciará a captura e gravação dos blocos em `/images/Win11LabTI/`.
+1. No servidor FOG (`http://20.20.0.208/fog`):
+   - A imagem `Win11-LabTI` (Image ID `1`) está definida como `Single Disk - Resizable` (Zstandard Compressed);
+   - A imagem de referência foi capturada com sucesso em **06/11/2026** (30.68 GiB no cliente) em `/images/Win11LabTI/`.
+2. Para fazer o deploy em qualquer máquina do laboratório:
+   - Registre o host ou dispare deploy rápido associando à imagem `Win11-LabTI`;
+   - Ligue a estação via cabo de rede na porta do laboratório pressionando **F12** (PXE);
+   - O FOG descarregará e expandirá a partição automaticamente no SSD local.
