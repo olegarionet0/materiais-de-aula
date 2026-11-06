@@ -19,7 +19,8 @@ Este é o hub central de documentação dos servidores e serviços mantidos pelo
 
 ## 🔌 Infraestrutura e Redes
 
-* **Clonagem de Máquinas (FOG Project):**
+* **Clonagem de Máquinas (FOG Project & Imagem Gold):**
+  * [[runbook-imagem-gold-windows11]] *(Script de automação: `setup-win11-gold-master.ps1`)*
   * [[runbook-servidor-fog-project]] *(Pendente)*
 * **Topologia e IPAM:**
   * [[topologia-rede-ipam]] *(Pendente)*

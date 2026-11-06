@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 10: Consultas com JOINs (INNER JOIN e LEFT JOIN)</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --code-bg: #0f172a;
+            --code-text: #f8fafc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 16px;
+        }
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--primary-light);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-success {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: rgba(22, 163, 74, 0.2);
+        }
+        .btn-success:hover {
+            background: var(--success);
+            color: #fff;
+        }
+        h1 { font-size: 1.8rem; color: #1e293b; margin: 12px 0 6px 0; }
+        h2 { font-size: 1.35rem; color: #334155; margin-top: 28px; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
+        h3 { font-size: 1.15rem; color: #475569; margin-top: 20px; margin-bottom: 8px; }
+        p { margin-bottom: 14px; }
+        ul, ol { margin-left: 24px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; }
+        blockquote {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-light);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            color: #1e3a8a;
+        }
+        pre {
+            position: relative;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 18px 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 0.92rem;
+            margin: 16px 0;
+            border: 1px solid #334155;
+        }
+        code {
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .alert-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div>
+                <a href="/" class="btn">🏠 Painel Principal do Lab</a>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a href="bd-slides-aula-10.html" target="_blank" class="btn btn-success">🖥️ Abrir Slides da Aula 10</a>
+            </div>
+        </div>
+        <div>
+            <span class="badge">EEEP-AFS • Banco de Dados (2º Ano DS)</span>
+            <h1>Aula 10: Consultas com JOINs (INNER JOIN e LEFT JOIN)</h1>
+            <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+                Professor Olegário Neto • Laboratório de Desenvolvimento de Sistemas (Offline)
+            </p>
+        </div>
+        <div class="content">
+            <h1>💻 Guia de Laboratório: Consultas com JOINs no VS Code</h1>
+<blockquote>
+<p><strong>IMPORTANT:</strong> <strong>Novo Ambiente Oficial de Banco de Dados</strong>
+A partir de hoje, trabalhamos como desenvolvedores reais: escrevendo scripts SQL no <strong>VS Code</strong> e executando com a extensão <strong>MySQL</strong>.</p>
+<p><strong>Atalho essencial:</strong> Selecione a query (ou posicione o cursor nela) e tecle <strong><code>Ctrl + Enter</code></strong> para executar.</p>
+</blockquote>
+<hr />
+<h2>🏛️ 1. Setup Rápido da Conexão no VS Code</h2>
+<ol>
+<li>Abra o <strong>VS Code</strong>.</li>
+<li>Clique no ícone de banco de dados na barra lateral esquerda (Extensão <strong>MySQL</strong>).</li>
+<li>Clique no botão <strong><code>+</code> (Add Connection)</strong>:</li>
+<li><strong>Host:</strong> <code>localhost</code> (ou <code>127.0.0.1</code>)</li>
+<li><strong>Port:</strong> <code>3306</code></li>
+<li><strong>User:</strong> <code>root</code></li>
+<li><strong>Password:</strong> <em>(deixe em branco)</em></li>
+<li>Clique em <strong>Connect</strong>.</li>
+<li>Crie na sua pasta pessoal um arquivo chamado <strong><code>joins_aula10.sql</code></strong>.</li>
+</ol>
+<hr />
+<h2>🏗️ 2. Script de Inicialização da Base</h2>
+<p>Copie o script abaixo, cole no seu arquivo <code>joins_aula10.sql</code> e execute no VS Code (<code>Ctrl + Enter</code>):</p>
+<pre><code class="language-sql">CREATE DATABASE IF NOT EXISTS loja_afs;
+USE loja_afs;
+
+-- 1. Tabela de Categorias (Tabela Pai)
+DROP TABLE IF EXISTS produtos;
+DROP TABLE IF EXISTS categorias;
+
+CREATE TABLE categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    setor VARCHAR(50) NOT NULL
+);
+
+-- 2. Tabela de Produtos (Tabela Filho com FK)
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    categoria_id INT NULL,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+-- 3. Inserção de Categorias
+INSERT INTO categorias (nome, setor) VALUES 
+('Eletrônicos', 'Tecnologia'),
+('Papelaria', 'Escolar'),
+('Móveis', 'Escritório');
+
+-- 4. Inserção de Produtos
+INSERT INTO produtos (nome, preco, categoria_id) VALUES 
+('Teclado Mecânico', 250.00, 1),
+('Mouse Gamer', 120.00, 1),
+('Monitor 24', 850.00, 1),
+('Caderno Universitário', 25.00, 2),
+('Resma Papel A4', 32.00, 2),
+('Caneta Azul', 2.50, 2),
+('Cabo Adaptador USB', 15.00, NULL); -- Produto propositalmente sem categoria!
+</code></pre>
+<hr />
+<h2>⚡ 3. Desafios Práticos de Laboratório</h2>
+<p>Escreva cada consulta abaixo no seu <code>joins_aula10.sql</code>, comente e execute:</p>
+<h3>Desafio 1: O Primeiro INNER JOIN</h3>
+<blockquote>
+<p>Selecione o nome do produto, o preço e o nome da categoria. Utilize apelidos de tabela (<code>produtos AS p</code> e <code>categorias AS c</code>).<br />
+<em>Observe: O "Cabo Adaptador USB" apareceu no resultado? Por que?</em></p>
+</blockquote>
+<pre><code class="language-sql">-- Escreva sua query aqui abaixo:
+
+</code></pre>
+<hr />
+<h3>Desafio 2: Filtrando após o JOIN</h3>
+<blockquote>
+<p>Selecione o nome do produto, o preço e o nome da categoria apenas para os produtos cujo setor seja <code>'Tecnologia'</code> e o preço seja maior que <code>150.00</code>.</p>
+</blockquote>
+<pre><code class="language-sql">-- Escreva sua query aqui abaixo:
+
+</code></pre>
+<hr />
+<h3>Desafio 3: O Poder do LEFT JOIN</h3>
+<blockquote>
+<p>Execute um <code>LEFT JOIN</code> entre <code>produtos</code> (esquerda) e <code>categorias</code> (direita).<br />
+<em>Pergunta: O que apareceu na coluna do nome da categoria para o produto "Cabo Adaptador USB"?</em></p>
+</blockquote>
+<pre><code class="language-sql">-- Escreva sua query aqui abaixo:
+
+</code></pre>
+<hr />
+<h3>Desafio 4: Caçando Produtos Órfãos (Auditoria)</h3>
+<blockquote>
+<p>Escreva uma query com <code>LEFT JOIN</code> que liste <strong>apenas os produtos que NÃO possuem categoria cadastrada</strong> (<code>categoria_id IS NULL</code> ou <code>c.id IS NULL</code>).</p>
+</blockquote>
+<pre><code class="language-sql">-- Escreva sua query aqui abaixo:
+
+</code></pre>
+<hr />
+<h3>Desafio 5: Relatório Estatístico Agrupado</h3>
+<blockquote>
+<p>Faça um <code>INNER JOIN</code> e calcule:
+* Nome da categoria
+* Quantidade de produtos naquela categoria (<code>COUNT(p.id)</code>)
+* Preço médio dos produtos (<code>AVG(p.preco)</code>)
+* Ordene da categoria com mais produtos para a que tem menos.</p>
+</blockquote>
+<pre><code class="language-sql">-- Escreva sua query aqui abaixo:
+
+</code></pre>
+<hr />
+<h2>🏁 Critério de Avaliação</h2>
+<p>Ao concluir todos os 5 desafios no <code>joins_aula10.sql</code>, chame o professor na bancada para conferência das queries no VS Code e concessão do visto.</p>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll("pre").forEach(pre => {
+            const btn = document.createElement("button");
+            btn.className = "copy-btn";
+            btn.innerText = "📋 Copiar SQL";
+            btn.onclick = () => {
+                const code = pre.querySelector("code") ? pre.querySelector("code").innerText : pre.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    btn.innerText = "Copiado! ✓";
+                    btn.style.background = "#16a34a";
+                    setTimeout(() => {
+                        btn.innerText = "📋 Copiar SQL";
+                        btn.style.background = "";
+                    }, 2000);
+                });
+            };
+            pre.appendChild(btn);
+        });
+    </script>
+</body>
+</html>
