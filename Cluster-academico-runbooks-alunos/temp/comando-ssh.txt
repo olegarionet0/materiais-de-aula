@@ -1,5 +1,0 @@
-# Arquivo temporário de comandos
-# (Será excluído após a execução)
-
-# Comando para autorizar chave SSH (já executamos direto via SSH, mas deixamos registrado caso precise):
-mkdir -p ~/.ssh && echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICC8XVcgnT6FQab+7vSk26FCua0TtpC8sfVTUqR9WCBc olega@nemesis' >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
