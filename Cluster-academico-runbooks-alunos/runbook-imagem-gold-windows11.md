@@ -69,6 +69,13 @@ No prompt de comando elevado (CMD ou PowerShell como Administrador):
 C:\Windows\System32\Sysprep\sysprep.exe /generalize /oobe /shutdown
 ```
 
+> [!TIP] Se o Sysprep falhar com "não pôde validar a instalação":
+> No PowerShell como Administrador, execute o script de correção automática de pacotes AppX:
+> ```powershell
+> irm https://raw.githubusercontent.com/olegarionet0/materiais-de-aula/main/Cluster-academico-runbooks-alunos/corrigir-sysprep.ps1 | iex
+> ```
+> Para o guia detalhado, consulte [[como-resolver-erro-sysprep|como-resolver-erro-sysprep.md]].
+
 > [!WARNING] Atenção Crítica
 > O computador será desligado automaticamente ao término do Sysprep. **Não ligue a máquina no boot convencional pelo disco local**, pois isso iniciará o assistente do Windows e cancelará a generalização.
 

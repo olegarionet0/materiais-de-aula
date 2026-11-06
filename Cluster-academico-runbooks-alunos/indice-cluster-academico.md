@@ -21,6 +21,7 @@ Este é o hub central de documentação dos servidores e serviços mantidos pelo
 
 * **Clonagem de Máquinas (FOG Project & Imagem Gold):**
   * [[runbook-imagem-gold-windows11]] *(Script de automação: `setup-win11-gold-master.ps1`)*
+  * [[como-resolver-erro-sysprep]] *(Correção de erro de validação do Sysprep)*
   * [[runbook-servidor-fog-project]] *(Pendente)*
 * **Topologia e IPAM:**
   * [[topologia-rede-ipam]] *(Pendente)*
