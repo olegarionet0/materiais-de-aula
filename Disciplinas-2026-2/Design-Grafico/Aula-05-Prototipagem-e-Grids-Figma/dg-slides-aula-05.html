@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 05: Prototipagem e Layout Grids no Figma — Design Gráfico | EEEP-AFS</title>
+  <style>
+    :root {
+      --bg-dark: #090a0d;
+      --card-bg: #13161f;
+      --card-border: #222736;
+      --stream-red: #e50914;
+      --stream-red-glow: rgba(229, 9, 20, 0.25);
+      --accent-cyan: #00d2ff;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --kbd-bg: #1f2433;
+      --kbd-border: #3b4258;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top progress bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: #1a1d26;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--stream-red), #ff4b55);
+      transition: width 0.3s ease;
+    }
+
+    /* Header bar */
+    header {
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 17, 21, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 10;
+    }
+
+    .header-tag {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--stream-red);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-tag::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--stream-red);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--stream-red);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slide-indicator {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #1a1f2b;
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Main presentation stage */
+    main {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 40px;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 32px 56px 80px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.98);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    .slide.capa {
+      align-items: center;
+      text-align: center;
+    }
+
+    /* Typography */
+    .slide-badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .slide.capa .slide-badge {
+      align-self: center;
+    }
+
+    .badge-red { background: rgba(229, 9, 20, 0.15); color: #ff525c; border: 1px solid rgba(229, 9, 20, 0.35); }
+    .badge-cyan { background: rgba(0, 210, 255, 0.15); color: #38bdf8; border: 1px solid rgba(0, 210, 255, 0.35); }
+    .badge-purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.35); }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+
+    h1 {
+      font-size: 3.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    h2 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      max-width: 920px;
+      line-height: 1.5;
+    }
+
+    .slide.capa .slide-desc {
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 1.3rem;
+    }
+
+    /* Grids & Cards */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.highlight {
+      border-color: rgba(229, 9, 20, 0.4);
+      background: linear-gradient(180deg, #181318 0%, #13161f 100%);
+    }
+
+    .card.highlight-cyan {
+      border-color: rgba(0, 210, 255, 0.4);
+      background: linear-gradient(180deg, #101923 0%, #13161f 100%);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ffffff;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.98rem;
+      color: #d1d5db;
+    }
+
+    .card-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+    }
+
+    .card-list li::before {
+      content: "•";
+      color: var(--stream-red);
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    /* Keyboard shortcut tags */
+    kbd {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 0.85rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #f3f4f6;
+      background-color: var(--kbd-bg);
+      border: 1px solid var(--kbd-border);
+      border-radius: 6px;
+      box-shadow: inset 0 -2px 0 #11141d;
+    }
+
+    .metric-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1b212f;
+      border: 1px solid #2f374c;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: ui-monospace, monospace;
+      font-size: 0.88rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Steps list */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .step-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--stream-red);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .step-num.cyan { background: #0284c7; }
+
+    .step-content { flex: 1; }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .step-detail {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Comparison Box */
+    .vs-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .vs-card-bad {
+      background: #181315;
+      border: 1px solid #3d1c22;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .vs-card-good {
+      background: #101918;
+      border: 1px solid #1a3d34;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    /* Visual Prototype Flow Diagram (CSS) */
+    .flow-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .phone-mock {
+      background: #0f1115;
+      border: 2px solid #2e3446;
+      border-radius: 18px;
+      width: 240px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .phone-mock-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid #222736;
+      padding-bottom: 6px;
+    }
+
+    .mock-btn {
+      background: var(--stream-red);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .mock-link {
+      background: #1c1f26;
+      border: 1px solid #2f3646;
+      color: #d1d5db;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .flow-arrows {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .arrow-badge {
+      background: rgba(0, 210, 255, 0.12);
+      border: 1px solid rgba(0, 210, 255, 0.4);
+      color: #38bdf8;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Visual 12-Column Grid Demo */
+    .grid-demo-wrapper {
+      background: #0f1115;
+      border: 1px solid #2c3347;
+      border-radius: 10px;
+      padding: 14px 28px;
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .grid-12-cols {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 8px;
+      height: 110px;
+      position: relative;
+    }
+
+    .grid-col {
+      background: rgba(229, 9, 20, 0.16);
+      border: 1px dashed rgba(229, 9, 20, 0.4);
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 6px;
+      font-size: 0.72rem;
+      color: #ff8a90;
+      font-family: monospace;
+    }
+
+    .grid-overlay-hero {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      width: calc(50% - 4px);
+      height: 52px;
+      background: rgba(0, 210, 255, 0.18);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #e0f2fe;
+    }
+
+    .grid-overlay-cta {
+      position: absolute;
+      top: 12px;
+      right: 0;
+      width: calc(16.66% - 4px);
+      height: 52px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--accent-green);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #a7f3d0;
+    }
+
+    /* Table */
+    table.specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table.specs-table th,
+    table.specs-table td {
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.96rem;
+    }
+
+    table.specs-table th {
+      background: #1a1f2d;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Speaker Notes Drawer */
+    .notes-panel {
+      position: fixed;
+      bottom: 64px;
+      right: 24px;
+      width: 480px;
+      max-width: calc(100vw - 48px);
+      max-height: 360px;
+      overflow-y: auto;
+      background: rgba(17, 21, 31, 0.96);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 18px;
+      z-index: 200;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      display: none;
+    }
+
+    .notes-panel.open { display: block; }
+
+    .notes-panel h4 {
+      color: var(--accent-cyan);
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notes-panel p {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    /* Bottom navigation controls */
+    footer {
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 17, 21, 0.85);
+      border-top: 1px solid var(--card-border);
+      z-index: 10;
+    }
+
+    .nav-hints {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button.btn {
+      background: #1c2230;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    button.btn:hover {
+      background: #272f42;
+      border-color: #3b4661;
+    }
+
+    button.btn-primary {
+      background: var(--stream-red);
+      border-color: #c90812;
+    }
+
+    button.btn-primary:hover {
+      background: #ff1926;
+      border-color: #ff1926;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-tag">EEEP Adolfo Ferreira de Sousa · Design Gráfico</div>
+    <div class="header-right">
+      <button class="btn" onclick="toggleNotes()" title="Atalho: N">📋 Notas (<kbd>N</kbd>)</button>
+      <div class="slide-indicator" id="slideIndicator">Slide 1 de 11</div>
+    </div>
+  </header>
+
+  <!-- Main Slides Stage -->
+  <main>
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="slide capa active" id="slide-1"
+      data-teoria="Abertura da Aula 05. Na Aula 04, os alunos produziram 3 telas estáticas (Login, Cadastro e Home) do app StreamVibe. Hoje o salto de qualidade consiste em transformar telas estáticas em um fluxo navegável (prototipagem) e iniciar o design para telas grandes (Web Desktop) usando matemática de colunas."
+      data-dinamica="Conectar o tema diretamente ao mercado: nenhum cliente ou desenvolvedor front-end aprova telas soltas sem fluxo de navegação ou alinhamento em grid.">
+      <span class="slide-badge badge-red">Aula 05 · 2º Ano Informática</span>
+      <h1>🎬 StreamVibe:<br>Prototipagem & Layout Grids</h1>
+      <p class="slide-desc">Dando vida às telas do aplicativo mobile e estruturando a versão Web Desktop com colunas matemáticas no Figma.</p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 12px;">
+        <span class="metric-pill">Prof. Olegário Neto</span>
+        <span class="metric-pill">11/11/2026</span>
+        <span class="metric-pill">100 min (2 Tempos)</span>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: AGENDA -->
+    <section class="slide" id="slide-2"
+      data-teoria="Apresentação rápida da divisão da aula em dois blocos de 50 minutos. O 8º tempo aproveita o arquivo que o aluno já possui da avaliação prática; o 9º tempo introduz o padrão Web Desktop."
+      data-dinamica="Pedir que todos abram o arquivo do StreamVibe no navegador enquanto a agenda é apresentada para evitar atraso no laboratório.">
+      <span class="slide-badge badge-cyan">Roteiro de Hoje</span>
+      <h2>📋 Agenda da Aula (2 Tempos)</h2>
+      <p class="slide-desc">Do protótipo clicável no celular até a arquitetura de colunas para computador.</p>
+      <div class="grid-2">
+        <div class="card highlight">
+          <div class="card-title">📱 8º Tempo — Prototipagem Mobile (50 min)</div>
+          <ul class="card-list">
+            <li>Devolutiva rápida dos erros da Avaliação Prática (Aula 04).</li>
+            <li>Aba <strong>Prototype</strong> (<kbd>Shift</kbd> + <kbd>E</kbd>) e conexões entre telas.</li>
+            <li>Transições, ação <code>Back</code> e <strong>Scroll Horizontal</strong> no carrossel.</li>
+            <li>Teste simulado no aparelho (Modo Present).</li>
+          </ul>
+        </div>
+        <div class="card highlight-cyan">
+          <div class="card-title">💻 9º Tempo — Grids e Web Desktop (50 min)</div>
+          <ul class="card-list">
+            <li>Por que desenvolvedores Web exigem <strong>Layout Grids</strong>.</li>
+            <li>Criação do Frame Desktop (<code>1440 x 1024 px</code>).</li>
+            <li>Configuração do padrão de <strong>12 Colunas</strong> (<kbd>Shift</kbd> + <kbd>G</kbd>).</li>
+            <li>Construção da Navbar, Hero Section e fileira de filmes Web.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: O GANCHO (FEEDBACK AULA 04) -->
+    <section class="slide" id="slide-3"
+      data-teoria="Recuperação ativa sobre o bug mais comum observado nas 28 entregas da avaliação: objetos posicionados visualmente sobre a prancheta, mas na raiz do canvas em vez de aninhados na árvore do Frame. Também reforçamos o bloqueio de imagem de fundo com cadeado e o contraste sobre imagens escuras."
+      data-dinamica="Lançar a pergunta no ar antes de mostrar a resposta: 'Dei Play e o botão desapareceu, o que aconteceu?'. Deixar 2 alunos responderem.">
+      <span class="slide-badge badge-yellow">Feedback da Aula 04</span>
+      <h2>⚠️ "Dei Play e meu botão sumiu!"</h2>
+      <p class="slide-desc">Antes de conectar as telas no protótipo, precisamos corrigir o erro número 1 de aninhamento encontrado nas entregas.</p>
+      <div class="vs-box">
+        <div class="vs-card-bad">
+          <div class="card-title" style="color: #ff6b6b;">❌ O Problema</div>
+          <ul class="card-list">
+            <li>O elemento está visualmente em cima da tela, mas na barra esquerda aparece <strong>fora da pasta do Frame</strong>.</li>
+            <li>No modo de apresentação (Play), o Figma só exibe o que está <strong>dentro</strong> do Frame.</li>
+            <li>Imagem de fundo sem cadeado acaba sendo arrastada junto com os botões.</li>
+          </ul>
+        </div>
+        <div class="vs-card-good">
+          <div class="card-title" style="color: #34d399;">✅ Correção em 3 Segundos</div>
+          <ul class="card-list">
+            <li>Selecione o item perdido e recorte: <kbd>Ctrl</kbd> + <kbd>X</kbd></li>
+            <li>Clique no <strong>nome do Frame</strong> (ex: <em>Login</em>) e cole: <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+            <li>Trave o background com o ícone de <strong>Cadeado</strong> e garanta contraste entre texto e fundo.</li>
+            <li><em>Perdeu o arquivo da Aula 04?</em> Copie as 3 telas prontas no kit <code>modelo-streamvibe-base.html</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: MODO PROTOTYPE -->
+    <section class="slide" id="slide-4"
+      data-teoria="Aplicando o princípio de Minto: começamos pelo impacto (telas soltas não demonstram usabilidade; protótipos permitem validar fluxos reais com usuários e clientes antes de escrever uma única linha de código). Explicar a anatomia de uma interação no Figma: Trigger (gatilho, ex: On click), Action (Navigate to / Back) e Animation (Dissolve, Slide in, Smart Animate)."
+      data-dinamica="Espelhar o Figma no projetor e demonstrar ao vivo o atalho Shift+E, a seleção do Device iPhone 14/15 Pro e o arraste da primeira seta azul (noodle).">
+      <span class="slide-badge badge-purple">Parte 1 · Interatividade</span>
+      <h2>⚡ Aba Prototype: Dando Vida às Telas</h2>
+      <p class="slide-desc">Telas estáticas mostram estética; protótipos testam o fluxo real antes da programação.</p>
+      <div class="steps-container">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Mudar de Modo e Escolher o Aparelho</div>
+            <div class="step-detail">Pressione <kbd>Shift</kbd> + <kbd>E</kbd> (ou clique na aba <strong>Prototype</strong> à direita). Em <em>Device</em>, escolha <strong>iPhone 14 & 15 Pro</strong>.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Puxar a Seta Azul do Botão até o Frame de Destino</div>
+            <div class="step-detail">Selecione o botão (use <kbd>Ctrl</kbd> + <kbd>Clique</kbd>), segure a bolinha branca <code>+</code> na borda e arraste até a tela seguinte.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Configurar Gatilho e Animação</div>
+            <div class="step-detail">Gatilho: <span class="metric-pill">On click</span> &nbsp; Ação: <span class="metric-pill">Navigate to</span> &nbsp; Transição: <span class="metric-pill">Dissolve / Slide in (300ms)</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: MAPA DE NAVEGAÇÃO STREAMVIBE -->
+    <section class="slide" id="slide-5"
+      data-teoria="Esquema objetivo das conexões obrigatórias no projeto StreamVibe. Destacar a diferença entre usar 'Navigate to' (empilha uma tela na frente) e usar a ação 'Back' no botão de voltar (desempilha voltando para a tela de origem exata, evitando loops confusos no histórico)."
+      data-dinamica="Deixar este slide projetado enquanto os alunos conectam as 3 telas durante a prática guiada.">
+      <span class="slide-badge badge-purple">Mapa de Fluxo</span>
+      <h2>🗺️ Conexões do App StreamVibe</h2>
+      <p class="slide-desc">Conecte os elementos exatos (botões e links) — nunca conecte a tela inteira de origem.</p>
+      <div class="flow-stage">
+        <div class="phone-mock">
+          <div class="phone-mock-title">1. Tela Login</div>
+          <div class="mock-link">E-mail / Senha</div>
+          <div class="mock-btn">Botão "Entrar" ➔</div>
+          <div class="mock-link">Link "Criar Conta" ➔</div>
+        </div>
+
+        <div class="flow-arrows">
+          <span class="arrow-badge">Entrar ➔ Home (Dissolve)</span>
+          <span class="arrow-badge">Criar Conta ➔ Cadastro (Slide in)</span>
+          <span class="arrow-badge" style="border-color: #fbbf24; color: #fbbf24;">Seta Voltar ➔ Action: Back</span>
+        </div>
+
+        <div class="phone-mock">
+          <div class="phone-mock-title">2. Tela Cadastro</div>
+          <div class="mock-link">⬅ Seta Voltar</div>
+          <div class="mock-link">Nome / E-mail / Senha</div>
+          <div class="mock-btn">Botão "Cadastrar" ➔</div>
+        </div>
+
+        <div class="flow-arrows">
+          <span class="arrow-badge" style="border-color: #34d399; color: #34d399;">Cadastrar ➔ Home</span>
+        </div>
+
+        <div class="phone-mock">
+          <div class="phone-mock-title">3. Tela Home</div>
+          <div class="mock-link" style="height: 60px; display: flex; align-items: center; justify-content: center;">Hero Banner</div>
+          <div class="mock-link">Carrossel Horizontal ↔</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: SCROLL HORIZONTAL -->
+    <section class="slide" id="slide-6"
+      data-teoria="O truque técnico para fazer o carrossel deslizar lateralmente no celular depende de duas configurações complementares: na aba Design, os cards devem estar dentro de um Frame menor que a soma das larguras com 'Clip content' ativado (recorte); na aba Prototype, a propriedade Scroll Behavior precisa ser trocada para 'Horizontal'."
+      data-dinamica="Mostrar que esquecer de reduzir a largura do sub-frame faz com que o scroll horizontal não aconteça, pois o Figma entende que nada transbordou a caixa.">
+      <span class="slide-badge badge-green">Recurso Mobile Real</span>
+      <h2>↔️ Carrossel Deslizante (Scroll Horizontal)</h2>
+      <p class="slide-desc">Para deslizar as capas de filmes para o lado no Play, você precisa criar uma "janela" menor que o conteúdo.</p>
+      <div class="grid-2">
+        <div class="steps-container">
+          <div class="step-item">
+            <div class="step-num cyan">1</div>
+            <div class="step-content">
+              <div class="step-title">Envelopar em um Sub-Frame</div>
+              <div class="step-detail">Selecione todas as capas do carrossel e aperte <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd> (Frame Selection).</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num cyan">2</div>
+            <div class="step-content">
+              <div class="step-title">Limitar Largura e Recortar (Design)</div>
+              <div class="step-detail">Puxe a borda direita do sub-frame até a margem do celular e marque <strong>Clip content</strong>.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num cyan">3</div>
+            <div class="step-content">
+              <div class="step-title">Ativar Overflow (Prototype)</div>
+              <div class="step-detail">Em <kbd>Shift</kbd> + <kbd>E</kbd>, mude <em>Overflow</em> para <span class="metric-pill">Horizontal</span> e teste no Play (<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Enter</kbd>).</div>
+            </div>
+          </div>
+        </div>
+        <div class="card highlight-cyan" style="justify-content: center;">
+          <div class="card-title">🧪 Check do Teste (Modo Play)</div>
+          <ul class="card-list">
+            <li>A moldura do iPhone aparece ao redor das telas?</li>
+            <li>Clicar em <strong>Entrar</strong> leva para a Home?</li>
+            <li>Clicar em <strong>Criar Conta</strong> vai ao Cadastro e <strong>Voltar</strong> retorna ao Login?</li>
+            <li>Passar o mouse/arrastar no carrossel move os filmes lateralmente?</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: LAYOUT GRIDS (CONCEITO E PADRÕES) -->
+    <section class="slide" id="slide-7"
+      data-teoria="Transição para o 9º tempo. Explicar a ponte entre Design Gráfico e Programação Front-end: frameworks como Bootstrap, Tailwind CSS e o próprio CSS Grid dividem páginas em 12 colunas. O número 12 é escolhido na indústria por ser divisível por 2, 3, 4 e 6, permitindo compor layouts simétricos variados sem cálculos quebrados. Apresentar os 3 termos: Count (colunas), Margin (respiro externo) e Gutter (espaço fixo entre colunas)."
+      data-dinamica="Perguntar: 'Por que 12 colunas e não 10?' e mostrar no diagrama abaixo como blocos de 6+6, 4+4+4 ou 2x6 se encaixam com exatidão.">
+      <span class="slide-badge badge-cyan">Parte 2 · Arquitetura Web</span>
+      <h2>📐 Layout Grids: Por que 12 Colunas?</h2>
+      <p class="slide-desc">Programadores front-end (CSS Grid / Bootstrap) usam colunas matemáticas. Sem Grid no Figma, o site fica torto no código.</p>
+      <table class="specs-table">
+        <thead>
+          <tr>
+            <th>Dispositivo</th>
+            <th>Tamanho do Frame</th>
+            <th>Colunas (Count)</th>
+            <th>Margin (Bordas)</th>
+            <th>Gutter (Entre Colunas)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>📱 Mobile (App)</strong></td>
+            <td><code>390 x 844 px</code></td>
+            <td><span class="metric-pill">4 Colunas</span></td>
+            <td><code>24 px</code></td>
+            <td><code>16 px</code></td>
+          </tr>
+          <tr>
+            <td><strong>💻 Desktop (Web)</strong></td>
+            <td><code>1440 x 1024 px</code></td>
+            <td><span class="metric-pill">12 Colunas</span></td>
+            <td><code>80 px</code></td>
+            <td><code>24 px</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="grid-demo-wrapper">
+        <div class="grid-12-cols">
+          <div class="grid-overlay-hero">Hero Texto (Colunas 1 a 6)</div>
+          <div class="grid-overlay-cta">CTA (Col. 11–12)</div>
+          <div class="grid-col">1</div><div class="grid-col">2</div><div class="grid-col">3</div><div class="grid-col">4</div>
+          <div class="grid-col">5</div><div class="grid-col">6</div><div class="grid-col">7</div><div class="grid-col">8</div>
+          <div class="grid-col">9</div><div class="grid-col">10</div><div class="grid-col">11</div><div class="grid-col">12</div>
+        </div>
+      </div>
+      <p style="margin-top: 12px; font-size: 0.95rem; color: var(--text-muted);">
+        💡 Atalho rápido no Figma para exibir ou esconder as colunas vermelhas: <kbd>Shift</kbd> + <kbd>G</kbd>
+      </p>
+    </section>
+
+    <!-- SLIDE 8: VERSÃO WEB STREAMVIBE (ESPECIFICAÇÕES) -->
+    <section class="slide" id="slide-8"
+      data-teoria="Guia visual com as medidas exatas para os alunos construírem a versão Web Desktop do StreamVibe na segunda metade do 9º tempo. Reforçar a regra de ouro do alinhamento em grid: um objeto sempre começa na borda esquerda de uma coluna e termina na borda direita de outra — nunca termina no meio do Gutter."
+      data-dinamica="Demonstrar rapidamente a criação do Frame Desktop (F -> Desktop), a adição do Layout Grid (+) -> Columns (12, Margin 80, Gutter 24) e deixar este slide travado na tela enquanto produzem.">
+      <span class="slide-badge badge-red">Especificação Web · StreamVibe</span>
+      <h2>🖥️ Montando a Home Desktop (1440 px)</h2>
+      <p class="slide-desc">Crie um novo Frame <strong>Desktop</strong> (<code>1440 x 1024 px</code>), aplique fundo <code>#0F1115</code> e configure o Grid de 12 colunas.</p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">1️⃣ Navbar (Topo)</div>
+          <ul class="card-list">
+            <li><strong>Logo StreamVibe:</strong> Inicia na borda da <strong>Coluna 1</strong>.</li>
+            <li><strong>Menu central:</strong> <em>Início, Filmes, Séries, Minha Lista</em> (fonte <code>16 px</code>, gap <code>32 px</code>).</li>
+            <li><strong>Botão "Entrar":</strong> Termina alinhado na borda da <strong>Coluna 12</strong>.</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <div class="card-title">2️⃣ Hero Section (Destaque)</div>
+          <ul class="card-list">
+            <li>Banner largura total (<code>1440 x 560 px</code>) com foto do Unsplash + degradê escuro.</li>
+            <li>Título (<code>48 px</code> Bold), sinopse (<code>18 px</code>) e botão <strong>▶ Assistir Agora</strong>.</li>
+            <li>Bloco alinhado exatamente entre as <strong>Colunas 1 e 6</strong>.</li>
+          </ul>
+        </div>
+        <div class="card highlight-cyan">
+          <div class="card-title">3️⃣ Fileira de Filmes (6 Cards)</div>
+          <ul class="card-list">
+            <li>Título <em>"Em Alta"</em> alinhado à <strong>Coluna 1</strong>.</li>
+            <li>Crie <strong>6 cards</strong> lado a lado na mesma linha.</li>
+            <li>Cada card ocupa exatamente <strong>2 colunas</strong> de largura (<code>2 × 6 = 12</code>).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: ATIVIDADE PRÁTICA & DESAFIO -->
+    <section class="slide" id="slide-9"
+      data-teoria="Consolidação das duas entregas da aula prática de hoje e oferta de andaime diferenciado (Desafio Extra) para alunos que concluem as etapas básicas antes do toque."
+      data-dinamica="Circular entre as estações verificando se o grid está configurado com Columns (e não o Grid quadriculado padrão) e se os cards respeitam as colunas sem invadir o Gutter.">
+      <span class="slide-badge badge-green">Mão na Massa</span>
+      <h2>🛠️ Checklist da Prática de Hoje</h2>
+      <p class="slide-desc">Siga o guia no seu ritmo e confira os itens antes do encerramento da aula.</p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">✅ Entregas Obrigatórias</div>
+          <ul class="card-list">
+            <li><strong>Mobile Navegável:</strong> Login, Cadastro e Home interligados na aba Prototype.</li>
+            <li><strong>Scroll Horizontal:</strong> Carrossel da Home deslizando lateralmente no modo Play.</li>
+            <li><strong>Frame Desktop:</strong> Página <code>Web - Home</code> configurada com Grid de <strong>12 colunas</strong>.</li>
+            <li><strong>Layout Alinhado:</strong> Navbar, Hero (Col. 1–6) e 6 cards de filmes (2 col. cada).</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <div class="card-title">🏆 Desafio Extra (Avançados)</div>
+          <ul class="card-list">
+            <li><strong>Auditoria no Mobile:</strong> Adicione o Grid de <strong>4 colunas</strong> (Margin 24, Gutter 16) nas telas de celular antigas e ajuste botões tortos.</li>
+            <li><strong>Tela de Detalhes:</strong> Duplique a Home mobile (<kbd>Ctrl</kbd> + <kbd>D</kbd>) para criar a tela de sinopse de um filme e conecte uma capa até ela.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: MICROATIVIDADE COMPONENTES E VARIANTES (HOVER) -->
+    <section class="slide" id="slide-10"
+      data-teoria="Introdução prática a Component Variants e microinterações de desktop. Na Web, botões oferecem resposta visual imediata ao cursor (estado :hover do CSS). No Figma, simulamos isso transformando o botão em Componente, criando uma variante de Hover e conectando os dois estados na aba Prototype com 'While hovering' + 'Smart animate'."
+      data-dinamica="Mostrar que uma única alteração no componente pai (ou na variante Hover) se propaga automaticamente para todos os botões da página.">
+      <span class="slide-badge badge-purple">Microatividade · Variantes</span>
+      <h2>✨ Botão Web com Estado Hover</h2>
+      <p class="slide-desc">Simule o efeito de passar o mouse (<code>:hover</code> do CSS) usando Componentes e Variantes sem escrever código.</p>
+      <div class="steps-container">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Criar Componente e Variante</div>
+            <div class="step-detail">Selecione o botão <strong>▶ Assistir Agora</strong>, aperte <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>K</kbd> e clique em <strong>+ Add variant</strong> no painel direito.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Estilizar o Estado Hover</div>
+            <div class="step-detail">Na segunda variante, clareie o vermelho para <code>#FF2A36</code> (ou adicione borda branca sutil) para destacar o foco.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Ligar no Modo Prototype (<kbd>Shift</kbd> + <kbd>E</kbd>)</div>
+            <div class="step-detail">Puxe a seta da Variante 1 para a Variante 2: <span class="metric-pill">While hovering</span> &nbsp; <span class="metric-pill">Smart animate (200ms)</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: ENCERRAMENTO -->
+    <section class="slide" id="slide-11"
+      data-teoria="Fechamento com recuperação ativa oral: pedir à turma que responda sem consultar o runbook os 4 comandos e conceitos principais aprendidos na aula. Anunciar o conteúdo da Aula 06 (Landing Page responsiva e inspeção de propriedades CSS)."
+      data-dinamica="Fazer 4 perguntas rápidas apontando para a turma em voz alta antes de liberar para o intervalo/saída.">
+      <span class="slide-badge badge-yellow">Fechamento Ativo</span>
+      <h2>✅ Checkpoint Final & Próxima Aula</h2>
+      <p class="slide-desc">Respondam sem olhar para o roteiro:</p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">❓ 4 Perguntas Rápidas</div>
+          <ul class="card-list">
+            <li>Qual atalho alterna para o modo <strong>Prototype</strong>? (<kbd>Shift</kbd> + <kbd>E</kbd>)</li>
+            <li>O que precisa estar ativo no carrossel para o scroll funcionar? (<code>Clip content</code> + <code>Horizontal</code>)</li>
+            <li>Quantas colunas usamos como padrão no <strong>Web Desktop</strong>? (<strong>12 colunas</strong>)</li>
+            <li>Qual atalho liga e desliga as linhas vermelhas do Grid? (<kbd>Shift</kbd> + <kbd>G</kbd>)</li>
+          </ul>
+        </div>
+        <div class="card highlight-cyan" style="justify-content: center;">
+          <div class="card-title">📅 Na Próxima Aula (Aula 06)</div>
+          <ul class="card-list">
+            <li>Finalização da <strong>Landing Page Web</strong> do StreamVibe (Seções de Planos, Perguntas Frequentes e Footer).</li>
+            <li>Adaptação responsiva e inspeção de código CSS direto pelo Figma.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Speaker Notes Drawer -->
+  <aside class="notes-panel" id="notesPanel">
+    <h4>
+      <span>👨‍🏫 Notas do Professor (Conteúdo de Apoio)</span>
+      <button class="btn" style="padding: 2px 8px; font-size: 0.75rem;" onclick="toggleNotes()">Fechar ✕</button>
+    </h4>
+    <div id="notesContent"></div>
+  </aside>
+
+  <!-- Footer Controls -->
+  <footer>
+    <div class="nav-hints">
+      <span>Navegação: <kbd>←</kbd> <kbd>→</kbd> ou <kbd>Espaço</kbd></span>
+      <span>Tela Cheia: <kbd>F</kbd></span>
+      <span>Notas: <kbd>N</kbd></span>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn" id="btnPrev" onclick="changeSlide(-1)">◀ Anterior</button>
+      <button class="btn btn-primary" id="btnNext" onclick="changeSlide(1)">Próximo ▶</button>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function updateSlide() {
+      for (let i = 1; i <= totalSlides; i++) {
+        const slideEl = document.getElementById(`slide-${i}`);
+        if (slideEl) {
+          slideEl.classList.toggle('active', i === currentSlide);
+        }
+      }
+
+      const activeSlide = document.getElementById(`slide-${currentSlide}`);
+      const notesEl = document.getElementById('notesContent');
+      if (activeSlide && notesEl) {
+        const teoria = activeSlide.dataset.teoria || '';
+        const dinamica = activeSlide.dataset.dinamica || '';
+        notesEl.innerHTML = `
+          <p><strong>Teoria / Explicação:</strong> ${teoria}</p>
+          <p><strong>Dinâmica de Sala:</strong> ${dinamica}</p>
+        `;
+      }
+
+      const progressPercent = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = `${progressPercent}%`;
+      document.getElementById('slideIndicator').textContent = `Slide ${currentSlide} de ${totalSlides}`;
+
+      document.getElementById('btnPrev').disabled = (currentSlide === 1);
+      document.getElementById('btnPrev').style.opacity = (currentSlide === 1) ? "0.4" : "1";
+
+      document.getElementById('btnNext').textContent =
+        (currentSlide === totalSlides) ? "Concluir Aula ✔" : "Próximo ▶";
+    }
+
+    function changeSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide < 1) currentSlide = 1;
+      if (currentSlide > totalSlides) currentSlide = totalSlides;
+      updateSlide();
+    }
+
+    function toggleNotes() {
+      document.getElementById('notesPanel').classList.toggle('open');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        changeSlide(-1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        currentSlide = 1;
+        updateSlide();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        currentSlide = totalSlides;
+        updateSlide();
+      } else if (e.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      }
+    });
+
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    window.addEventListener('touchend', (e) => {
+      let touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 50) {
+        changeSlide(1);
+      } else if (touchEndX > touchStartX + 50) {
+        changeSlide(-1);
+      }
+    }, false);
+
+    updateSlide();
+  </script>
+</body>
+</html>

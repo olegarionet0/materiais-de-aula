@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo Base StreamVibe (3 Telas) — Aula 05 | EEEP-AFS</title>
+  <style>
+    :root {
+      --bg: #090a0d;
+      --card: #13161f;
+      --border: #222736;
+      --red: #e50914;
+      --cyan: #00d2ff;
+      --green: #10b981;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      padding: 28px 20px 60px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(229, 9, 20, 0.15);
+      color: #ff525c;
+      border: 1px solid rgba(229, 9, 20, 0.35);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 20px auto;
+      font-size: 1rem;
+    }
+
+    .how-to {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .how-step strong {
+      display: block;
+      color: var(--cyan);
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .how-step p {
+      font-size: 0.88rem;
+      color: #d1d5db;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      background: #1c2230;
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn:hover { background: #272f42; border-color: #3b4661; }
+    .btn-primary { background: var(--red); border-color: #c90812; }
+    .btn-primary:hover { background: #ff1926; }
+    .btn-cyan { background: #0369a1; border-color: #0284c7; }
+    .btn-cyan:hover { background: #0284c7; }
+
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .screen-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .screen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screen-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .screen-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: monospace;
+    }
+
+    .svg-preview {
+      background: #07080b;
+      border: 1px solid #1f2433;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    .svg-preview svg {
+      max-height: 520px;
+      width: auto;
+      border-radius: 12px;
+      border: 1px solid #2b3245;
+    }
+
+    .screen-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .screen-actions .btn {
+      flex: 1;
+      justify-content: center;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--green);
+      color: #042f2e;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    kbd {
+      background: #1f2433;
+      border: 1px solid #3b4258;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: monospace;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Kit de Recuperação · Aula 05</span>
+      <h1>🎬 Modelo Base StreamVibe (3 Telas)</h1>
+      <p class="subtitle">
+        Não encontrou ou perdeu o seu projeto da Aula 04? Use este kit para colocar as 3 telas editáveis direto no seu Figma em menos de 1 minuto.
+      </p>
+    </header>
+
+    <section class="how-to">
+      <div class="how-step">
+        <strong>1. Copie ou Baixe o Modelo</strong>
+        <p>Clique em <strong>"Copiar Todas para o Figma"</strong> abaixo (ou baixe o arquivo <code>.svg</code>).</p>
+      </div>
+      <div class="how-step">
+        <strong>2. Cole no Seu Figma</strong>
+        <p>Crie um <em>Design File</em> em branco no Figma e pressione <kbd>Ctrl</kbd> + <kbd>V</kbd> (ou arraste o <code>.svg</code> baixado para a tela).</p>
+      </div>
+      <div class="how-step">
+        <strong>3. Converta em Frames</strong>
+        <p>Desagrupe (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd>) e, selecionando cada tela, aperte <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd> para transformar em Frame (<code>390 × 844</code>).</p>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="copyAllScreens()">📋 Copiar Todas as 3 Telas para o Figma</button>
+      <button class="btn btn-cyan" onclick="downloadAllSvg()">⬇️ Baixar Arquivo .SVG (Arrastar para o Figma)</button>
+    </div>
+
+    <div class="screens-grid">
+
+      <!-- TELA 1: LOGIN -->
+      <article class="screen-card">
+        <div class="screen-header">
+          <span class="screen-title">1. Tela de Login</span>
+          <span class="screen-meta">390 × 844 px</span>
+        </div>
+        <div class="svg-preview" id="wrap-login">
+          <svg id="svg-login" xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+            <g id="Tela-Login">
+              <rect id="Login-BG" width="390" height="844" rx="24" fill="#0F1115"/>
+              <rect id="Logo-Pill" x="125" y="108" width="140" height="36" rx="8" fill="#1C1F26"/>
+              <text x="195" y="131" fill="#E50914" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">STREAMVIBE</text>
+              <text id="Login-Titulo" x="24" y="210" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Entrar na conta</text>
+              <text x="24" y="236" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Acesse filmes e series em 4K</text>
+              <g id="Input-Email">
+                <rect x="24" y="270" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="303" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">seu@email.com</text>
+              </g>
+              <g id="Input-Senha">
+                <rect x="24" y="342" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="375" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Sua senha</text>
+              </g>
+              <g id="Btn-Entrar">
+                <rect x="24" y="430" width="342" height="56" rx="12" fill="#E50914"/>
+                <text x="195" y="463" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">Entrar</text>
+              </g>
+              <g id="Link-Criar-Conta">
+                <rect x="75" y="512" width="240" height="36" rx="8" fill="#0F1115"/>
+                <text x="195" y="535" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14" text-anchor="middle">Nao tem conta? Criar Conta</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="screen-actions">
+          <button class="btn" onclick="copySvg('svg-login', 'Tela de Login')">📋 Copiar Login</button>
+        </div>
+      </article>
+
+      <!-- TELA 2: CADASTRO -->
+      <article class="screen-card">
+        <div class="screen-header">
+          <span class="screen-title">2. Tela de Cadastro</span>
+          <span class="screen-meta">390 × 844 px</span>
+        </div>
+        <div class="svg-preview" id="wrap-cadastro">
+          <svg id="svg-cadastro" xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+            <g id="Tela-Cadastro">
+              <rect id="Cadastro-BG" width="390" height="844" rx="24" fill="#0F1115"/>
+              <g id="Btn-Voltar">
+                <rect x="24" y="56" width="96" height="36" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="72" y="79" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="600" text-anchor="middle">← Voltar</text>
+              </g>
+              <text id="Cadastro-Titulo" x="24" y="142" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Criar Conta</text>
+              <text x="24" y="168" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Preencha os dados para comecar</text>
+              <g id="Input-Nome">
+                <rect x="24" y="202" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="235" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Nome completo</text>
+              </g>
+              <g id="Input-Cad-Email">
+                <rect x="24" y="274" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="307" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">seu@email.com</text>
+              </g>
+              <g id="Input-Cad-Senha">
+                <rect x="24" y="346" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="379" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Criar senha</text>
+              </g>
+              <g id="Input-Confirmar-Senha">
+                <rect x="24" y="418" width="342" height="56" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <text x="42" y="451" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="14">Confirmar senha</text>
+              </g>
+              <g id="Btn-Cadastrar">
+                <rect x="24" y="506" width="342" height="56" rx="12" fill="#E50914"/>
+                <text x="195" y="539" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">Cadastrar</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="screen-actions">
+          <button class="btn" onclick="copySvg('svg-cadastro', 'Tela de Cadastro')">📋 Copiar Cadastro</button>
+        </div>
+      </article>
+
+      <!-- TELA 3: HOME -->
+      <article class="screen-card">
+        <div class="screen-header">
+          <span class="screen-title">3. Home + Carrossel</span>
+          <span class="screen-meta">390 × 844 px (4 Cards)</span>
+        </div>
+        <div class="svg-preview" id="wrap-home">
+          <svg id="svg-home" xmlns="http://www.w3.org/2000/svg" width="560" height="844" viewBox="0 0 560 844" fill="none">
+            <g id="Tela-Home">
+              <rect id="Home-BG" width="390" height="844" rx="24" fill="#0F1115"/>
+              <g id="Hero-Banner">
+                <rect width="390" height="390" rx="24" fill="#1C1F26"/>
+                <rect x="24" y="218" width="108" height="24" rx="6" fill="#E50914"/>
+                <text x="78" y="234" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" text-anchor="middle">EM DESTAQUE</text>
+                <text x="24" y="276" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Horizonte Zero</text>
+                <text x="24" y="302" fill="#A0A0A0" font-family="Inter, Arial, sans-serif" font-size="13">Sci-Fi · 2h 14min · 4K HDR</text>
+                <g id="Btn-Assistir">
+                  <rect x="24" y="322" width="156" height="44" rx="10" fill="#E50914"/>
+                  <text x="102" y="349" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle">▶ Assistir</text>
+                </g>
+              </g>
+              <text x="24" y="428" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Em Alta</text>
+              <g id="Carrossel-Filmes">
+                <g id="Card-Filme-1">
+                  <rect x="24" y="446" width="120" height="180" rx="8" fill="#23293A" stroke="#333B52"/>
+                  <text x="84" y="542" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">Duna II</text>
+                </g>
+                <g id="Card-Filme-2">
+                  <rect x="160" y="446" width="120" height="180" rx="8" fill="#2B1F2E" stroke="#45304A"/>
+                  <text x="220" y="542" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">Interestelar</text>
+                </g>
+                <g id="Card-Filme-3">
+                  <rect x="296" y="446" width="120" height="180" rx="8" fill="#1B2E3C" stroke="#2D4A5E"/>
+                  <text x="356" y="542" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">Blade Runner</text>
+                </g>
+                <g id="Card-Filme-4">
+                  <rect x="432" y="446" width="120" height="180" rx="8" fill="#2E251C" stroke="#4D3D2D"/>
+                  <text x="492" y="542" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" text-anchor="middle">Matrix</text>
+                </g>
+              </g>
+              <text x="24" y="664" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Continuar Assistindo</text>
+              <g id="Fila-Continuar">
+                <rect x="24" y="682" width="164" height="104" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+                <rect x="202" y="682" width="164" height="104" rx="8" fill="#1C1F26" stroke="#2E3446"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="screen-actions">
+          <button class="btn" onclick="copySvg('svg-home', 'Tela Home')">📋 Copiar Home</button>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copiado! Agora vá no Figma e aperte Ctrl + V.</div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    function buildCombinedSvg() {
+      const loginInner = document.getElementById('Tela-Login').outerHTML;
+      const cadInner = document.getElementById('Tela-Cadastro').outerHTML;
+      const homeInner = document.getElementById('Tela-Home').outerHTML;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="844" viewBox="0 0 1460 844" fill="none">
+  <g transform="translate(0, 0)">${loginInner}</g>
+  <g transform="translate(450, 0)">${cadInner}</g>
+  <g transform="translate(900, 0)">${homeInner}</g>
+</svg>`;
+    }
+
+    async function copyText(content, label) {
+      try {
+        await navigator.clipboard.writeText(content);
+        showToast(`✅ ${label} copiada! Cole no Figma com Ctrl + V.`);
+      } catch (err) {
+        const area = document.createElement('textarea');
+        area.value = content;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+        showToast(`✅ ${label} copiada! Cole no Figma com Ctrl + V.`);
+      }
+    }
+
+    function copySvg(svgId, label) {
+      const svgEl = document.getElementById(svgId);
+      copyText(svgEl.outerHTML, label);
+    }
+
+    function copyAllScreens() {
+      copyText(buildCombinedSvg(), 'As 3 telas');
+    }
+
+    function downloadAllSvg() {
+      const blob = new Blob([buildCombinedSvg()], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'streamvibe-3-telas-base.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('⬇️ Arquivo streamvibe-3-telas-base.svg baixado! Arraste para o Figma.');
+    }
+  </script>
+</body>
+</html>
