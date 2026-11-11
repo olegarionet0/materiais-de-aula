@@ -34,7 +34,7 @@ Antes de iniciar os passos abaixo:
 * [ ] Confira na barra lateral esquerda (*Layers*) se **todos os botões e textos estão dentro dos respectivos Frames** (e não flutuando fora deles).
 
 > [!tip] **Perdeu ou não encontrou o arquivo da Aula 04?**
-> Abra o arquivo **`modelo-streamvibe-base.html`** na pasta desta aula no portal de materiais. Clique em **"Copiar Todas as 3 Telas para o Figma"**, cole no seu arquivo em branco (`Ctrl + V`), desagrupe (`Ctrl + Shift + G`) e transforme cada tela em Frame (`Ctrl + Alt + G`). Em 30 segundos você já estará pronto para prototipar!
+> Abra o arquivo **`dg-modelo-streamvibe-base.html`** na pasta desta aula no portal de materiais. Clique em **"Copiar Todas as 3 Telas para o Figma"**, cole no seu arquivo em branco (`Ctrl + V`), desagrupe (`Ctrl + Shift + G`) e transforme cada tela em Frame (`Ctrl + Alt + G`). Em 30 segundos você já estará pronto para prototipar!
 
 ---
 
